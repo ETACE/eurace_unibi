@@ -4,11 +4,17 @@
  <version>Version 1.0, 01/01/2010</version>
  <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
  <description></description>
-	 <agents> 
+<agents> 
  <xagent>
    <name>IGFirm</name>
    <description></description>
-   <memory/>
+   <memory>
+   <variable>
+     <type>adt_list_adaptation_speed_array</type>
+     <name>list_adaptation_speed</name>
+     <description>List of adaptation speeds per skill group</description>
+    </variable>
+    </memory>
    <functions>
    <function>
      <name>IGFirm_idle</name>

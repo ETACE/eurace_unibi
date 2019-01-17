@@ -1,0 +1,4 @@
+Changes in Eurace@Unibi Model v1.0.1
+
+* Market_Research/model.xml: Moved datatype estimators_linear_regression to Cons_Goods/model.xml
+* Inv_Goods_Vintage/model.xml: Moved variable list_adaptation_speed to Labour/Employer_Role_IG_Firm_dummy/model.xml

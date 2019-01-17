@@ -349,11 +349,6 @@
      <name>mean_adaptation_speed</name>
      <description>Average adaptation speed in the economy</description>
     </variable>
-	<variable>
-     <type>adt_list_adaptation_speed_array</type>
-     <name>list_adaptation_speed</name>
-     <description>List of adaptation speeds per skill group</description>
-    </variable>
      <variable>
      <type>double</type>
      <name>productivity_progress_in_economy</name>

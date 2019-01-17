@@ -458,6 +458,39 @@
      </variable>
     </variables>
    </dataType>
+   
+   <dataType>
+    <name>estimators_linear_regression</name>
+    <description>Used by firms to estimated the demand by applying a linear regression</description>
+    <variables>
+     <variable>
+      <type>int</type>
+      <name>mall_id</name>
+      <description></description>
+     </variable>
+	  <variable>
+      <type>int</type>
+      <name>region_id</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>intercept</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>regressor</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>variance</name>
+      <description></description>
+     </variable>
+    </variables>
+   </dataType>
+   
   </dataTypes>
  </environment>
  <agents>
@@ -555,11 +588,13 @@
      <name>revenue_per_day</name>
      <description>Daily revenue</description>
     </variable>
+
     <variable>
      <type>estimators_linear_regression_array</type>
      <name>linear_regression_estimators</name>
      <description>Holds the estimators for the linear regression model</description>
     </variable>
+
     <variable>
      <type>double</type>
      <name>technological_frontier</name>

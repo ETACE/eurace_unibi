@@ -333,6 +333,14 @@
      <name>list_adaptation_speed_per_skill_group</name>
      <description>List of adaptation speeds per skill group</description>
     </variable>
+<!-- Moved memvar: from Cons_Goods/model.xml -->
+<!--
+    <variable>
+     <type>estimators_linear_regression_array</type>
+     <name>linear_regression_estimators</name>
+     <description>Holds the estimators for the linear regression model</description>
+    </variable>
+-->
     <variable>
      <type>double</type>
      <name>average_s_skill_of_1</name>

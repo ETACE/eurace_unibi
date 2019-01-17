@@ -62,37 +62,6 @@
     </variables>
    </dataType>
    <dataType>
-    <name>estimators_linear_regression</name>
-    <description>Used by firms to estimated the demand by applying a linear regression</description>
-    <variables>
-     <variable>
-      <type>int</type>
-      <name>mall_id</name>
-      <description></description>
-     </variable>
-	  <variable>
-      <type>int</type>
-      <name>region_id</name>
-      <description></description>
-     </variable>
-     <variable>
-      <type>double</type>
-      <name>intercept</name>
-      <description></description>
-     </variable>
-     <variable>
-      <type>double</type>
-      <name>regressor</name>
-      <description></description>
-     </variable>
-     <variable>
-      <type>double</type>
-      <name>variance</name>
-      <description></description>
-     </variable>
-    </variables>
-   </dataType>
- <dataType>
     <name>estimated_values_adt</name>
     <description></description>
     <variables>

@@ -193,6 +193,11 @@
      <name>mean_research_specific_skills</name>
      <description>mean specific skills of research workers</description>
     </variable>
+    <variable>
+     <type>adt_list_adaptation_speed_array</type>
+     <name>list_adaptation_speed</name>
+     <description>List of adaptation speeds per skill group</description>
+    </variable>
    </memory>
    <functions>
     <function>
