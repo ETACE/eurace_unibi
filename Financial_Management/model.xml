@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Financial Management</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+ <environment>
+  <constants>
+   <variable>
+    <type>double</type>
+    <name>const_firm_leverage</name>
+    <description>Initial leverage (debt/equity ratio) of each firm.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>debt_rescaling_factor</name>
+    <description>The debt rescaling factor $\omega$ is used in case of a firm bankruptcy to rescale the debt. This is a process of debt-to-equity transformation. It sets the target debt level in relation to the value of total assets: $L^*=\omega A^*$. The firm will not refund all of its loans completely, but will write off every loan with a certain ratio: $w_j = (1-L^*/L)L_j$ for loan $j$. The fraction $(1-L^*/L)$ is the write-off ratio, and $w_j$ is the monetary amount of the write-off for loan $j$.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>target_leverage_ratio</name>
+    <description>The target leverage ratio is the proportion of the target debt to target equity: $\ell = L^*/E^*$. This determines the target equity level as $E^*= (1/\ell) L^*$ and sets the amount of equity that the firm should raise on the financial market.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>target_liquidity_ratio</name>
+    <description>The target liquidity ratio is a parameter used in the case of firm bankruptcy due to illiquidity. The amount of equity to raise on the AFM equals $\alpha (F-P)$, where $\alpha$ is the target liquidity ratio, F are the financial commitments, and P is the payment account.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>const_dividend_earnings_ratio</name>
+    <description>The parameter const_dividend_earnings_ratio is used to determine the first positive dividend payment (if the dividend was set to 0, or at the start): TOTAL_DIVIDEND_PAYMENT = CONST_DIVIDEND_EARNINGS_RATIO *NET_EARNINGS;</description>
+   </variable>
+    <variable>
+    <type>double</type>
+    <name>const_dividend_treshold_full_payout</name>
+    <description>The parameter const_dividend_treshold_full_payout is used to set a treshold </description>
+   </variable>
+  </constants>
+  <functionFiles>
+   <file>Firm_Financial_Management_Functions.c</file>
+  </functionFiles>
+  <timeUnits>
+   <timeUnit>
+    <name>daily</name>
+    <unit>iteration</unit>
+    <period>1</period>
+   </timeUnit>
+   <timeUnit>
+    <name>weekly</name>
+    <unit>daily</unit>
+    <period>5</period>
+   </timeUnit>
+   <timeUnit>
+    <name>monthly</name>
+    <unit>weekly</unit>
+    <period>4</period>
+   </timeUnit>
+  </timeUnits>
+  <dataTypes>
+   <dataType>
+    <name>debt_item</name>
+    <description>ADT containing the attributes of a single loan</description>
+    <variables>
+     <variable>
+      <type>int</type>
+      <name>bank_id</name>
+      <description>Bank providing the loan.</description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>loan_value</name>
+      <description>Current value of the loan (initial value minus debt installments).</description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>interest_rate</name>
+      <description>Fixed interest rate per month.</description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>installment_amount</name>
+      <description>Fixed installment payment due per month.</description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>var_per_installment</name>
+      <description>Value-at-risk subtracted from the residual value-at-risk at each installment.</description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>residual_var</name>
+      <description>Residual value-at-risk, decreases gradually.</description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>bad_debt</name>
+      <description>Bad debt that is not refunded to bank in case of a firm bankruptcy.</description>
+     </variable>
+     <variable>
+      <type>int</type>
+      <name>nr_periods_before_repayment</name>
+      <description>The number of periods left before full repayment of the loan is due.</description>
+     </variable>
+    </variables>
+   </dataType>
+  </dataTypes>
+ </environment>
+ <agents>
+  <xagent>
+   <name>Firm</name>
+   <description></description>
+   <memory>
+
+    <variable>
+     <type>int</type>
+     <name>flag_illiquidity_correction</name>
+     <description>correction in cas illiquidity: debt rescaling uses TotalDebt, not TotalAssets</description>
+    </variable>
+
+    <variable>
+     <type>double</type>
+     <name>ebit</name>
+     <description>Earnings-before-interest-and-taxes: total revenue - sales_costs</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings</name>
+     <description>Earnings after interest payments (= ebit - interest)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_corporate</name>
+     <description>Tax rate on corporate profits (kept in memory)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_vat</name>
+     <description>VAT tax rate</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment</name>
+     <description>Tax payment over earnings after interest payments (tax_corporate*earnings)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment_in_calendar_month</name>
+     <description>Tax payment over earnings after interest payments (tax_corporate*earnings)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>net_earnings</name>
+     <description>Net earnings after tax payments (= ebit - interest - tax)</description>
+    </variable>
+
+    <variable>
+     <type>double_array</type>
+     <name>earnings_history</name>
+     <description>Net earnings of last 4 months</description>
+    </variable>
+
+    <variable>
+     <type>double</type>
+     <name>previous_net_earnings</name>
+     <description>Net earnings from previous production period</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_interest_payment</name>
+     <description>Total interest payments on outstanding debts</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_interest_payment_in_calendar_month</name>
+     <description>Total interest payments on outstanding debts in calendar month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_installment_payment</name>
+     <description>Total debt installment payments on outstanding debts</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_installment_payment_in_calendar_month</name>
+     <description>Total debt installment payments on outstanding debts incalendar month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend_payment</name>
+     <description>Total dividend payment</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend_payment_in_calendar_month</name>
+     <description>Total dividend payment in calendar month</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>flag_full_dividend</name>
+     <description>Indicator is 1 if 100 percent dividend payout.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_share_price</name>
+     <description>Current share price on the market</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_dividend_per_share</name>
+     <description>Dividend-per-share ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_dividend_per_share</name>
+     <description>Dividend-per-share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_earnings_per_share</name>
+     <description>Earnings-per-Share ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_earnings_per_share</name>
+     <description>Earnings-per-Share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_dividend_per_earnings</name>
+     <description>Dividend-to-Earnings ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_dividend_per_earnings</name>
+     <description>Dividend-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_earnings_ratio</name>
+     <description>Debt-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_equity_ratio</name>
+     <description>Debt-to-Equity ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>price_earnings_ratio</name>
+     <description>Price-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>retained_earnings_ratio</name>
+     <description>Retained earnings-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_share_ratio_growth</name>
+     <description>Target growth of the Earnings-per-Share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>critical_price_earnings_ratio</name>
+     <description>Critical (target) value for the Price-Earnings ratio (can be set by the firm)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>critical_earnings_per_share_ratio</name>
+     <description>Critical (target) value for the Earnings-per-Share ratio (derived from the growth level)</description>
+    </variable>
+    <variable>
+     <type>debt_item_array</type>
+     <name>loans</name>
+     <description>Array of structs holding all loans of the firm</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt</name>
+     <description>Total value of all loans outstanding</description>
+    </variable>
+	<variable>
+     <type>double</type>
+     <name>target_debt</name>
+     <description>Target value for total debt in bankruptcy debt rescaling procedure.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_balance_sheet</name>
+     <description>Total value of all loans outstanding</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_local_inventory</name>
+     <description>Total value of all local inventory stocks held at malls</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_local_inventory_balance_sheet</name>
+     <description>Total value of all local inventory stocks held at malls</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_units_capital_stock</name>
+     <description>Units of capital stock</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_capital_stock</name>
+     <description>Value of the capital stock</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_capital_stock_balance_sheet</name>
+     <description>Value of the capital stock</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_capital_depreciation_value</name>
+     <description>Sum over all units of capital of the depreciation value</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_capital_depreciation_units</name>
+     <description>Sum over all units of capital of the depreciation in units</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_assets</name>
+     <description>Value of total assets</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity</name>
+     <description>equity = total assets - total liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity_balance_sheet</name>
+     <description>equity = total assets - total liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>production_liquidity_needs</name>
+     <description>Production liquidity needs are production costs (labour costs and investments)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>financial_liquidity_needs</name>
+     <description>Financial liquidity needs are prior financial commitments (interests, installments, taxes)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_financial_needs</name>
+     <description>Total financial needs = Production liquidity needs + Financial liquidity needs + dividends</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>external_financial_needs</name>
+     <description>External financing</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_share</name>
+     <description>Earnings per share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>retained_earnings</name>
+     <description>Retained earnings = net earnings - dividend payout</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_payments</name>
+     <description>Sum of payments: taxes, interest, principle, production costs (labour+capital).</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>previous_shares_outstanding</name>
+     <description>Outstanding shares in previous month</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state</name>
+     <description>Minsky state for firms. values 1-4.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_1</name>
+     <description>Minsky firm category 1: Non-borrowers, do not need credit to produce.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_2</name>
+     <description>Minsky firm category 2: Hedge borrowers, need credit to produce.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_3</name>
+     <description>Minsky firm category 3: Speculative borrowers, need credit to pay principle only (debt installment).</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_4</name>
+     <description>Minsky firm category 4: Ponzi borrowers, need credit to pay interest and principle (debt installment).</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_5</name>
+     <description>Minsky firm category 5: other, non-classified.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_20</name>
+     <description>Hedge borrowers, no financial difficulties.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_21</name>
+     <description>Hedge borrower, who entered in financial crisis.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_22</name>
+     <description>Hedge borrower, who entered illiquidity bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_23</name>
+     <description>Hedge borrower, who entered insolvency bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_30</name>
+     <description>Speculative borrowers, no financial difficulties.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_31</name>
+     <description>Speculative borrower, who entered in financial crisis.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_32</name>
+     <description>Speculative borrower, who entered illiquidity bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_33</name>
+     <description>Speculative borrower, who entered insolvency bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_40</name>
+     <description>Ponzi borrowers, no financial difficulties.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_41</name>
+     <description>Ponzi borrower, who entered in financial crisis.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_42</name>
+     <description>Ponzi borrower, who entered illiquidity bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>minsky_state_43</name>
+     <description>Ponzi borrower, who entered insolvency bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>age_at_bankruptcy</name>
+     <description>Age of the firm when it goes bankrupt.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_at_bankruptcy</name>
+     <description>Debt of the firm when it goes bankrupt.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity_at_bankruptcy</name>
+     <description>Equity of the firm when it goes bankrupt.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees_at_bankruptcy</name>
+     <description>Number of employees of the firm when it goes bankrupt.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity_asset_ratio</name>
+     <description>Equity/Total assets. This is an indicator of financial failure.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>profit_asset_ratio</name>
+     <description>Profit: net earnings/total assets.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>sales_asset_ratio</name>
+     <description>Sales: Earnings/Total assets.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>investment_asset_ratio</name>
+     <description>Capital costs/Total assets.</description>
+    </variable>
+
+    <variable>
+     <type>double</type>
+     <name>total_income</name>
+     <description>Total monthly income (revenues, new bank loans, new share issues). Used for the balance sheet accounting.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_liabilities</name>
+     <description>Sum of liabilities.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_expenses</name>
+     <description>Sum of expenses.</description>
+    </variable>
+   </memory>
+   <functions>
+    <function>
+     <name>Firm_compute_financial_payments</name>
+     <description>Function to compute the prior financial commitments of the firm: interests, installments, taxes.</description>
+     <currentState>Firm_End_Public_Sector_Role</currentState>
+     <nextState>001</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_compute_income_statement</name>
+     <description>Function to compute the income statement of the firm.</description>
+     <currentState>001</currentState>
+     <nextState>002</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_compute_dividends</name>
+     <description>Function to compute the total dividend payout of the firm.</description>
+     <currentState>002</currentState>
+     <nextState>003</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_compute_total_financial_payments</name>
+     <description>Function to compute the total financial payments of the firm: interest, installments, taxes, production costs, dividends.</description>
+     <currentState>003</currentState>
+     <nextState>004</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_compute_balance_sheet</name>
+     <description>Function to compute the balance sheet of the firm.</description>
+     <currentState>004</currentState>
+     <nextState>Firm_Bankruptcy_check</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_set_bankruptcy_insolvency</name>
+     <description>Function to set the type of bankruptcy to `insolvency' and go to end_Firm state. 
+Also sets the active flag to 0 and starts the bankruptcy idle counter. 
+</description>
+     <currentState>Firm_Bankruptcy_check</currentState>
+     <nextState>Firm_variables_reset</nextState>
+     <condition>
+      <lhs>
+       <value>a.equity</value>
+      </lhs>
+      <op>LT</op>
+      <rhs>
+       <value>0.0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>bankruptcy_insolvency</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Firm_bankruptcy_reset_immediately</name>
+     <description>Function to reset variables immediately when the Firm goes bankrupt.</description>
+     <currentState>Firm_variables_reset</currentState>
+     <nextState>Firm_End_Financial_Management_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Firm_Bankruptcy_check</currentState>
+     <nextState>Firm_End_Financial_Management_Role</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.equity</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>0.0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_compute_total_liquidity_needs</name>
+     <description>Function to compute the total liquidity needs:
+ - financial_liquidity_needs: to finance interests, debt principle + taxes + dividend payment
+ - production_liquidity_needs: to finance production costs: wage bill + capital investments</description>
+     <currentState>02</currentState>
+     <nextState>02b</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_check_financial_and_bankruptcy_state</name>
+     <description>Function that checks the balance sheet and sets flags for the bankruptcy- or financial crisis state.</description>
+     <currentState>Firm_End_Credit_Role</currentState>
+     <nextState>Firm_bankruptcy_checked</nextState>
+     <condition>
+      <lhs>
+       <value>a.external_financial_needs</value>
+      </lhs>
+      <op>GT</op>
+      <rhs>
+       <value>0.0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_set_bankruptcy_illiquidity</name>
+     <description>Function to set the type of bankruptcy to `illiquidity' and then go to end_Firm state. 
+Also sets the active flag to 0 and starts the bankruptcy idle counter.</description>
+     <currentState>Firm_bankruptcy_checked</currentState>
+     <nextState>Firm_variables_reset2</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_illiquidity_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>1</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>bankruptcy_illiquidity</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Firm_bankruptcy_reset_immediately</name>
+     <description>Function to reset variables immediately when the Firm goes bankrupt.</description>
+     <currentState>Firm_variables_reset2</currentState>
+     <nextState>Firm_End_Financial_Management_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_set_minsky_state_crisis</name>
+     <description>Firm sets Minsky state in case of a financial crisis (which can always be resolved by down-scaling dividends or the production level).</description>
+     <currentState>Firm_checks_financial_crisis</currentState>
+     <nextState>Firm_resolve_financial_crisis</nextState>
+     <condition>
+      <lhs>
+       <value>a.financial_crisis_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>1</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_in_financial_crisis</name>
+     <description>Function to resolve the financial crisis by reducing dividends.</description>
+     <currentState>Firm_resolve_financial_crisis</currentState>
+     <nextState>Firm_End_External_Financing</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_not_in_bankruptcy</name>
+     <description>Idle function to transit from state Firm_bankruptcy_checked to state Firm_checks_financial_crisis.</description>
+     <currentState>Firm_bankruptcy_checked</currentState>
+     <nextState>Firm_checks_financial_crisis</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_illiquidity_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Firm_checks_financial_crisis</currentState>
+     <nextState>Firm_End_External_Financing</nextState>
+     <condition>
+      <lhs>
+       <value>a.financial_crisis_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Firm_Start_Credit_Role</currentState>
+     <nextState>Firm_End_External_Financing</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.external_financial_needs</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0.0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Firm_End_Credit_Role</currentState>
+     <nextState>Firm_End_External_Financing</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.external_financial_needs</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0.0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_execute_financial_payments</name>
+     <description>Function to execute financial payments.</description>
+     <currentState>Firm_End_External_Financing</currentState>
+     <nextState>Firm_End_Financial_Management</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>installment</messageName>
+      </output>
+      <output>
+       <messageName>dividend_info</messageName>
+      </output>
+      <output>
+       <messageName>tax_payment</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Firm_send_subsidy_notification</name>
+     <description>Function to send a subsidy_notification_message to the government.</description>
+     <currentState>Firm_Start_Financial_Management_Role</currentState>
+     <nextState>005</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_subsidy_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Firm_send_transfer_notification</name>
+     <description>Function to send a transfer_notification_message to the government.</description>
+     <currentState>005</currentState>
+     <nextState>Firm_End_Public_Sector_Role</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_transfer_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Firm_bankruptcy_generic_procedure</name>
+     <description>Function to process the bankruptcy condition in case of insolvency.</description>
+     <currentState>Firm_not_active</currentState>
+     <nextState>Firm_bankruptcy_state_0</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_idle_counter</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>239</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firing</messageName>
+      </output>
+     </outputs>
+    </function>
+<!--Removed: Firm_bankruptcy_illiquidity_procedure-->
+    <function>
+     <name>idle</name>
+     <description>Idle for Firm_bankruptcy_*_procedure.
+</description>
+     <currentState>Firm_not_active</currentState>
+     <nextState>Firm_bankruptcy_state_0</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_idle_counter</value>
+      </lhs>
+      <op>NEQ</op>
+      <rhs>
+       <value>239</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+
+	<function>
+     <name>Firm_bankruptcy_rescale_loans</name>
+     <description>Rescale_loans.</description>
+     <currentState>Firm_bankruptcy_state_0</currentState>
+     <nextState>Firm_bankruptcy_state_01</nextState>
+     <inputs/>
+     <outputs>
+	<output>
+       <messageName>bankruptcy</messageName>
+      </output>
+     </outputs>
+    </function>
+	
+	<function>
+     <name>Firm_bankruptcy_reset_delayed</name>
+     <description>Reset delayed variables.</description>
+     <currentState>Firm_bankruptcy_state_01</currentState>
+     <nextState>Firm_bankruptcy_state_1</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for Firm_bankruptcy_reset_delayed.</description>
+     <currentState>Firm_bankruptcy_state_01</currentState>
+     <nextState>Firm_bankruptcy_state_1</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_bankruptcy_idle_counter</name>
+     <description>Function to decrease the bankruptcy_idle_counter by 1. 
+Note that a negative count means the financing condition has not been yet satisfied at the end of the default idle period.</description>
+     <currentState>Firm_checks_if_active</currentState>
+     <nextState>Firm_not_active</nextState>
+     <condition>
+      <lhs>
+       <value>a.active</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Firm_checks_if_active</currentState>
+     <nextState>Firm_is_active</nextState>
+     <condition>
+      <lhs>
+       <value>a.active</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>1</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_remains_in_bankruptcy</name>
+     <description>Function to determine at the end of the bankruptcy idle period whether the firm has managed to raise sufficient equity on the AFM to re-surface from bankruptcy (condition to remain in bankruptcy: external financial needs positive).</description>
+     <currentState>Firm_bankruptcy_state_1</currentState>
+     <nextState>Firm_bankruptcy_state_4</nextState>
+     <condition>
+      <lhs>
+       <value>a.external_financial_needs</value>
+      </lhs>
+      <op>GT</op>
+      <rhs>
+       <value>0.0001</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Firm_reset_bankruptcy_flags</name>
+     <description>Function to reset the bankruptcy flags when the bankruptcy process has finished.</description>
+     <currentState>Firm_bankruptcy_state_4</currentState>
+     <nextState>Firm_Start_Financial_Management_Role</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_idle_counter</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for Firm_reset_bankruptcy_flags</description>
+     <currentState>Firm_bankruptcy_state_4</currentState>
+     <nextState>Firm_End_Branches</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.bankruptcy_idle_counter</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Firm_bankruptcy_state_1</currentState>
+     <nextState>Firm_bankruptcy_state_4</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.external_financial_needs</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0.0001</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+ <messages>
+  <message>
+   <name>bankruptcy_illiquidity</name>
+   <description>Bankruptcy message sent by firms to malls.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>firm_id</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>bankruptcy_insolvency</name>
+   <description>Bankruptcy message sent by firms to malls.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>firm_id</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+ </messages>
+</xmodel>

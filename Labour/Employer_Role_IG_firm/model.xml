@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Labour Market</name>
+ <version>Version 1.0, 01/01/2010</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+<environment>
+  <functionFiles>
+   <file>IGFirm_Employer_Functions.c</file>
+  </functionFiles>
+</environment>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>double</type>
+     <name>percent_revenue_for_innovation</name>
+     <description>Fraction of the revenue which is spent for RD</description>
+    </variable>
+    <variable>
+     <type>employee_array</type>
+     <name>employees</name>
+     <description>Used to store the data-type Employee</description>
+    </variable>
+    <variable>
+     <type>employee_array</type>
+     <name>research_employees</name>
+     <description>Used to store the data-type Employee</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>technology</name>
+     <description>The basic wage offer</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer</name>
+     <description>The basic wage offer</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer_for_rd</name>
+     <description>The basic wage offer</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>base_wage_offer_for_rd</name>
+     <description>The basic wage offer</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees</name>
+     <description>number of employees</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_research_employees</name>
+     <description>number of researc employees</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees_skill_1</name>
+     <description>number of employees with general skills 1</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees_skill_2</name>
+     <description>number of employees with general skills 2</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees_skill_3</name>
+     <description>number of employees with general skills 3</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees_skill_4</name>
+     <description>number of employees with general skills 4</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>no_employees_skill_5</name>
+     <description>number of employees with general skills 5</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>vacancies</name>
+     <description>number of vacancies</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>posted_vacancies</name>
+     <description>number of posted_vacancies</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>production_vacancies_posted</name>
+     <description>number of vacancies</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>research_vacancies</name>
+     <description>number of research vacancies</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>research_vacancies_posted</name>
+     <description>number of research vacancies posted</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>average_g_skill</name>
+     <description>average general skills of the workforce</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>average_s_skill_of_1</name>
+     <description>average specific skills of employees with general skills 1</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>average_s_skill_of_2</name>
+     <description>average specific skills of employees with general skills 2</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>average_s_skill_of_3</name>
+     <description>average specific skills of employees with general skills 3</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>average_s_skill_of_4</name>
+     <description>average specific skills of employees with general skills 4</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>average_s_skill_of_5</name>
+     <description>average specific skills of employees with general skills 5</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer_for_skill_1</name>
+     <description>wage offer for workers with skill level 1</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer_for_skill_2</name>
+     <description>wage offer for workers with skill level 2</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer_for_skill_3</name>
+     <description>wage offer for workers with skill level 3</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer_for_skill_4</name>
+     <description>wage offer for workers with skill level 4</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wage_offer_for_skill_5</name>
+     <description>wage offer for workers with skill level 5</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>employees_needed</name>
+     <description>number of workers a firm needs for next production</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>research_employees_needed</name>
+     <description>number of workers a firm needs for next production</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>mean_wage</name>
+     <description>mean wage of production workers</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>mean_research_wage</name>
+     <description>mean wage of research workers</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>mean_specific_skills</name>
+     <description>mean specific skills of production workers</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>mean_research_specific_skills</name>
+     <description>mean specific skills of research workers</description>
+    </variable>
+   </memory>
+   <functions>
+    <function>
+     <name>IGFirm_calculate_specific_skills_and_wage_offer</name>
+     <description>Firms calculate the specific skills for each general skill group and the according wage offer.</description>
+     <currentState>Start_IGFirm_Employer_Role</currentState>
+     <nextState>0111</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_redundancies</name>
+     <description>If the firm wants to decrease the workforce it sends redundancies.</description>
+     <currentState>0111</currentState>
+     <nextState>01y</nextState>
+     <condition>
+      <lhs>
+       <lhs>
+        <value>a.no_research_employees</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>a.research_employees_needed</value>
+       </rhs>
+      </lhs>
+      <op>OR</op>
+      <rhs>
+       <lhs>
+        <value>a.no_employees</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>a.employees_needed</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firing</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_idle</name>
+     <description>Firm does nothing.</description>
+     <currentState>0111</currentState>
+     <nextState>01y</nextState>
+     <condition>
+      <lhs>
+       <not>
+        <lhs>
+         <value>a.no_research_employees</value>
+        </lhs>
+        <op>GT</op>
+        <rhs>
+         <value>a.research_employees_needed</value>
+        </rhs>
+       </not>
+      </lhs>
+      <op>AND</op>
+      <rhs>
+       <not>
+        <lhs>
+         <value>a.no_employees</value>
+        </lhs>
+        <op>GT</op>
+        <rhs>
+         <value>a.employees_needed</value>
+        </rhs>
+       </not>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_random_redundancies</name>
+     <description>IGFirm sends redundancies in order to decrease the workforce.</description>
+     <currentState>01y</currentState>
+     <nextState>01yyy</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firing</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_send_vacancies</name>
+     <description>If additional workers are needed the firm sends vacancies messages espacially the different wage offers for the different general skill groups.</description>
+     <currentState>01yyy</currentState>
+     <nextState>01b</nextState>
+     <condition>
+      <lhs>
+       <lhs>
+        <value>a.no_research_employees</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>a.research_employees_needed</value>
+       </rhs>
+      </lhs>
+      <op>OR</op>
+      <rhs>
+       <lhs>
+        <value>a.no_employees</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>a.employees_needed</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>vacancies</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_idle</name>
+     <description>Firm does nothing.</description>
+     <currentState>01yyy</currentState>
+     <nextState>01c</nextState>
+     <condition>
+      <lhs>
+       <not>
+        <lhs>
+         <value>a.no_research_employees</value>
+        </lhs>
+        <op>LT</op>
+        <rhs>
+         <value>a.research_employees_needed</value>
+        </rhs>
+       </not>
+      </lhs>
+      <op>AND</op>
+      <rhs>
+       <not>
+        <lhs>
+         <value>a.no_employees</value>
+        </lhs>
+        <op>LT</op>
+        <rhs>
+         <value>a.employees_needed</value>
+        </rhs>
+       </not>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_read_job_applications_send_job_offer_or_rejection</name>
+     <description>IGFirm reads the application, ranks the applicants according to their general and specific skills and sends as many job offers to the first ranked applicants as the firm has vacancies to fill. The other applicants are refused.</description>
+     <currentState>01b</currentState>
+     <nextState>01d</nextState>
+     <inputs>
+      <input>
+       <messageName>job_application</messageName>
+      </input>
+     </inputs>
+     <outputs>
+      <output>
+       <messageName>job_offer</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_read_job_responses</name>
+     <description>The IGfirm reads the responses to their job offers and updates the number of employees and the number of vacancies.</description>
+     <currentState>01d</currentState>
+     <nextState>01e</nextState>
+     <inputs>
+      <input>
+       <messageName>job_acceptance</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_read_job_quitting</name>
+     <description>The firm reads quitting messages and updates the number of employees and the number of vacancies.</description>
+     <currentState>01c</currentState>
+     <nextState>01f</nextState>
+     <inputs>
+      <input>
+       <messageName>quitting</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_read_job_quitting</name>
+     <description>The firm reads quitting messages and updates the number of employees and the number of vacancies.</description>
+     <currentState>01e</currentState>
+     <nextState>01g</nextState>
+     <inputs>
+      <input>
+       <messageName>quitting</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_start_labour_market</name>
+     <description>Dummy function if a firm has to enter the Labor Market in the second round after receiving quittings.</description>
+     <currentState>01f</currentState>
+     <nextState>01h</nextState>
+     <condition>
+      <lhs>
+       <value>a.no_employees</value>
+      </lhs>
+      <op>LT</op>
+      <rhs>
+       <value>a.employees_needed</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_finish_labour_market_first_round</name>
+     <description>IGFirm has nothing to do in the first round.</description>
+     <currentState>01f</currentState>
+     <nextState>01k</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.no_employees</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>a.employees_needed</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_finish_labour_market_first_round</name>
+     <description>IGFirm has nothing to do in the first round.</description>
+     <currentState>01g</currentState>
+     <nextState>01k</nextState>
+     <condition>
+      <lhs>
+       <lhs>
+        <value>a.no_employees</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>a.employees_needed</value>
+       </rhs>
+      </lhs>
+      <op>AND</op>
+      <rhs>
+       <lhs>
+        <value>a.no_research_employees</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>a.research_employees_needed</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_update_wage_offer</name>
+     <description>The IGfirm increases the wage offer if there are vacancies left.</description>
+     <currentState>01g</currentState>
+     <nextState>01h</nextState>
+     <condition>
+      <lhs>
+       <lhs>
+        <value>a.no_employees</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>a.employees_needed</value>
+       </rhs>
+      </lhs>
+      <op>OR</op>
+      <rhs>
+       <lhs>
+        <value>a.no_research_employees</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>a.research_employees_needed</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_vacancies_2</name>
+     <description>If additional workers are needed the firm sends vacancies messages espacially the different wage offers for the different general skill groups.</description>
+     <currentState>01h</currentState>
+     <nextState>01i</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>vacancies2</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_read_job_applications_send_job_offer_or_rejection_2</name>
+     <description>IGFirm reads the application, ranks the applicants according to their general and specific skills and sends as many job offers to the first ranked applicants as the firm has vacancies to fill. The other applicants are refused.</description>
+     <currentState>01i</currentState>
+     <nextState>01j</nextState>
+     <inputs>
+      <input>
+       <messageName>job_application2</messageName>
+      </input>
+     </inputs>
+     <outputs>
+      <output>
+       <messageName>job_offer2</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_read_job_responses_2</name>
+     <description>The IGfirm reads the responses to their job offers and updates the number of employees and the number of vacancies.</description>
+     <currentState>01j</currentState>
+     <nextState>01k</nextState>
+     <inputs>
+      <input>
+       <messageName>job_acceptance2</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_read_job_quitting_2</name>
+     <description>The firm reads quitting messages and updates the number of employees and the number of vacancies.</description>
+     <currentState>01k</currentState>
+     <nextState>01l</nextState>
+     <inputs>
+      <input>
+       <messageName>quitting2</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_update_wage_offer_2</name>
+     <description>The firm increases the wage offer if there are vacancies left.</description>
+     <currentState>01l</currentState>
+     <nextState>01m</nextState>
+     <condition>
+      <lhs>
+       <value>a.no_employees</value>
+      </lhs>
+      <op>LT</op>
+      <rhs>
+       <value>a.employees_needed</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_idle</name>
+     <description>Firm does nothing.</description>
+     <currentState>01l</currentState>
+     <nextState>01m</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.no_employees</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>a.employees_needed</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_mean_wage_specific_skills</name>
+     <description>IGFirm does statistical calculations .</description>
+     <currentState>01m</currentState>
+     <nextState>Start_IGFirm_Production</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+     <nextState>09</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+  <message/>
+
+</xmodel>

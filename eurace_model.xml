@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Eurace Unibi Model</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models>
+  <model>
+   <file>Cons_Goods/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+ <model>
+   <file>Credit/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Credit/IGFirm_dummy/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Financial_Management/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Financial_Management/IGFirm_dummy/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Financial/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Inv_Goods_Basic/model.xml</file>
+   <enabled>false</enabled>
+  </model>
+  <model>
+   <file>Inv_Goods_Vintage/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Labour/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Government/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Statistical_Office/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Statistical_Office/IGFirm_dummy/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+  <model>
+   <file>Labour/Employer_Role_IG_Firm_dummy/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+<model>
+   <file>Market_Research/model.xml</file>
+   <enabled>true</enabled>
+  </model>
+ </models>
+ <environment>
+  <constants>
+   <variable>
+    <type>int</type>
+    <name>rnd_seed</name>
+    <description>Random seed for the run</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>total_regions</name>
+    <description>Total number of regions.</description>
+   </variable>
+  <variable>
+    <type>int</type>
+    <name>id_debug_probe</name>
+    <description>ID to probe for debuging</description>
+   </variable>
+	<variable>
+	<type>int</type>
+    <name>time_debug_probe</name>
+    <description>Time period for debuging: print if (DAY GT time_debug_probe)</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_log</name>
+    <description>0 or 1, A flag for debugging output in general.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_bankruptcy</name>
+    <description>0 or 1, A flag to print debugging info for bankruptcy functions.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_eurostat</name>
+    <description>0 or 1, A flag to print debugging info for Eurostat.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_ch</name>
+    <description>0 or 1, A flag to print debugging info for ClearingHouse.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_afm</name>
+    <description>0 or 1, A flag to print debugging info for AFM (full order lists).</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_afm_ch</name>
+    <description>0 or 1, A flag to print debugging info for AFM, ClearingHouse info only.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_exp1</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_file_exp1</name>
+    <description>0 or 1, A flag to print debugging info to files (requires the existence of an "its" subfolder in the folder where xml files are written).</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_file_exp2</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file. Used in Government code.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>policy_exp1</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_gov</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_household</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_credit</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_consumption</name>
+    <description>0 or 1, A flag to print logging output to terminal or to file.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_finman</name>
+    <description>0 or 1, A flag to print debugging output to terminal.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug_production</name>
+    <description>0 or 1, A flag to print debugging output to terminal.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>print_debug</name>
+    <description>0 or 1, A flag to print debugging output to terminal.</description>
+   </variable>
+	<variable>
+    <type>int</type>
+    <name>print_debug_market_research</name>
+    <description>0 or 1, A flag to print debugging output to terminal.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>policy_exp_energy_shock</name>
+    <description>Switch for policy experiment: energy shock.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>policy_exp_stabilization_subsidy</name>
+    <description>Switch for policy experiment: stabilization policy using subsidy scheme.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>policy_exp_stabilization_tax</name>
+    <description>Switch for policy experiment: stabilization policy using tax reduction scheme.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>const_bankruptcy_idle_period</name>
+    <description>Number of iterations that a bankrupt firm remains idle, before resuming production activity.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>days_per_month</name>
+    <description>Optional setting for the number of days in a month.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>xml_cloned</name>
+    <description>Indicator variable: Value 1 if a cloned xml file is used</description>
+   </variable>
+  </constants>
+  <functionFiles>
+   <file>my_library_functions.c</file>
+  </functionFiles>
+  <timeUnits>
+   <timeUnit>
+    <name>daily</name>
+    <unit>iteration</unit>
+    <period>1</period>
+   </timeUnit>
+   <timeUnit>
+    <name>weekly</name>
+    <unit>daily</unit>
+    <period>5</period>
+   </timeUnit>
+   <timeUnit>
+    <name>monthly</name>
+    <unit>weekly</unit>
+    <period>4</period>
+   </timeUnit>
+   <timeUnit>
+    <name>quarterly</name>
+    <unit>monthly</unit>
+    <period>3</period>
+   </timeUnit>
+   <timeUnit>
+    <name>yearly</name>
+    <unit>monthly</unit>
+    <period>12</period>
+   </timeUnit>
+   <timeUnit>
+    <name>millionyearly</name>
+    <unit>yearly</unit>
+    <period>1000000</period>
+   </timeUnit>
+  </timeUnits>
+  <dataTypes/>
+ </environment>
+ <agents>
+  <xagent>
+   <name>Firm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description>Government  to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>day_of_month_to_act</name>
+     <description>Activation day.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>last_day_of_month_to_act</name>
+     <description>One day before the activation day.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account_balance_sheet</name>
+     <description>Payment account when calculating balance sheet.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bank_id</name>
+     <description>Bank ID at which the agent maintains its payment account.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>Household</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int_array</type>
+     <name>neighboring_region_ids</name>
+     <description>List of IDs of region that neighbour the own region.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description>Government  to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>day_of_month_to_act</name>
+     <description>Activation day.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bank_id</name>
+     <description>Bank ID at which the agent maintains its payment account.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>Mall</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description>Government  to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description>Government  to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bank_id</name>
+     <description>Bank ID at which the agent maintains its payment account.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>day_of_month_to_act</name>
+     <description>Activation day.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>last_day_of_month_to_act</name>
+     <description>One day before the activation day.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account_balance_sheet</name>
+     <description>Payment account when calculating balance sheet.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>Eurostat</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>Bank</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description>Government  to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>Government</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int_array</type>
+     <name>list_of_regions</name>
+     <description>List of regions that are associated to the government.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>day_of_month_to_act</name>
+     <description>Activation day.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>CentralBank</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+  <xagent>
+   <name>ClearingHouse</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>region_id</name>
+     <description>Region ID to which the agent is associated.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>partition_id</name>
+     <description>Partition ID used for parallelization.</description>
+    </variable>
+   </memory>
+   <functions/>
+  </xagent>
+ </agents>
+ <messages>
+  <message>
+   <name>bank_account_update</name>
+   <description>Sent by agents to inform their bank about the current payment account balance.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Sending agent ID.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bank_id</name>
+     <description>Receiving bank agent ID.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>bank_to_central_bank_account_update</name>
+   <description>Banks send account information to central bank</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Sending agent ID.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>ecb_debt</name>
+     <description>Debt of the bank to the Central Bank</description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>gov_to_central_bank_account_update</name>
+   <description>Governments send account information to central bank</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description>Sending agent ID.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>payment_account</name>
+     <description>Current account value.</description>
+    </variable>
+   </variables>
+  </message>
+ </messages>
+</xmodel>

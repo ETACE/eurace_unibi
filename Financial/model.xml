@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Financial Market</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+ <environment>
+  <constants>
+   <variable>
+    <type>double</type>
+    <name>index_price_adj</name>
+    <description>Lambda parameter in the (D/S)-price adjustment rule. Typical value: 1.0.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>index_price_adj_max</name>
+    <description>Ceiling on price growth rate. Typical value: 1.10.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>index_price_adj_min</name>
+    <description>Floor on negative price "growth" rate (the decrease rate). Typical value: 0.90.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>trading_activity</name>
+    <description>Flag to switch on/off the trading of index shares.
+
+trading_activity = 0: households receive dividends, but do not issue orders to re-adjust their asset portfolio.
+
+trading_activity = 1: households receive dividends, and issue orders to re-adjust their asset portfolio.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>trading_random</name>
+    <description>Flag to switch on/off the random trading.
+	</description>
+   </variable>
+  </constants>
+  <functionFiles>
+   <file>ClearingHouse_Financial_Market_Functions.c</file>
+   <file>Household_Financial_Market_Functions.c</file>
+   <file>Firm_Financial_Market_Functions.c</file>
+   <file>IGFirm_Financial_Market_Functions.c</file>
+   <file>Central_Bank_Financial_Market_Functions.c</file>
+   <file>Government_Financial_Market_Functions.c</file>
+   <file>ClearingHouse_aux_functions.c</file>
+   <file>Household_aux_functions.c</file>
+  </functionFiles>
+  <timeUnits/>
+  <dataTypes>
+   <dataType>
+    <name>order</name>
+    <description>ADT for stock orders</description>
+    <variables>
+     <variable>
+      <type>int</type>
+      <name>trader_id</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>value</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>int</type>
+      <name>quantity</name>
+      <description></description>
+     </variable>
+    </variables>
+   </dataType>
+   <dataType>
+    <name>index_adt</name>
+    <description>ADT for the stock market index</description>
+    <variables>
+     <variable>
+      <type>double</type>
+      <name>price</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>weight</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>total_dividend</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>dividend_per_share</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>int</type>
+      <name>nr_shares</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>moving_avg_price</name>
+      <description>Moving average of the price.</description>
+     </variable>
+     <variable>
+      <type>double_array</type>
+      <name>price_history</name>
+      <description>Price history dynamic array.</description>
+     </variable>
+    </variables>
+   </dataType>
+   <dataType>
+    <name>index_portfolio</name>
+    <description>Household portfolio of index shares.</description>
+    <variables>
+     <variable>
+      <type>double</type>
+      <name>lastprice</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>int</type>
+      <name>units</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>moving_avg_price</name>
+      <description>Moving average of the price, obtained from Clearinghouse.</description>
+     </variable>
+    </variables>
+   </dataType>
+   <dataType>
+    <name>Belief</name>
+    <description>ADT containing belief attributes about stock market index</description>
+    <variables>
+     <variable>
+      <type>double</type>
+      <name>expected_dividend</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>expected_price</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>expected_return</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>expected_volatility</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>last_price</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>fraction_to_invest</name>
+      <description>Fraction to invest in the risky asset.</description>
+     </variable>
+    </variables>
+   </dataType>
+  </dataTypes>
+ </environment>
+ <agents>
+  <xagent>
+   <name>Firm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>int</type>
+     <name>current_shares_outstanding</name>
+     <description></description>
+    </variable>
+   </memory>
+   <functions>
+	<function>
+     <name>Firm_check_minsky_class</name>
+     <description>Function to set the type of firm according to Minksy's Financial Instability Hypothesis.</description>
+     <currentState>02b</currentState>
+     <nextState>Firm_Start_Credit_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+	<function>
+     <name>Firm_set_minsky_state_bankruptcy</name>
+     <description>Function to set the Minsky subclass in case of bankruptcy.</description>
+     <currentState>15</currentState>
+     <nextState>16</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+  <xagent>
+   <name>Household</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>double</type>
+     <name>risk_free_rate</name>
+     <description>Interest rate on deposits</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>wealth</name>
+     <description>Total wealth: payment account + asset wealth</description>
+    </variable>
+    <variable>
+     <type>Belief</type>
+     <name>beliefs</name>
+     <description>Belief attributes about the stock market index price.</description>
+    </variable>
+    <variable>
+     <type>index_portfolio</type>
+     <name>assetsowned</name>
+     <description>Portfolio of index shares owned by the household.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>logit_beta</name>
+     <description>Intensity of choice parameter for the logit choice model.</description>
+    </variable>
+   </memory>
+   <functions>
+    <function>
+     <name>Household_receive_index_info</name>
+     <description>Function to read the index dividend (index_info message from Clearinghouse).</description>
+     <currentState>Household_Start_Financial_Market_Role</currentState>
+     <nextState>AFM_000</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs>
+      <input>
+       <messageName>index_info</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Household_Start_Financial_Market_Role</currentState>
+     <nextState>AFM_000</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Household_receive_index_price</name>
+     <description>Function to read the index price (index_info message from Clearinghouse).</description>
+     <currentState>AFM_000</currentState>
+     <nextState>AFM_001</nextState>
+     <condition>
+      <lhs>
+       <time>
+        <period>monthly</period>
+        <phase>a.day_of_month_to_act</phase>
+       </time>
+      </lhs>
+      <op>AND</op>
+      <rhs>
+       <lhs>
+        <value>TRADING_ACTIVITY</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>1</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs>
+      <input>
+       <messageName>index_price</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>    
+    <function>
+     <name>Household_revises_expected_portfolio</name>
+     <description>Function to revise the index portfolio.</description>
+     <currentState>AFM_001</currentState>
+     <nextState>AFM_002</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>order</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Household_update_portfolio</name>
+     <description>Function to update the index portfolio after transactions have occurred.</description>
+     <currentState>AFM_002</currentState>
+     <nextState>Household_Start_Labour_Role</nextState>
+     <inputs>
+      <input>
+       <messageName>order_status</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.trader_id</value>
+        </rhs>
+       </filter>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>AFM_000</currentState>
+     <nextState>Household_Start_Labour_Role</nextState>
+     <condition>
+      <lhs>
+       <not>
+        <time>
+         <period>monthly</period>
+         <phase>a.day_of_month_to_act</phase>
+        </time>
+       </not>
+      </lhs>
+      <op>OR</op>
+      <rhs>
+       <lhs>
+        <value>TRADING_ACTIVITY</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>0</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory/>
+   <functions>
+    <function>
+     <name>IGFirm_receive_stock_info_dummy</name>
+     <description>Dummy function: firms do not receive stock market info (model version: stock market index).</description>
+     <currentState>06</currentState>
+     <nextState>07</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+  <xagent>
+   <name>Government</name>
+   <description></description>
+   <memory/>
+   <functions>
+    <function>
+     <name>Government_bond_market_dummy</name>
+     <description>Dummy function</description>
+     <currentState>Gov_Start_Bond_Market</currentState>
+     <nextState>01</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+  <xagent>
+   <name>ClearingHouse</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>order_array</type>
+     <name>pending_orders</name>
+     <description>List of pending orders submitted.</description>
+    </variable>
+    <variable>
+     <type>order_array</type>
+     <name>processed_orders</name>
+     <description>List of processed orders</description>
+    </variable>
+    <variable>
+     <type>index_adt</type>
+     <name>stock_index</name>
+     <description>Variable holding data for the stock market index</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>dsratio</name>
+     <description>Ratio (D/S) of aggregate demand and supply (integers).</description>
+    </variable>
+    <variable>
+     <type>double_array</type>
+     <name>random_numbers_normal</name>
+     <description>Vector of pre-generated random numbers, using the normal distribution N(1,0.01). Length: number of months of simulation.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_counter_total_dividend</name>
+     <description>Monthly counter of the total_dividend by firms. Used to compute the dividend per index share.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>stock_index_price</name>
+     <description>Price of the stock index from ADT.</description>
+    </variable>
+   </memory>
+   <functions>
+    <function>
+     <name>ClearingHouse_send_index_info</name>
+     <description>Compute the dividend for the stock_index, and send the index info message.</description>
+     <currentState>start_Clearinghouse</currentState>
+     <nextState>AFM_00</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>index_info</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for ClearingHouse_send_index_info, not 1st of month.</description>
+     <currentState>start_Clearinghouse</currentState>
+     <nextState>AFM_00</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>ClearingHouse_send_index_price</name>
+     <description>Function to send the index price message daily, at start of every iteration.</description>
+     <currentState>AFM_00</currentState>
+     <nextState>AFM_01</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>index_price</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>ClearingHouse_receive_orders</name>
+     <description>Function to read the order messages, and add these to the pending_orders array.</description>
+     <currentState>AFM_01</currentState>
+     <nextState>AFM_02</nextState>
+     <inputs>
+      <input>
+       <messageName>order</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>ClearingHouse_compute_transactions</name>
+     <description>Function to process the pending orders, and compute transactions.</description>
+     <currentState>AFM_02</currentState>
+     <nextState>AFM_03</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>ClearingHouse_send_transaction_info</name>
+     <description>Function to send the processed orders.</description>
+     <currentState>AFM_03</currentState>
+     <nextState>AFM_04</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>order_status</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>ClearingHouse_receive_dividend_info</name>
+     <description>Function to read the dividend info messages from firms. Runs daily, at the end of every iteration.</description>
+     <currentState>AFM_04</currentState>
+     <nextState>AFM_05</nextState>
+     <inputs>
+      <input>
+       <messageName>dividend_info</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>ClearingHouse_update_price</name>
+     <description>Function to update the stock index price.</description>
+     <currentState>AFM_05</currentState>
+     <nextState>end_Clearinghouse</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+  <xagent>
+   <name>CentralBank</name>
+   <description></description>
+   <memory/>
+   <functions>
+    <function>
+     <name>Central_Bank_dummy</name>
+     <description>Dummy function</description>
+     <currentState>CB_market_operations</currentState>
+     <nextState>CB_financial_operations_end</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+ <messages>
+  <message>
+   <name>index_info</name>
+   <description>Message sent by Clearinghouse to inform households about the monthly dividend per share on index shares.</description>
+   <variables>
+    <variable>
+     <type>double</type>
+     <name>dividend_per_share</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>index_price</name>
+   <description>Message sent by Clearinghouse to inform households of the current daily stock index price and moving average.</description>
+   <variables>
+    <variable>
+     <type>double</type>
+     <name>price</name>
+     <description>Index price per share.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>moving_avg_price</name>
+     <description>Moving average price information.</description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>order</name>
+   <description>Message sent by households containing the value of the order.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>trader_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>value</name>
+     <description>Monetary amount to invest in the market index.</description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>order_status</name>
+   <description>Message sent by Clearinghouse to inform households of the units of index shares resulting from the order.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>trader_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>value</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>quantity</name>
+     <description>Units of index shares for the transaction.
+Positive means: units bought, negative means: units sold.</description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>dividend_info</name>
+   <description>Message sent by Clearinghouse to inform households of the current dividend per index share.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>firm_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+ </messages>
+</xmodel>

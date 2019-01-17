@@ -1,0 +1,45 @@
+<!DOCTYPE xmodel SYSTEM "http://eurace.cs.bilgi.edu.tr/XMML.dtd">
+<xmodel version="2" >
+ <name>Credit Market</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+ <environment>
+  <functionFiles>
+   <file>IGFirm_Credit_Functions.c</file>
+  </functionFiles>
+ </environment>
+ <agents>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+<memory>
+ <variable>
+     <type>double</type>
+     <name>received_interest_daily</name>
+     <description>Received daily interest on bank account.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>received_interest_in_calendar_month</name>
+     <description>Sum of all interest on bank account received in calendar month</description>
+    </variable>
+</memory>
+   <functions>
+    <function>
+     <name>IGFirm_receive_account_interest</name>
+     <description>IGFirm receives interest on deposit account.</description>
+     <currentState>IGFirm_interest</currentState>
+     <nextState>IGFirm_checks_if_active</nextState>
+     <inputs>
+      <input>
+       <messageName>account_interest</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+</xmodel>

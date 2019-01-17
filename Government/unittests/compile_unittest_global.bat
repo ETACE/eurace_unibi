@@ -1,0 +1,1 @@
+gcc -D_DEBUG_MODE -g -I../../libmboard/include -L../../libmboard/lib unittest.c ../../memory.c ../../messageboards.c ../Government_Functions.c Government_unittests.c -lm -lcunit -lmboard_s

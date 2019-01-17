@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Statistical Office</name>
+ <version>Version 1.0, 10/02/2009</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+ <environment>
+  <constants/>
+  <functionFiles>
+   <file>IGFirm_Statistics_Functions.c</file>
+  </functionFiles>
+ </environment>
+ <agents>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>igfirm_balance_sheet_adt</type>
+     <name>igfirm_balance_sheet_calendar</name>
+     <description>Balance sheet consisting of adts for stocks and flows</description>
+    </variable>
+    <variable>
+     <type>igfirm_stocks_adt</type>
+     <name>igfirm_stocks_calendar</name>
+     <description>stock adt for monetary stocks at the end of the calendar month</description>
+    </variable>
+    <variable>
+     <type>igfirm_outflows_adt</type>
+     <name>igfirm_outflows_calendar</name>
+     <description>outflows adt for monetary outflows during the calendar month</description>
+    </variable>
+    <variable>
+     <type>igfirm_inflows_adt</type>
+     <name>igfirm_inflows_calendar</name>
+     <description>inflows adt for monetary outflows during the calendar month</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>age</name>
+     <description>Age of the firm in months.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>transfer_payment</name>
+     <description>The transfer payment read from message.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>subsidy_pct</name>
+     <description>The subsidy percentage read from message.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>active</name>
+     <description>0,1. Flag indicating whether the firm should start production activity.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bankruptcy_idle_counter</name>
+     <description>Number of iterations before the bankrupt firm becomes active again and resumes production activity.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bankruptcy_state</name>
+     <description>0,1. Flag indicating whether the firm is in bankruptcy.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bankruptcy_insolvency_state</name>
+     <description>0,1. Flag indicating whether the firm is in bankruptcy case: insolvency.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>bankruptcy_illiquidity_state</name>
+     <description>0,1. Flag indicating whether the firm is in bankruptcy case: illiquidity.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>financial_crisis_state</name>
+     <description>0,1. Flag indicating whether the firm is in a financial crisis state.</description>
+    </variable>
+	<variable>
+     <type>double</type>
+     <name>economy_wide_general_skills_in_firms</name>
+     <description>Average general skill level economy-wide. Used be the IGFirm to set the productivity for capital vintages.</description>
+    </variable>
+	<variable>
+     <type>double</type>
+     <name>economy_wide_specific_skills_in_firms</name>
+     <description>Average specific skill level economy-wide. Used be the IGFirm to set the productivity for capital vintages.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>subsidy_payment</name>
+     <description>Amount of subsidy payment received from Government</description>
+    </variable>
+   </memory>
+   <functions>
+    <function>
+     <name>IGFirm_reset_variables</name>
+     <description>Function to reset IGFirm balance sheet flow variables. Activation: 1st day of calendar month.</description>
+     <currentState>IGFirm_start</currentState>
+     <nextState>IGFirm_init_01</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_start</currentState>
+     <nextState>IGFirm_interest</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_receive_data</name>
+     <description>Function to read the messages from the eurostat agent.</description>
+     <currentState>IGFirm_init_01</currentState>
+     <nextState>IGFirm_interest</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs>
+      <input>
+       <messageName>eurostat_send_specific_skills</messageName>
+       <filter>
+        <lhs>
+         <value>a.region_id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.region_id</value>
+        </rhs>
+       </filter>
+      </input>
+      <input>
+       <messageName>policy_announcement</messageName>
+       <filter>
+        <lhs>
+         <value>a.gov_id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>  
+	<input>
+       <messageName>msg_skills_eurostat_to_igfirm</messageName>     
+      </input>    
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>IGFirm does nothing</description>
+     <currentState>IGFirm_is_active</currentState>
+     <nextState>Start_IGFirm_Productivity</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>IGFirm does nothing</description>
+     <currentState>IGFirm_End_Financial_Management_Role</currentState>
+     <nextState>IGFirm_End_Branches</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_data_to_Eurostat</name>
+     <description>Function to send a data_message to the eurostat agent including several micro data.</description>
+     <currentState>IGFirm_End_Branches</currentState>
+     <nextState>IGFirm_Send_Data</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>0</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_send_data</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_compute_stock_flows</name>
+     <description>IGFirms compute stock and flows for blanace sheets.</description>
+     <currentState>IGFirm_Send_Data</currentState>
+     <nextState>06</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>IGFirm does nothing</description>
+     <currentState>IGFirm_End_Branches</currentState>
+     <nextState>06</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>0</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_payments_to_bank</name>
+     <description></description>
+     <currentState>07</currentState>
+     <nextState>end_IGFirm</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>bank_account_update</messageName>
+      </output>
+     </outputs>
+    </function>
+   </functions>
+  </xagent>
+</xmodel>

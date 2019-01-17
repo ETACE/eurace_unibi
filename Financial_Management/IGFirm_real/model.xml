@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Financial Management</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+	<environment>
+  <functionFiles>
+   <file>IGFirm_Financial_Management_Functions.c</file>
+	   <file>IGFirm_FM_aux_functions.c</file>
+  </functionFiles>
+	</environment>
+ <agents>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>double</type>
+     <name>ebit</name>
+     <description>Earnings-before-interest-and-taxes: total revenue - sales_costs</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings</name>
+     <description>Earnings after interest payments (= ebit - interest)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_corporate</name>
+     <description>Tax rate on corporate profits (kept in memory)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_vat</name>
+     <description>VAT tax rate</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment</name>
+     <description>Tax payment over earnings after interest payments (tax_corporate*earnings)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment_in_calendar_month</name>
+     <description>Tax payment over earnings after interest payments (tax_corporate*earnings)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>net_earnings</name>
+     <description>Net earnings after tax payments (= ebit - interest - tax)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_net_earnings</name>
+     <description>Net earnings from previous production period</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_interest_payment</name>
+     <description>Total interest payments on outstanding debts</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_interest_payment_in_calendar_month</name>
+     <description>Total interest payments on outstanding debts in calendar month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_installment_payment</name>
+     <description>Total debt installment payments on outstanding debts</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_installment_payment_in_calendar_month</name>
+     <description>Total debt installment payments on outstanding debts in calendar month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend_payment</name>
+     <description>Total dividend payment</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend_payment_in_calendar_month</name>
+     <description>Total dividend payment in calendar month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_share_price</name>
+     <description>Current share price on the market</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_dividend_per_share</name>
+     <description>Dividend-per-share ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_dividend_per_share</name>
+     <description>Dividend-per-share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_earnings_per_share</name>
+     <description>Earnings-per-Share ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_earnings_per_share</name>
+     <description>Earnings-per-Share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_dividend_per_earnings</name>
+     <description>Dividend-to-Earnings ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_dividend_per_earnings</name>
+     <description>Dividend-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_earnings_ratio</name>
+     <description>Debt-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_equity_ratio</name>
+     <description>Debt-to-Equity ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>price_earnings_ratio</name>
+     <description>Price-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>retained_earnings_ratio</name>
+     <description>Retained earnings-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_share_ratio_growth</name>
+     <description>Target growth of the Earnings-per-Share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>critical_price_earnings_ratio</name>
+     <description>Critical (target) value for the Price-Earnings ratio (can be set by the firm)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>critical_earnings_per_share_ratio</name>
+     <description>Critical (target) value for the Earnings-per-Share ratio (derived from the growth level)</description>
+    </variable>
+    <variable>
+     <type>debt_item_array</type>
+     <name>loans</name>
+     <description>Array of structs holding all loans of the firm</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt</name>
+     <description>Total value of all loans outstanding</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_balance_sheet</name>
+     <description>Total value of all loans outstanding</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_local_inventory</name>
+     <description>Total value of capital good store</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_local_inventory_balance_sheet</name>
+     <description>Total value of capital good store</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_units_capital_stock</name>
+     <description>Units of capital stock</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_value_capital_stock</name>
+     <description>Value of the capital stock</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_capital_depreciation_value</name>
+     <description>Sum over all units of capital of the depreciation value</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_capital_depreciation_units</name>
+     <description>Sum over all units of capital of the depreciation in units</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_assets</name>
+     <description>Value of total assets</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity</name>
+     <description>equity = total assets - total liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity_balance_sheet</name>
+     <description>equity = total assets - total liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>production_liquidity_needs</name>
+     <description>Production liquidity needs are production costs (labour costs and investments)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>financial_liquidity_needs</name>
+     <description>Financial liquidity needs are prior financial commitments (interests, installments, taxes)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_financial_needs</name>
+     <description>Total financial needs = Production liquidity needs + Financial liquidity needs + dividends</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>external_financial_needs</name>
+     <description>External financing</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_share</name>
+     <description>Earnings per share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_payments</name>
+     <description>Sum of payments: taxes, interest, principle, production costs (labour+capital).</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>previous_shares_outstanding</name>
+     <description>Outstanding shares in previous month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_income</name>
+     <description>Total monthly income (revenues, new bank loans, new share issues). Used for the balance sheet accounting.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_liabilities</name>
+     <description>Sum of liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_expenses</name>
+     <description>Sum of expenses</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>calc_production_costs</name>
+     <description>Sum of liabilities</description>
+    </variable>
+   </memory>
+   <functions>
+    <function>
+     <name>IGFirm_bankruptcy_idle_counter</name>
+     <description>Function to decrease the bankruptcy_idle_counter by 1. 
+Note that a negative count means the financing condition has not been yet satisfied at the end of the default idle period.</description>
+     <currentState>IGFirm_checks_if_active</currentState>
+     <nextState>IGFirm_not_active</nextState>
+     <condition>
+      <lhs>
+       <value>a.active</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_checks_if_active</currentState>
+     <nextState>IGFirm_is_active</nextState>
+     <condition>
+      <lhs>
+       <value>a.active</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>1</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_bankruptcy_insolvency_procedure</name>
+     <description>Function to process the bankruptcy condition in case of insolvency.</description>
+     <currentState>IGFirm_not_active</currentState>
+     <nextState>IGFirm_bankruptcy_state_0</nextState>
+     <condition>
+      <lhs>
+       <lhs>
+        <value>a.bankruptcy_insolvency_state</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>1</value>
+       </rhs>
+      </lhs>
+      <op>AND</op>
+      <rhs>
+       <lhs>
+        <value>a.bankruptcy_idle_counter</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>239</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>bankruptcy</messageName>
+      </output>
+      <output>
+       <messageName>firing</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_bankruptcy_illiquidity_procedure</name>
+     <description>Function to process the bankruptcy condition in case of illiquidity.</description>
+     <currentState>IGFirm_not_active</currentState>
+     <nextState>IGFirm_bankruptcy_state_0</nextState>
+     <condition>
+      <lhs>
+       <lhs>
+        <lhs>
+         <value>a.bankruptcy_illiquidity_state</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>1</value>
+        </rhs>
+       </lhs>
+       <op>AND</op>
+       <rhs>
+        <lhs>
+         <value>a.bankruptcy_insolvency_state</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>0</value>
+        </rhs>
+       </rhs>
+      </lhs>
+      <op>AND</op>
+      <rhs>
+       <lhs>
+        <value>a.bankruptcy_idle_counter</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>239</value>
+       </rhs>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firing</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for IGFirm_bankruptcy_*_procedure.
+</description>
+     <currentState>IGFirm_not_active</currentState>
+     <nextState>IGFirm_bankruptcy_state_0</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_idle_counter</value>
+      </lhs>
+      <op>NEQ</op>
+      <rhs>
+       <value>239</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_bankruptcy_reset_delayed</name>
+     <description>Reset variables delayed.</description>
+     <currentState>IGFirm_bankruptcy_state_0</currentState>
+     <nextState>IGFirm_bankruptcy_state_1</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for IGFirm_bankruptcy_reset_delayed.</description>
+     <currentState>IGFirm_bankruptcy_state_0</currentState>
+     <nextState>IGFirm_bankruptcy_state_1</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_remains_in_bankruptcy</name>
+     <description></description>
+     <currentState>IGFirm_bankruptcy_state_1</currentState>
+     <nextState>IGFirm_bankruptcy_state_4</nextState>
+     <condition>
+      <lhs>
+       <value>a.external_financial_needs</value>
+      </lhs>
+      <op>GT</op>
+      <rhs>
+       <value>0.0001</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_bankruptcy_state_1</currentState>
+     <nextState>IGFirm_bankruptcy_state_4</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.external_financial_needs</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0.0001</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_reset_bankruptcy_flags</name>
+     <description>Function to reset the bankruptcy flags when the bankruptcy process has finished.</description>
+     <currentState>IGFirm_bankruptcy_state_4</currentState>
+     <nextState>IGFirm_Start_Financial_Management_Role</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_idle_counter</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for IGFirm_reset_bankruptcy_flags</description>
+     <currentState>IGFirm_bankruptcy_state_4</currentState>
+     <nextState>IGFirm_End_Branches</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.bankruptcy_idle_counter</value>
+       </lhs>
+       <op>EQ</op>
+       <rhs>
+        <value>0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_total_liquidity_needs</name>
+     <description>Function to compute the total liquidity needs for executing payments.</description>
+     <currentState>01kk</currentState>
+     <nextState>IGFirm_Start_Credit_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_Start_Credit_Role</currentState>
+     <nextState>IGFirm_End_External_Financing</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.external_financial_needs</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0.0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_End_Credit_Role</currentState>
+     <nextState>IGFirm_End_External_Financing</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.external_financial_needs</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0.0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_check_financial_and_bankruptcy_state</name>
+     <description>Function that checks the balance sheet and sets flags for the bankruptcy- or financial crisis state.</description>
+     <currentState>IGFirm_End_Credit_Role</currentState>
+     <nextState>IGFirm_bankruptcy_checked</nextState>
+     <condition>
+      <lhs>
+       <value>a.external_financial_needs</value>
+      </lhs>
+      <op>GT</op>
+      <rhs>
+       <value>0.0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_set_bankruptcy_illiquidity</name>
+     <description>unction to set the type of bankruptcy to `illiquidity' and then go to end_Firm state. 
+Also sets the active flag to 0 and starts the bankruptcy idle counter.</description>
+     <currentState>IGFirm_bankruptcy_checked</currentState>
+     <nextState>IGFirm_variables_reset2</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_illiquidity_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>1</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>bankruptcy_illiquidity</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_bankruptcy_reset_immediately</name>
+     <description>Function to reset variables immediately when the IGFirm goes bankrupt.</description>
+     <currentState>IGFirm_variables_reset2</currentState>
+     <nextState>IGFirm_End_Financial_Management_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_in_financial_crisis</name>
+     <description>Function to resolve the financial crisis by reducing dividends.</description>
+     <currentState>IGFirm_checks_financial_crisis</currentState>
+     <nextState>IGFirm_End_External_Financing</nextState>
+     <condition>
+      <lhs>
+       <value>a.financial_crisis_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>1</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_not_in_bankruptcy</name>
+     <description>Idle function to transit from state Firm_bankruptcy_checked to state Firm_checks_financial_crisis.</description>
+     <currentState>IGFirm_bankruptcy_checked</currentState>
+     <nextState>IGFirm_checks_financial_crisis</nextState>
+     <condition>
+      <lhs>
+       <value>a.bankruptcy_illiquidity_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_checks_financial_crisis</currentState>
+     <nextState>IGFirm_End_External_Financing</nextState>
+     <condition>
+      <lhs>
+       <value>a.financial_crisis_state</value>
+      </lhs>
+      <op>EQ</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_execute_financial_payments</name>
+     <description>Function to execute financial payments.</description>
+     <currentState>IGFirm_End_External_Financing</currentState>
+     <nextState>IGFirm_End_Financial_Management</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>installment</messageName>
+      </output>
+      <output>
+       <messageName>dividend_info</messageName>
+      </output>
+      <output>
+       <messageName>tax_payment</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_idle</name>
+     <description></description>
+     <currentState>IGFirm_Start_Financial_Management_Role</currentState>
+     <nextState>IGFirm_End_Financial_Management_Role</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>a.last_day_of_month_to_act</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_subsidy_notification</name>
+     <description>Function to send a subsidy_notification_message to the government.</description>
+     <currentState>IGFirm_Start_Financial_Management_Role</currentState>
+     <nextState>05</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>a.last_day_of_month_to_act</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_subsidy_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_send_transfer_notification</name>
+     <description>Function to send a transfer_notification_message to the government.</description>
+     <currentState>05</currentState>
+     <nextState>IGFirm_End_Public_Sector_Role</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_transfer_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_compute_financial_payments</name>
+     <description>Function to compute the prior financial commitments of the firm: interests, installments, taxes.</description>
+     <currentState>IGFirm_End_Public_Sector_Role</currentState>
+     <nextState>001</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_income_statement</name>
+     <description>Function to compute the income statement of the firm.</description>
+     <currentState>001</currentState>
+     <nextState>002</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_dividends</name>
+     <description>Function to compute the total dividend payout of the firm.</description>
+     <currentState>002</currentState>
+     <nextState>003</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_total_financial_payments</name>
+     <description>Function to compute the total financial payments of the firm: interest, installments, taxes, production costs, dividends.</description>
+     <currentState>003</currentState>
+     <nextState>004</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_balance_sheet</name>
+     <description>Function to compute the balance sheet of the firm.</description>
+     <currentState>004</currentState>
+     <nextState>IGFirm_Bankruptcy_check</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_set_bankruptcy_insolvency</name>
+     <description>Function to set the type of bankruptcy to `insolvency' and go to end_Firm state. 
+Also sets the active flag to 0 and starts the bankruptcy idle counter. 
+</description>
+     <currentState>IGFirm_Bankruptcy_check</currentState>
+     <nextState>IGFirm_variables_reset</nextState>
+     <condition>
+      <lhs>
+       <value>a.equity</value>
+      </lhs>
+      <op>LT</op>
+      <rhs>
+       <value>0.0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>bankruptcy_insolvency</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_bankruptcy_reset_immediately</name>
+     <description>Function to reset variables immediately when the IGFirm goes bankrupt.</description>
+     <currentState>IGFirm_variables_reset</currentState>
+     <nextState>IGFirm_End_Financial_Management_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_Bankruptcy_check</currentState>
+     <nextState>IGFirm_End_Financial_Management_Role</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.equity</value>
+       </lhs>
+       <op>LT</op>
+       <rhs>
+        <value>0.0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+</xmodel>

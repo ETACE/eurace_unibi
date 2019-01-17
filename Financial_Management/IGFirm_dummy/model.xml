@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Financial Management</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+	<environment>
+  <functionFiles>
+   <file>IGFirm_Financial_Management_Functions.c</file>
+	   <file>IGFirm_FM_aux_functions.c</file>
+  </functionFiles>
+	<constants>
+   <variable>
+<type>int</type>
+     <name>igfirm_dividend_payout_stretching_month</name>
+	 </variable>
+	</constants>
+	</environment>
+ <agents>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>double</type>
+     <name>ebit</name>
+     <description>Earnings-before-interest-and-taxes: total revenue - sales_costs</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings</name>
+     <description>Earnings after interest payments (= ebit - interest)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_corporate</name>
+     <description>Tax rate on corporate profits (kept in memory)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_vat</name>
+     <description>VAT tax rate</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment</name>
+     <description>Tax payment over earnings after interest payments (tax_corporate*earnings)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment_in_calendar_month</name>
+     <description>Tax payment over earnings after interest payments (tax_corporate*earnings)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>net_earnings</name>
+     <description>Net earnings after tax payments (= ebit - interest - tax)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_net_earnings</name>
+     <description>Net earnings from previous production period</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend_payment</name>
+     <description>Total dividend payment</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_dividend_payment_in_calendar_month</name>
+     <description>Total dividend payment in calendar month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_share_price</name>
+     <description>Current share price on the market</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_dividend_per_share</name>
+     <description>Dividend-per-share ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_dividend_per_share</name>
+     <description>Dividend-per-share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_earnings_per_share</name>
+     <description>Earnings-per-Share ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_earnings_per_share</name>
+     <description>Earnings-per-Share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_dividend_per_earnings</name>
+     <description>Dividend-to-Earnings ratio (previous production cycle)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>current_dividend_per_earnings</name>
+     <description>Dividend-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_earnings_ratio</name>
+     <description>Debt-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>debt_equity_ratio</name>
+     <description>Debt-to-Equity ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>price_earnings_ratio</name>
+     <description>Price-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>retained_earnings_ratio</name>
+     <description>Retained earnings-to-Earnings ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_share_ratio_growth</name>
+     <description>Target growth of the Earnings-per-Share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>critical_price_earnings_ratio</name>
+     <description>Critical (target) value for the Price-Earnings ratio (can be set by the firm)</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>critical_earnings_per_share_ratio</name>
+     <description>Critical (target) value for the Earnings-per-Share ratio (derived from the growth level)</description>
+    </variable>
+
+    <variable>
+     <type>double</type>
+     <name>total_debt</name>
+     <description>Total value of all loans outstanding</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt_balance_sheet</name>
+     <description>Total value of all loans outstanding</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_assets</name>
+     <description>Value of total assets</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity</name>
+     <description>equity = total assets - total liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>equity_balance_sheet</name>
+     <description>equity = total assets - total liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_share</name>
+     <description>Earnings per share ratio</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_payments</name>
+     <description>Sum of payments: taxes, interest, principle, production costs (labour+capital).</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>previous_shares_outstanding</name>
+     <description>Outstanding shares in previous month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_income</name>
+     <description>Total monthly income (revenues, new bank loans, new share issues). Used for the balance sheet accounting.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_liabilities</name>
+     <description>Sum of liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_expenses</name>
+     <description>Sum of expenses</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>calc_production_costs</name>
+     <description>Sum of liabilities</description>
+    </variable>
+   </memory>
+<functions>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>IGFirm_checks_if_active</currentState>
+     <nextState>IGFirm_is_active</nextState>
+     <inputs/>
+     <outputs/>    
+</function>
+    <function>
+     <name>IGFirm_execute_financial_payments</name>
+     <description>Function to execute financial payments.</description>
+     <currentState>01kk</currentState>
+     <nextState>IGFirm_End_Financial_Management</nextState>
+   <condition>
+       <time>
+        <period>monthly</period>
+        <phase>a.day_of_month_to_act</phase>
+       </time>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>dividend_info</messageName>
+      </output>
+      <output>
+       <messageName>tax_payment</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_idle</name>
+     <description></description>
+     <currentState>IGFirm_Start_Financial_Management_Role</currentState>
+     <nextState>IGFirm_End_Financial_Management_Role</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>a.last_day_of_month_to_act</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_send_subsidy_notification</name>
+     <description>Function to send a subsidy_notification_message to the government.</description>
+     <currentState>IGFirm_Start_Financial_Management_Role</currentState>
+     <nextState>05</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>a.last_day_of_month_to_act</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_subsidy_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_send_transfer_notification</name>
+     <description>Function to send a transfer_notification_message to the government.</description>
+     <currentState>05</currentState>
+     <nextState>IGFirm_End_Public_Sector_Role</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>firm_transfer_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_compute_income_statement</name>
+     <description>Function to compute the income statement of the firm.</description>
+     <currentState>IGFirm_End_Public_Sector_Role</currentState>
+     <nextState>002</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_dividends</name>
+     <description>Function to compute the total dividend payout of the firm.</description>
+     <currentState>002</currentState>
+     <nextState>003</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_total_financial_payments</name>
+     <description>Function to compute the total financial payments of the firm: interest, installments, taxes, production costs, dividends.</description>
+     <currentState>003</currentState>
+     <nextState>004</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_compute_balance_sheet</name>
+     <description>Function to compute the balance sheet of the firm.</description>
+     <currentState>004</currentState>
+     <nextState>IGFirm_End_Financial_Management_Role</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+</xmodel>

@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Government</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+ <environment>
+  <constants>
+   <variable>
+    <type>double</type>
+    <name>gov_policy_unemployment_benefit_pct</name>
+    <description>Parameter to set the net replacement rate (the unemployment benefit as a fraction of last labour income).</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>gov_policy_money_financing_fraction</name>
+    <description>Parameter to set the fraction of the budget deficit to be financed by money financing.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>gov_policy_gdp_fraction_consumption</name>
+    <description>Parameter to set government consumption expenditure as a fraction of GDP.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>gov_policy_gdp_fraction_investment</name>
+    <description>Parameter to set government investment expenditure as a fraction of GDP.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>no_regions_per_gov</name>
+    <description>Number of regions per government. Default 2.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>subsidy_trigger_on</name>
+    <description>Trigger floor level of the GDP growth rate, below which the subsidy is switched on. Typically set to -0.01.
+</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>subsidy_trigger_off</name>
+    <description>Trigger ceiling level of the GDP growth rate, above which the subsidy is switched off. Typically set to +0.01.
+</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>gov_policy_swith_quantitative_easing</name>
+    <description>Swith to turn on quantitative easing.
+</description>
+   </variable>
+	  <variable>
+    <type>int</type>
+    <name>gov_policy_switch_human_capital_improvement</name>
+    <description>Swith to turn on quantitative easing.
+</description>
+   </variable>
+	   <variable>
+    <type>int</type>
+    <name>policy_exp_best_technology_subsidy</name>
+    <description>Switch for subsidy policy: If 1 then the best available vintage is subsidiezed by the government with firm_subsidy_pct  
+</description>
+   </variable>
+	<variable>
+    <type>int</type>
+    <name>regional_policy_technology_subsidy</name>
+    <description>Switch for regional subsidy policy: If it is 1 and policy_exp_best_technology_subsidy is 1 then the best available vintage is subsidiezed by certain governments (to be set in the government variables list) with firm_subsidy_pct  
+</description>
+   </variable>
+  <variable>
+    <type>double</type>
+    <name>best_technology_subsidy_pct</name>
+    <description>Percentage of capital goods subsidies 
+</description>
+   </variable>
+  </constants>
+  <functionFiles>
+   <file>Government_Functions.c</file>
+  </functionFiles>
+  <timeUnits/>
+	 <dataTypes>
+   <dataType>
+    <name>adt_skill_distribution</name>
+    <description>Skill distribution</description>
+    <variables>
+	 <variable>
+      <type>int</type>
+      <name>general_skill_group</name>
+      <description></description>
+     </variable>
+	 <variable>
+      <type>double</type>
+      <name>percentage</name>
+      <description></description>
+     </variable>
+	 </variables>
+	</dataType>
+	<dataType>
+    <name>adt_actual_skill_distribution_with_ids</name>
+    <description>Skill distribution</description>
+    <variables>
+	 <variable>
+      <type>int</type>
+      <name>general_skill_group</name>
+      <description></description>
+     </variable>
+	 <variable>
+      <type>int_array</type>
+      <name>id_list</name>
+      <description></description>
+     </variable>
+	 </variables>
+	</dataType>
+  </dataTypes>
+ </environment>
+ <agents>
+  <xagent>
+   <name>Government</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>double</type>
+     <name>unemployment_benefit_pct</name>
+     <description>Variable that sets the unemployment benefit as a fraction of last labour income.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>gdp_fraction_consumption</name>
+     <description>Parameter that sets the government consumption expenditure as a fraction of GDP.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>gdp_fraction_investment</name>
+     <description>Parameter that sets the government investment expenditure as a fraction of GDP.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_corporate</name>
+     <description>Corporate tax rate on firm and bank profits.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_hh_labour</name>
+     <description>Labour income tax rate for households.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_hh_capital</name>
+     <description>Capital gains tax rate for households.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_vat</name>
+     <description>VAT tax.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_tax_revenues</name>
+     <description>Monthly tax revenues.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_tax_revenues</name>
+     <description>Yearly tax revenues.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_benefit_payment</name>
+     <description>Unemployment benefit payments to all unemployed households.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_benefit_payment</name>
+     <description>Unemployment benefit payments for all unemployed households.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>hh_transfer_payment</name>
+     <description>Household transfer payment amount.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>firm_transfer_payment</name>
+     <description>Firm transfer payment amount.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_transfer_payment</name>
+     <description>Aggregate monthly transfer payments.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_transfer_payment</name>
+     <description>Aggregate yearly transfer payments.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>hh_subsidy_pct</name>
+     <description>The household subsidy percentage on the price of consumer goods.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>firm_subsidy_pct</name>
+     <description>The firm subsidy percentage on the  price of capital goods.</description>
+    </variable>
+ <variable>
+     <type>int</type>
+     <name>regional_firm_subsidy</name>
+     <description>Flag: If 1 then this government pays subsidies</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>subsidy_flag</name>
+     <description>Indicator to indicate if stabilization subsidy is active. 1 means active, 0 means inactive.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>gov_interest_rate</name>
+     <description>Interest rate the government uses to pay interest on the public debt.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_bond_interest_payment</name>
+     <description>Aggregate monthly bond interest payments.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_subsidy_payment</name>
+     <description>Aggregate monthly subsidy payments.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_consumption_expenditure</name>
+     <description>The actual monthly government consumption expenditure that is realised at the end of the month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_investment_expenditure</name>
+     <description>The actual monthly government investment expenditure that is realised at the end of the month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_budget_balance</name>
+     <description>The budget balance (deficit/surplus) that is realised at the end of the month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_gdp</name>
+     <description>This is monthly GDP, summed over the regions belonging to this government.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_budget_balance_gdp_fraction</name>
+     <description>The monthly budget balance as a percentage of monthly gdp.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_consumption_budget</name>
+     <description>The consumption budget for the next month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_investment_budget</name>
+     <description>The investment budget for the next month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_income</name>
+     <description>The actual total government income at end of month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>monthly_expenditure</name>
+     <description>The actual total government expenditure at end of month.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_subsidy_payment</name>
+     <description>Aggregate yearly subsidy payments.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_bond_interest_payment</name>
+     <description>Aggregate yearly bond interest payments.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_investment_expenditure</name>
+     <description>The actual yearly government investment expenditure that is realised at the end of the year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_consumption_expenditure</name>
+     <description>The actual yearly government consumption expenditure that is realised at the end of the year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_income</name>
+     <description>The actual total government income received at the end of the year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_expenditure</name>
+     <description>The actual total government expenditure at the end of the year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_debt</name>
+     <description>Government debt.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_budget_balance</name>
+     <description>The budget balance (deficit/surplus) that is realised at the end of the year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_money_financing</name>
+     <description>The fraction of the budget deficit that is financed by money creation.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_bond_financing</name>
+     <description>The fraction of the budget deficit that is financed by government bonds.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>country_wide_mean_wage</name>
+     <description>Country wide mean wage is the mean wage for all regions associated to this government.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>num_unemployed</name>
+     <description>The number of unemployed that are associated to the government.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_gdp</name>
+     <description>This is yearly GDP, summed over the regions belonging to this government.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>previous_year_gdp</name>
+     <description>This is GDP of the previous year, for this government.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>gdp_growth</name>
+     <description>GDP growth rate (updated once a year).</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>gdp_forecast</name>
+     <description>Forecast for next year's GDP.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_income_forecast</name>
+     <description>Forecasted/planned total government income for the next year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_expenditure_budget</name>
+     <description>The total expenditure budget for the next year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>budget_balance_forecast</name>
+     <description>Forcast for the budget balance (deficit/surplus).</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_consumption_budget</name>
+     <description>The planned consumption budget for the next year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_investment_budget</name>
+     <description>The planned investment budget for the next year.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>yearly_budget_balance_gdp_fraction</name>
+     <description>The yearly budget balance as a percentage of yearly gdp.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_assets</name>
+     <description>Sum of assets</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>total_liabilities</name>
+     <description>Sum of liabilities</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>cumulated_deficit</name>
+     <description>The cumulative sum of deficits, updated monthly.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>inflation_rate</name>
+     <description>This is the economy-wide inflation_rate.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>unemployment_rate</name>
+     <description>This is the economy-wide unemployment_rate.</description>
+    </variable>
+	<variable>
+     <type>int</type>
+     <name>human_capital_policy_installation_date_in_years</name>
+     <description>Number of iteration when the human capital policy will be installed.</description>
+    </variable>
+	<variable>
+     <type>int</type>
+     <name>human_capital_policy_flag</name>
+     <description>Indicator variable.</description>
+</variable>
+<variable>
+     <type>adt_skill_distribution_array</type>
+     <name>new_skill_distribution</name>
+     <description>New skill distribution after policy.</description>
+</variable>
+   </memory>
+   <functions>
+    <function>
+     <name>Government_initialization</name>
+     <description>Initialization function, runs only once at the start.</description>
+     <currentState>start_Government</currentState>
+     <nextState>Government_Start_Monthly_Loop_Top</nextState>
+     <condition>
+      <time>
+       <period>millionyearly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for initialization function.</description>
+     <currentState>start_Government</currentState>
+     <nextState>Government_Start_Monthly_Loop_Top</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>millionyearly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_monthly_resetting</name>
+     <description>Monthly resetting of counters.</description>
+     <currentState>Government_Start_Monthly_Loop_Top</currentState>
+     <nextState>001</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_read_data_from_Eurostat</name>
+     <description>Function to read data from Eurostat.</description>
+     <currentState>001</currentState>
+     <nextState>Government_Start_Yearly_Loop_Top</nextState>
+     <inputs>
+      <input>
+       <messageName>data_for_government</messageName>
+      </input>
+      <input>
+       <messageName>eurostat_send_macrodata</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for monthly resetting loop at top.</description>
+     <currentState>Government_Start_Monthly_Loop_Top</currentState>
+     <nextState>Government_Start_Yearly_Loop_Top</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_set_policy</name>
+     <description>Function to set policy rules: income forecast and expenditure budget.</description>
+     <currentState>Government_Start_Yearly_Loop_Top</currentState>
+     <nextState>002</nextState>
+     <condition>
+      <time>
+       <period>yearly</period>
+       <phase>1</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_send_policy_announcements</name>
+     <description>Function to send yearly policy announcement message.</description>
+     <currentState>002</currentState>
+     <nextState>003</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>policy_announcement</messageName>
+      </output>
+		<output>
+	<messageName>human_capital_policy_announcement</messageName>
+	</output>
+     </outputs>
+    </function>
+	<function>
+     <name>Government_install_human_capital_policy</name>
+     <description>Function executes the human capital policy</description>
+     <currentState>003</currentState>
+     <nextState>003a</nextState>
+	    <condition>
+      <lhs>
+         <value>a.human_capital_policy_flag</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>1</value>
+        </rhs>
+     </condition>
+     <inputs>
+	<input>
+	<messageName>human_capital_policy_general_skill_information</messageName>
+	<filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+	</input>
+	</inputs>
+     <outputs>
+      <output>
+       <messageName>human_capital_policy_new_general_skill_notification</messageName>
+      </output>
+     </outputs>
+    </function>
+	<function>
+     <name>Government_idle</name>
+     <description>Function executes the human capital policy</description>
+     <currentState>003</currentState>
+     <nextState>003a</nextState>
+	    <condition>
+      <lhs>
+         <value>a.human_capital_policy_flag</value>
+        </lhs>
+        <op>NEQ</op>
+        <rhs>
+         <value>1</value>
+        </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_yearly_resetting</name>
+     <description>Yearly resetting of counters.</description>
+     <currentState>003a</currentState>
+     <nextState>Gov_Start_Bond_Market</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for yearly resetting loop at top.</description>
+     <currentState>Government_Start_Yearly_Loop_Top</currentState>
+     <nextState>Gov_Start_Bond_Market</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>yearly</period>
+        <phase>1</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_read_tax_payments</name>
+     <description>Function to read the tax revenues and store the monthly and yearly totals.</description>
+     <currentState>01</currentState>
+     <nextState>02</nextState>
+     <inputs>
+      <input>
+       <messageName>tax_payment</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+      <input>
+       <messageName>unemployment_benefit_restitution</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_read_subsidy_notifications</name>
+     <description>Counter of the \url{subsidy_notification} messages, monthly and yearly totals of the subsidy payments.</description>
+     <currentState>02</currentState>
+     <nextState>03</nextState>
+     <inputs>
+      <input>
+       <messageName>hh_subsidy_notification</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+      <input>
+       <messageName>firm_subsidy_notification</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_read_transfer_notifications</name>
+     <description>Counter of the \url{transfer_notification} messages, monthly and yearly totals of the transfer payments.</description>
+     <currentState>03</currentState>
+     <nextState>04</nextState>
+     <inputs>
+      <input>
+       <messageName>hh_transfer_notification</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+      <input>
+       <messageName>firm_transfer_notification</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_read_unemployment_benefit_notifications</name>
+     <description>Counter of the \url{unemployment} messages, monthly and yearly totals of the unemployment benefit payments.</description>
+     <currentState>04</currentState>
+     <nextState>Gov_Start_Monthly_Loop</nextState>
+     <inputs>
+      <input>
+       <messageName>unemployment_notification</messageName>
+       <filter>
+        <lhs>
+         <value>a.id</value>
+        </lhs>
+        <op>EQ</op>
+        <rhs>
+         <value>m.gov_id</value>
+        </rhs>
+       </filter>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle for yearly loop</description>
+     <currentState>Gov_Start_Monthly_Loop</currentState>
+     <nextState>06</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>0</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_resolve_unsold_bonds_dummy</name>
+     <description></description>
+     <currentState>Gov_Start_Monthly_Loop</currentState>
+     <nextState>05a</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>0</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_monthly_budget_accounting</name>
+     <description>Function to perform accounting at the end of each month.</description>
+     <currentState>05a</currentState>
+     <nextState>Gov_bonds_decision</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>request_fiat_money</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Government_bonds_issuing_decision_dummy</name>
+     <description></description>
+     <currentState>Gov_bonds_decision</currentState>
+     <nextState>06</nextState>
+     <condition>
+      <lhs>
+       <value>a.total_bond_financing</value>
+      </lhs>
+      <op>GT</op>
+      <rhs>
+       <value>0</value>
+      </rhs>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description>Idle function if Gov does not issue new bonds.</description>
+     <currentState>Gov_bonds_decision</currentState>
+     <nextState>06</nextState>
+     <condition>
+      <not>
+       <lhs>
+        <value>a.total_bond_financing</value>
+       </lhs>
+       <op>GT</op>
+       <rhs>
+        <value>0</value>
+       </rhs>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_send_account_update</name>
+     <description>Function to send the payment_account value to the Central Bank.</description>
+     <currentState>06</currentState>
+     <nextState>07</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>gov_to_central_bank_account_update</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>Government_compute_balance_sheet</name>
+     <description>Function to compute balance sheet of Gov.</description>
+     <currentState>07</currentState>
+     <nextState>Gov_Start_Yearly_Loop</nextState>
+     <inputs>
+      <input>
+       <messageName>ecb_dividend</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+    <function>
+     <name>idle</name>
+     <description></description>
+     <currentState>Gov_Start_Yearly_Loop</currentState>
+     <nextState>end_Government</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>yearly</period>
+        <phase>0</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>Government_yearly_budget_accounting</name>
+     <description>Function to perform accounting at the end of each year.</description>
+     <currentState>Gov_Start_Yearly_Loop</currentState>
+     <nextState>end_Government</nextState>
+     <condition>
+      <time>
+       <period>yearly</period>
+       <phase>0</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+ <messages>
+  <message>
+   <name>policy_announcement</name>
+   <description>Government announcing tax rates, benefits, transfer payments and subsidies.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_corporate</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_hh_labour</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_hh_capital</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_rate_vat</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>unemployment_benefit_pct</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>hh_subsidy_pct</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>firm_subsidy_pct</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>hh_transfer_payment</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>firm_transfer_payment</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>tax_payment</name>
+   <description>Message sent by agents to pay taxes</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>tax_payment</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>unemployment_benefit_restitution</name>
+   <description>Message sent by agents to refund unemployment benefit payments if they are re-employed.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>restitution_payment</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>hh_transfer_notification</name>
+   <description>Message sent by an agent to apply for a transfer payment and notify its government.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>hh_subsidy_notification</name>
+   <description>Message sent by an agent to apply for a subsidy payment and notify its government.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>subsidy_payment</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+	<message>
+   <name>human_capital_policy_announcement</name>
+   <description>Message sent by the government to inform that in this period the human capital policy will be installed.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>announcement</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>firm_transfer_notification</name>
+   <description>Message sent by an agent to apply for a transfer payment and notify its government.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>firm_subsidy_notification</name>
+   <description>Message sent by an agent to apply for a subsidy payment and notify its government.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>subsidy_payment</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>request_fiat_money</name>
+   <description>Message sent by the government to request fiat money directly from the ECB, without issuing bonds.</description>
+   <variables>
+    <variable>
+     <type>double</type>
+     <name>nominal_value</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+	 <message>
+   <name>human_capital_policy_general_skill_information</name>
+   <description>Message sent by the households containing the current general skills</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description></description>
+    </variable>
+	 <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+	 <variable>
+     <type>int</type>
+     <name>general_skills</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+	 <message>
+   <name>human_capital_policy_new_general_skill_notification</name>
+   <description>Message sent by the government containing the new general skill lever alfter the policy</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>id</name>
+     <description></description>
+    </variable>
+	 <variable>
+     <type>int</type>
+     <name>gov_id</name>
+     <description></description>
+    </variable>
+	 <variable>
+     <type>int</type>
+     <name>general_skills</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+ </messages>
+</xmodel>

@@ -1,0 +1,1 @@
+gcc -D_DEBUG_MODE -g -I../../libmboard/include -L../../libmboard/lib ../../memory.c ../../rules.c ../../messageboards.c ../../my_library_functions.c ../ClearingHouse_Financial_Market_Functions.c ../ClearingHouse_aux_functions.c ClearingHouse_unittests.c unittest_suite_clearinghouse.c -lm -lcunit -lmboard_s -lgsl -lgslcblas

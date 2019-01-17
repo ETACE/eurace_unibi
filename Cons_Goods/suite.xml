@@ -1,0 +1,48 @@
+<suite>
+<name>Cons_goods_unibi_suite</name>
+<constants>
+<firm_planning_horizon>10</firm_planning_horizon>
+<seed>10000</seed>
+</constants>
+<unittest>
+<name>test_Firm_calc_production_quantity</name>
+<function>Firm_calc_production_quantity</function>
+<xagent>Firm</xagent>
+<assertions>
+<variables>
+<variable>
+     <type>double</type>
+     <name>payment_account</name>
+ </variable>
+<variable>
+     <type>double</type>
+     <name>planned_production_quantity</name>
+ </variable>
+<variable>
+     <type>double</type>
+     <name>planned_output</name>
+ </variable>
+</variables>
+</assertions>
+<fixture>
+<Firm>
+<id>100</id>
+<current_mall_stocks>{{1555,55.4506987121,0.0}}</current_mall_stocks>
+<malls_sales_statistics>{{1555,{{1,55.4506987121},{2,55.4506987121},{3,55.4506987121},{4,55.4506987121},{5,55.4506987121},{6,55.4506987121},{7,55.4506987121},{8,55.4506987121},{9,55.4506987121},{10,55.4506987121}}}}</malls_sales_statistics>
+<payment_account>0</payment_account>
+<planned_delivery_volume>{{1555,1.0,0.0,0.0}}</planned_delivery_volume>
+<last_planned_production_quantities>{55.4506987121,55.4506987121,55.4506987121,55.4506987121,55.4506987121}</last_planned_production_quantities>
+<decil_production_rule>8</decil_production_rule>
+</Firm>
+</fixture>
+<expected>
+<Firm>
+<planned_production_quantity>55.450699</planned_production_quantity>
+<production_quantity>0.000000</production_quantity>
+<planned_output>55.450699</planned_output>
+</Firm>
+</expected>
+</unittest>
+
+</suite>
+

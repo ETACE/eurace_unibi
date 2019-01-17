@@ -1,0 +1,53 @@
+26.2.2012 Sander van der Hoog
+
+Firm_Financial_Man_ref.c
+Firm_Financial_Man_unittest_ref.c
+
+1. Firm_bankruptcy_insolvency_procedure()
+out: bankruptcy_message
+removed XML condition
+Add C Condition:
+if (BANKRUPTCY_IDLE_COUNTER%20==0)
+
+		nr_rescalings_left = (double)(BANKRUPTCY_IDLE_COUNTER/20);
+
+- target_debt is a rescaling of total asset
+target_debt = DEBT_RESCALING_FACTOR*TOTAL_ASSETS;
+
+- rescale once per month: equal portion write_offs
+write_off_ratio = (1/nr_rescalings_left)*(TOTAL_DEBT - target_debt)/TOTAL_DEBT;
+
+2.
+Firm_bankruptcy_illiquidity_procedure()
+out: bankruptcy_message
+removed XML condition
+Add C Condition:
+if (BANKRUPTCY_IDLE_COUNTER%20==0)
+
+		nr_rescalings_left = (double)(BANKRUPTCY_IDLE_COUNTER/20);
+
+- rescaling is on total debt
+		target_debt = DEBT_RESCALING_FACTOR*TOTAL_DEBT;
+
+- rescale once per month: equal portion write_offs
+write_off_ratio = (1/nr_rescalings_left)*(TOTAL_DEBT - target_debt)/TOTAL_DEBT;
+Test: write_off_ratio =  (1/nr_rescalings_left)*(1-w)
+
+3. New stategraph
+Firm_bankruptcy_generic_procedure
+replaces
+Firm_bankruptcy_illiquidity_procedure()
+Firm_bankruptcy_insolvency_procedure()
+-->only firing at counter==239
+
+Firm_bankruptcy_rescale_loans
+for both cases illiquidity + insolvency
+--> at (BANKRUPTCY_IDLE_COUNTER%20==0)
+
+BANKRUPTCY_IDLE_COUNTER
+239: fire all employees
+220: 1st rescaling of loans
+200: 2nd rescaling of loans
+...
+20: Final rescaling of loans, set to target
+

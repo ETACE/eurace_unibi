@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xmachine_agent_model>
+<name>Financial Management</name>
+<author>Sander van der Hoog, Simon Coakley</author>
+<date>191207</date>
+
+<!--************************* NOTES ***************************************-->
+<!--This is the main description file for the financial management role of Firm and Household-->
+<!--TODO: integrate with other xml files for credit and financial market roles from UG and UPM-->
+
+<!--***************** Environment values and functions **********************-->
+<environment>
+<functions>
+<file>Household_financial_management_functions.c</file>
+<file>Firm_financial_management_functions.c</file><file>Bank_financial_management_functions.c</file>
+<file>Clearinghouse_financial_management_functions.c</file>
+<file>my_library_functions.c</file>
+	
+</functions>
+
+<!--Structures-->
+
+<datatypes>
+
+<datatype>
+<name>employee</name>
+<desc>Used to hold employee information in firms</desc>
+<var><type>int</type><name>id</name></var>
+<var><type>int</type><name>region_id</name></var>
+<var><type>double</type><name>wage</name></var>
+<var><type>int</type><name>general_skill</name></var>
+<var><type>double</type><name>specific_skill</name></var>
+</datatype>
+
+<datatype>
+<name>vacancy</name>
+<desc>Used by households to hold vacancy information</desc>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>region_id</name></var>
+<var><type>double</type><name>wage_offer</name></var>
+</datatype>
+
+<datatype>
+<name>job_application</name>
+<desc>Used by firms to hold job applications</desc>
+<var><type>int</type><name>worker_id</name></var>
+<var><type>int</type><name>region_id</name></var>
+<var><type>int</type><name>general_skill</name></var>
+<var><type>double</type><name>specific_skill</name></var>
+</datatype>
+
+<datatype>
+<name>job_offer</name>
+<desc>Used by households and firms to hold job offers</desc>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>region_id</name></var>
+<var><type>double</type><name>wage_offer</name></var>
+</datatype>
+
+<!--Datatypes goods market -->
+
+<datatype>
+<name>consumption_goods_offer</name>
+<desc>Used by household and mall to hold consumption goods offers</desc>
+<var><type>int</type><name>id</name></var>
+<var><type>double</type><name>quality</name></var>
+<var><type>double</type><name>price</name></var>
+</datatype>
+
+<datatype>
+<name>consumption_request</name>
+<desc>Used by  mall to hold demand</desc>
+<var><type>int</type><name>worker_id</name></var>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>double</type><name>quantity</name></var>
+</datatype>
+
+<datatype>
+<name>mall_info</name>
+<desc>Used by firm to hold information about sales in malls</desc>
+<var><type>int</type><name>mall_id</name></var>
+<var><type>double</type><name>critical_stock</name></var>
+<var><type>double</type><name>current_stock</name></var>
+</datatype>
+
+<datatype>
+<name>mall_quality_price_info</name>
+<desc>Used by household to hold information about quality and prices of one good offered by mall</desc>
+<var><type>int</type><name>mall_id</name></var>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>mall_region_id</name></var>
+<var><type>double</type><name>quality</name></var>
+<var><type>double</type><name>price</name></var>
+<var><type>int</type><name>available</name></var>
+</datatype>
+
+<datatype>
+<name>mall_stock</name>
+<desc>Used by mall to hold information about current stock</desc>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>double</type><name>stock</name></var>
+<var><type>double</type><name>price</name></var>
+<var><type>double</type><name>quality</name></var>
+</datatype>
+
+<datatype>
+<name>delivery_volume_per_mall</name>
+<desc>Used by firm to hold information about delivery volume per mall</desc>
+<var><type>int</type><name>mall_id</name></var>
+<var><type>double</type><name>quantity</name></var>
+<var><type>double</type><name>price</name></var>
+<var><type>double</type><name>quality</name></var>
+</datatype>
+
+<datatype>
+<name>logit_firm_id</name>
+<desc>Used by household to stock logits and corresponding firm IDs</desc>
+<var><type>double</type><name>logit</name></var>
+<var><type>int</type><name>firm_id</name></var>
+</datatype>
+
+<datatype>
+<name>sales_in_mall</name>
+<desc>Used by mall to calculate sales</desc>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>double</type><name>sales</name></var>
+</datatype>
+
+<datatype>
+<name>ordered_quantity</name>
+<desc>Used by household to stock ordered quantities</desc>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>double</type><name>quantity</name></var>
+<var><type>double</type><name>price</name></var>
+</datatype>
+
+<datatype>
+<name>received_quantities</name>
+<desc>Used by household to stock received quantities</desc>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>double</type><name>quantity</name></var>
+</datatype>
+
+<datatype>
+<name>sold_quantities_per_mall</name>
+<desc>Used by firm to hold informations about sales </desc>
+<var><type>int</type><name>mall_id</name></var>
+<var><type>double</type><name>sold_quantity</name></var>
+<var><type>int</type><name>stock_empty</name></var>
+<var><type>double</type><name>estimated_demand</name></var>
+</datatype>
+
+<datatype>
+<name>sales_statistics</name>
+<desc>Used by firm to store sales in malls of last periods</desc>
+<var><type>int</type><name>mall_id</name></var>
+<var><type>int</type><name>period</name></var>
+<var><type>double</type><name>sales</name></var>
+</datatype>
+
+<!--Datatypes Market Research -->
+
+<datatype>
+<name>household_data</name>
+<desc>Used by Market Research to store data of the different regions</desc>
+<var><type>int</type><name>region_id</name></var>
+<var><type>int</type><name>no_households</name></var>
+<var><type>int</type><name>no_households_skill_1</name></var>
+<var><type>int</type><name>no_households_skill_2</name></var>
+<var><type>int</type><name>no_households_skill_3</name></var>
+<var><type>int</type><name>no_households_skill_4</name></var>
+<var><type>int</type><name>no_households_skill_5</name></var>
+<var><type>int</type><name>employed</name></var>
+<var><type>int</type><name>employed_skill_1</name></var>
+<var><type>int</type><name>employed_skill_2</name></var>
+<var><type>int</type><name>employed_skill_3</name></var>
+<var><type>int</type><name>employed_skill_4</name></var>
+<var><type>int</type><name>employed_skill_5</name></var>
+<var><type>int</type><name>unemployed</name></var>
+<var><type>double</type><name>unemployment_rate</name></var>
+<var><type>double</type><name>unemployment_rate_skill_1</name></var>
+<var><type>double</type><name>unemployment_rate_skill_2</name></var>
+<var><type>double</type><name>unemployment_rate_skill_3</name></var>
+<var><type>double</type><name>unemployment_rate_skill_4</name></var>
+<var><type>double</type><name>unemployment_rate_skill_5</name></var>
+<var><type>double</type><name>average_wage</name></var>
+<var><type>double</type><name>average_wage_skill_1</name></var>
+<var><type>double</type><name>average_wage_skill_2</name></var>
+<var><type>double</type><name>average_wage_skill_3</name></var>
+<var><type>double</type><name>average_wage_skill_4</name></var>
+<var><type>double</type><name>average_wage_skill_5</name></var>
+<var><type>double</type><name>average_s_skill</name></var>
+<var><type>double</type><name>average_s_skill_1</name></var>
+<var><type>double</type><name>average_s_skill_2</name></var>
+<var><type>double</type><name>average_s_skill_3</name></var>
+<var><type>double</type><name>average_s_skill_4</name></var>
+<var><type>double</type><name>average_s_skill_5</name></var>
+</datatype>
+
+
+<datatype>
+<name>firm_data</name>
+<desc>Used by Market Research to store data of the different regions</desc>
+<var><type>int</type><name>region_id</name></var>
+<var><type>int</type><name>firms</name></var>
+<var><type>int</type><name>vacancies</name></var>
+<var><type>int</type><name>employees</name></var>
+<var><type>int</type><name>employees_skill_1</name></var>
+<var><type>int</type><name>employees_skill_2</name></var>
+<var><type>int</type><name>employees_skill_3</name></var>
+<var><type>int</type><name>employees_skill_4</name></var>
+<var><type>int</type><name>employees_skill_5</name></var>
+<var><type>double</type><name>average_wage</name></var>
+<var><type>double</type><name>average_wage_skill_1</name></var>
+<var><type>double</type><name>average_wage_skill_2</name></var>
+<var><type>double</type><name>average_wage_skill_3</name></var>
+<var><type>double</type><name>average_wage_skill_4</name></var>
+<var><type>double</type><name>average_wage_skill_5</name></var>
+<var><type>double</type><name>average_s_skill</name></var>
+<var><type>double</type><name>average_s_skill_1</name></var>
+<var><type>double</type><name>average_s_skill_2</name></var>
+<var><type>double</type><name>average_s_skill_3</name></var>
+<var><type>double</type><name>average_s_skill_4</name></var>
+<var><type>double</type><name>average_s_skill_5</name></var>
+</datatype>
+
+<!--Datatypes Financial Management -->
+
+<datatype>
+<name>debt_item</name>
+<var><type>int</type><name>bank_id</name></var>
+<var><type>double</type><name>loan_value</name></var>
+<var><type>double</type><name>interest_rate</name></var>
+<var><type>double</type><name>interest_payment</name></var>
+<var><type>double</type><name>debt_installment_payment</name></var>
+<var><type>int</type><name>nr_periods_before_maturity</name></var>
+</datatype>
+
+<datatype>
+<name>capital_stock_item</name>
+<var><type>double</type><name>units</name></var>
+<var><type>double</type><name>purchase_price</name></var>
+<var><type>double</type><name>productivity</name></var>
+<var><type>double</type><name>depreciation_units_per_period</name></var>
+</datatype>
+
+</datatypes>
+</environment>
+
+<!-- ********************* X-machine Agent - Household **************************** -->
+<xmachine>
+<name>Household</name>
+<!--  Variables -->
+<!-- All variables used by household are declared here to allocate them in memory -->
+
+<memory>
+<var><type>int</type><name>id</name></var>
+<var><type>double</type><name>asset_budget</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>posx</name></var>
+<var><type>double</type><name>posy</name></var>
+</memory>
+<!-- Defining functions -->
+<functions>
+<!--************** Role: Financial Management Role ************** -->
+<function><name>Household_financial_planning</name></function>
+
+<!--************** Below here is old ************** -->
+<function>
+<name>Household_compute_gross_income</name>
+<depends>
+<name>Household_financial_planning</name>
+<type>internal</type>
+</depends>
+</function>
+
+<function>
+<name>Household_compute_monthly_taxes</name>
+<depends><name>Household_compute_gross_income</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_net_income</name>
+<depends><name>Household_compute_monthly_taxes</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_total_budget</name>
+<depends><name>Household_compute_net_income</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_asset_wealth</name>
+</function>
+
+<function>
+<name>Household_compute_cash_on_hands</name>
+<depends><name>Household_compute_total_budget</name><type>internal</type></depends>
+<depends><name>Household_compute_asset_wealth</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_consumption_budget</name>
+<depends><name>Household_compute_cash_on_hands</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_financial_needs_monthly</name>
+<depends><name>Household_compute_consumption_budget</name><type>internal</type></depends>
+</function>
+
+<!--************** Role: Asset Market Role **************-->
+
+<function>
+<name>Household_update_asset_portfolio</name>
+</function>
+
+<function>
+<name>Household_compute_financial_needs_daily</name>
+<depends><name>Household_update_asset_portfolio</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_entry_decision</name>
+<depends><name>Household_compute_financial_needs_daily</name><type>internal</type></depends>
+<depends><name>Household_compute_financial_needs_monthly</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_asset_budget</name>
+<depends><name>Household_entry_decision</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_and_send_bond_orders</name>
+<depends><name>Household_compute_asset_budget</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_and_send_gov_bond_orders</name>
+<depends><name>Household_compute_asset_budget</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Household_compute_and_send_stock_orders</name>
+<depends><name>Household_compute_asset_budget</name><type>internal</type></depends>
+</function>
+
+<function><name>Household_read_stock_transactions</name>
+<depends><name>Clearinghouse_send_stock_transactions</name><type>stock_transaction</type></depends>
+</function>
+
+<function><name>Household_read_bond_transactions</name>
+<depends><name>Clearinghouse_send_bond_transactions</name><type>bond_transaction</type></depends>
+</function>
+
+<function><name>Household_read_gov_bond_transactions</name>
+<depends><name>Clearinghouse_send_gov_bond_transactions</name><type>gov_bond_transaction</type></depends>
+</function>
+
+</functions>
+</xmachine>
+<!--*********************** End of Agent - Household *****************************-->
+
+
+<!--********************* X-machine Agent - Clearinghouse ****************************-->
+<xmachine>
+<name>Clearinghouse</name>
+<!-- Variables -->
+<!-- All variables used by clearing house are declared here to allocate them in memory -->
+<memory>
+<var><type>int</type><name>id</name></var>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>stock_id</name></var>
+<var><type>int</type><name>bond_id</name></var>
+<var><type>int</type><name>gov_bond_id</name></var>
+<var><type>double</type><name>limit_price</name></var>
+<var><type>double</type><name>limit_quantity</name></var>
+
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>posx</name></var>
+<var><type>double</type><name>posy</name></var>
+
+</memory>
+<!-- Defining functions -->
+
+<!--- asset market role-->
+<functions>
+
+<function>
+<name>Clearinghouse_read_stock_orders</name>
+<depends><name>Household_compute_and_send_stock_orders</name><type>stock_order</type></depends>
+	<depends>
+		<name>Firm_compute_and_send_stock_orders</name>
+		<type>stock_order</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_compute_stock_transactions</name>
+<depends><name>Clearinghouse_read_stock_orders</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_send_stock_transactions</name>
+<depends><name>Clearinghouse_compute_stock_transactions</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_read_bond_orders</name>
+<depends><name>Household_compute_and_send_bond_orders</name><type>bond_order</type></depends>
+	<depends>
+		<name>Firm_compute_and_send_bond_orders</name>
+		<type>bond_order</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_compute_bond_transactions</name>
+<depends><name>Clearinghouse_read_bond_orders</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_send_bond_transactions</name>
+<depends><name>Clearinghouse_compute_bond_transactions</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_read_gov_bond_orders</name>
+<depends><name>Household_compute_and_send_gov_bond_orders</name><type>gov_bond_order</type></depends>
+	<depends>
+		<name>Firm_compute_and_send_gov_bond_orders</name>
+		<type>gov_bond_order</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_compute_gov_bond_transactions</name>
+<depends><name>Clearinghouse_read_gov_bond_orders</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Clearinghouse_send_gov_bond_transactions</name>
+<depends><name>Clearinghouse_compute_gov_bond_transactions</name><type>internal</type></depends>
+</function>
+
+</functions>
+</xmachine>
+<!--*********************** End of Agent - Clearinghouse *****************************-->
+
+<!--********************* X-machine Agent - Bank ****************************-->
+<xmachine>
+<name>Bank</name>
+<!-- Variables -->
+<!-- All variables used by Bank are declared here to allocate them in memory -->
+<memory>
+<var><type>int</type><name>id</name></var>
+<var>
+		<type>double</type><name>proposed_interest_rate</name>
+		</var>
+	<var>
+		<type>double</type>
+		<name>amount_credit_offer</name></var>
+	<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>posx</name></var>
+<var><type>double</type><name>posy</name></var>
+	
+
+</memory>
+<!-- Defining functions -->
+
+<!--- credit market role-->
+<functions>
+
+<function>
+<name>Bank_read_loan_request_send_offers</name>
+	<depends>
+	<name>Firm_apply_for_loans</name>
+	<type>loan_request</type>
+	</depends>
+</function>
+
+</functions>
+</xmachine>
+<!--*********************** End of Agent - Bank *****************************-->
+
+<!--********************* X-machine Agent - Firm ****************************-->
+<xmachine>
+<name>Firm</name>
+<!-- Variables -->
+<!-- All variables used by firm are declared here to allocate them in memory -->
+<memory>
+
+
+<!---Role: Labor market role-->
+
+<var><type>int</type><name>id</name></var>
+<var><type>int</type><name>region_id</name></var>
+<var><type>int</type><name>gov_id</name></var>
+<var><type>int</type><name>bank_id</name></var>
+
+<var><type>employee_array</type><name>employees</name></var>
+<var><type>double</type><name>wage_offer</name></var>
+<var><type>double</type><name>technology</name></var>
+<var><type>int</type><name>no_employees</name></var>
+<var><type>int</type><name>vacancies</name></var>
+<var><type>double</type><name>average_g_skill</name></var>
+<var><type>double</type><name>mean_wage</name></var>
+<var><type>double</type><name>needed_capital_stock</name></var>
+<var><type>double</type><name>actual_cap_price</name></var>
+<var><type>double</type><name>mean_specific_skills</name></var>
+
+<!---Role: Producer market role-->
+<var><type>double</type><name>planned_production_quantity</name></var>
+<var><type>double</type><name>production_quantity</name></var>
+<var><type>double</type><name>unit_costs</name></var>
+<var><type>double</type><name>production_costs</name></var>
+<var><type>double</type><name>planned_production_costs</name></var>
+<var><type>double</type><name>revenue_per_day</name></var>
+<var><type>double</type><name>technological_frontier</name></var>
+<var><type>double</type><name>cum_revenue</name></var>
+<var><type>double</type><name>out_of_stock_costs</name></var>
+<var><type>sales_statistics_array</type><name>malls_sales_statistics</name></var>
+<var><type>double</type><name>quality</name></var>
+<var><type>double</type><name>price</name></var>
+<var><type>double</type><name>price_last_month</name></var>
+
+<var><type>double</type><name>total_units_capital_stock</name></var>
+<var><type>double</type><name>total_value_capital_stock</name></var>
+<var><type>double</type><name>total_value_local_inventory</name></var>
+
+<var><type>int</type><name>employees_needed</name></var>
+<var><type>sold_quantities_per_mall_array</type><name>sold_quantities</name></var>
+<var><type>double</type><name>total_sold_quantity</name></var>
+<var><type>double</type><name>cum_total_sold_quantity</name></var>
+<var><type>delivery_volume_per_mall_array</type><name>delivery_volume</name></var>
+<var><type>delivery_volume_per_mall_array</type><name>planned_delivery_volume</name></var>
+<var><type>mall_info_array</type><name>current_mall_stocks</name></var>
+<var><type>double_array</type><name>last_planned_production_quantities</name></var>
+<var><type>int</type><name>day_of_month_to_act</name></var>
+
+<!-- Role: Financial management role -->
+
+<!-- Firm_compute_income_statement -->
+<var><type>double</type><name>ebit</name></var>
+<var><type>double</type><name>payment_account</name></var>
+
+<!-- Firm_compute_balance_sheet -->
+<var><type>double</type><name>total_debt</name></var>
+<var><type>double</type><name>total_assets</name></var>
+<var><type>double</type><name>current_shares_outstanding</name></var>
+<var><type>double</type><name>current_share_price</name></var>
+
+<var><type>debt_item_array</type><name>loans</name></var>
+<var><type>double</type><name>total_interest_payment</name></var>
+<var><type>double</type><name>total_debt_installment_payment</name></var>
+<var><type>double</type><name>earnings</name></var>
+<var><type>double</type><name>tax_payment</name></var>
+<var><type>double</type><name>tax_rate_corporate</name></var>
+<var><type>double</type><name>previous_net_earnings</name></var>
+<var><type>double</type><name>net_earnings</name></var>
+
+<var><type>double</type><name>current_dividend_per_share</name></var>
+
+<var><type>double</type><name>previous_dividend_per_share</name></var>
+<var><type>double</type><name>total_dividend_payment</name></var>
+<var><type>double</type><name>current_dividend_per_earnings</name></var>
+<var><type>double</type><name>previous_dividend_per_earnings</name></var>
+
+<var><type>capital_stock_item_array</type><name>capital_stock</name></var>
+<var><type>double</type><name>equity</name></var>
+
+<!-- Firm_compute_payout_policy -->
+<var><type>double</type><name>planned_total_interest_payment</name></var>
+<var><type>double</type><name>planned_total_debt_installment_payment</name></var>
+<var><type>double</type><name>planned_total_dividend_payment</name></var>
+<var><type>double</type><name>planned_cum_revenue</name></var>
+
+<!-- Financial needs -->
+<!--total_financial_needs includes direct and delayed financial needs -->
+<var><type>double</type><name>total_financial_needs</name></var>
+<!--direct_financial_needs only includes payments that are directly payable: production costs -->
+<var><type>double</type><name>direct_financial_needs</name></var>
+<var><type>double</type><name>delayed_financial_needs</name></var>
+<var><type>double</type><name>internal_financial_needs</name></var>
+<var><type>double</type><name>external_financial_needs</name></var>
+<var><type>int</type><name>direct_financial_needs_require_external_financing</name></var>
+<var><type>int</type><name>delayed_financial_needs_require_external_financing</name></var>
+
+<!-- Ratios -->
+<var><type>double</type><name>earnings_per_share_ratio</name></var>
+<var><type>double</type><name>debt_earnings_ratio</name></var>
+<var><type>double</type><name>price_earnings_ratio</name></var>
+<var><type>double</type><name>retained_earnings_ratio</name></var>
+<var><type>double</type><name>earnings_per_share_ratio_growth</name></var>
+<var><type>double</type><name>critical_price_earnings_ratio</name></var>
+<var><type>double</type><name>critical_earnings_per_share_ratio</name></var>
+
+<!-- Misc variables (not yet used) -->
+<var><type>double</type><name>target_loans</name></var>
+<var><type>double</type><name>target_equity</name></var>
+<var><type>double</type><name>bonds_issue_target</name></var>
+<var><type>double</type><name>stocks_issue_target</name></var>
+
+<!-- Standard variables -->
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>posx</name></var>
+<var><type>double</type><name>posy</name></var>
+</memory>
+<!-- Defining functions -->
+<functions>
+<!-- Role: Financial management role -->
+<function>
+<name>Firm_compute_income_statement</name>
+</function>
+
+<function>
+<name>Firm_compute_balance_sheet</name>
+<depends><name>Firm_compute_income_statement</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Firm_compute_payout_policy</name>
+<depends><name>Firm_compute_balance_sheet</name><type>internal</type></depends>
+</function>
+
+<!-- Role: Credit Market Role -->
+<function>
+<name>Firm_apply_for_loans</name>
+<depends><name>Firm_compute_payout_policy</name><type>internal</type></depends>
+</function>
+
+<function>
+<name>Firm_read_loan_offers_send_loan_acceptance</name>
+<depends><name>Bank_read_loan_request_send_offers</name><type>loan_conditions</type></depends>
+</function>
+
+<!-- Role: Asset Market Role -->
+
+<function>
+<name>Firm_compute_and_send_bond_orders</name>
+<depends><name>Firm_read_loan_offers_send_loan_acceptance</name><type>internal</type></depends>
+</function><function>
+<name>Firm_read_bond_transactions</name>
+<depends><name>Clearinghouse_send_bond_transactions</name><type>bond_transaction</type></depends>
+</function><function>
+<name>Firm_compute_and_send_stock_orders</name>
+<depends><name>Firm_read_bond_transactions</name><type>internal</type></depends>
+</function>
+
+
+
+<function>
+<name>Firm_read_stock_transactions</name>
+<depends><name>Clearinghouse_send_stock_transactions</name><type>stock_transaction</type></depends>
+</function>
+
+	<function>
+		<name>Firm_compute_and_send_gov_bond_orders</name>
+		<depends>
+			<name>Firm_read_stock_transactions</name>
+			<type>internal</type></depends></function>
+
+	<function>
+<name>Firm_read_gov_bond_transactions</name>
+<depends><name>Clearinghouse_send_gov_bond_transactions</name><type>gov_bond_transaction</type></depends>
+</function>
+
+</functions>
+</xmachine>
+<!--*********************** End of Agent - Firm *****************************-->
+
+
+<!--******** Messages being posted by the agents to communicate *************-->
+<messages>
+
+<!--financial transactions context-->
+<message>
+<name>tax_payment</name>
+<note>Added by firm to pay taxes</note>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>gov_id</name></var>
+<var><type>double</type><name>tax_payment</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>interest_payment</name>
+<note>Added by firm to pay interest on debt</note>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>bank_id</name></var>
+<var><type>double</type><name>interest_payment</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>debt_installment_payment</name>
+<note>Added by firm to pay debt installments</note>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>bank_id</name></var>
+<var><type>double</type><name>debt_installment_payment</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>dividend_payment</name>
+<note>Added by firm to pay dividends</note>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>double</type><name>current_dividend_per_share</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<!--credit market context-->
+<message>
+<name>loan_request</name>
+<note>Added by firm to demand credit</note>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>bank_id</name></var>
+<var><type>double</type><name>credit_amount</name></var>
+<var><type>double</type><name>total_assets</name></var>
+<var><type>double</type><name>total_debt</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>loan_conditions</name>
+<note>Added by bank to offer credit</note>
+<var><type>int</type><name>bank_id</name></var>
+<var><type>int</type><name>firm_id</name></var>
+	<var>
+		<type>double</type><name>proposed_interest_rate</name>
+		</var>
+	<var><type>double</type><name>amount_credit_offer</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>loan_acceptance</name>
+<note>Added by firm to demand credit</note>
+<var><type>int</type><name>firm_id</name></var>
+<var><type>int</type><name>bank_id</name></var>
+<var><type>double</type><name>credit_amount_taken</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<!--asset market context-->
+<message>
+<name>stock_order</name>
+<note>Added by trader</note>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>stock_id</name></var>
+<var><type>double</type><name>limit_price</name></var>
+<var><type>double</type><name>limit_quantity</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>stock_transaction</name>
+<note>Added by clearinghouse</note>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>stock_id</name></var>
+<var><type>double</type><name>transaction_price</name></var>
+<var><type>double</type><name>transaction_quantity</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message><message>
+<name>bond_order</name>
+<note>Added by trader</note>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>bond_id</name></var>
+<var><type>double</type><name>limit_price</name></var>
+<var><type>double</type><name>limit_quantity</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>bond_transaction</name>
+<note>Added by clearinghouse</note>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>bond_id</name></var>
+<var><type>double</type><name>transaction_price</name></var>
+<var><type>double</type><name>transaction_quantity</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>gov_bond_order</name>
+<note>Added by trader</note>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>govbond_id</name></var>
+<var><type>double</type><name>limit_price</name></var>
+<var><type>double</type><name>limit_quantity</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+<message>
+<name>gov_bond_transaction</name>
+<note>Added by clearinghouse</note>
+<var><type>int</type><name>trader_id</name></var>
+<var><type>int</type><name>govbond_id</name></var>
+<var><type>double</type><name>transaction_price</name></var>
+<var><type>double</type><name>transaction_quantity</name></var>
+<var><type>double</type><name>range</name></var>
+<var><type>double</type><name>x</name></var>
+<var><type>double</type><name>y</name></var>
+<var><type>double</type><name>z</name></var>
+</message>
+
+</messages>
+<!--********************** End of Messages **********************************-->
+
+</xmachine_agent_model>

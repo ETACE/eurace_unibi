@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Investment Goods Market</name>
+ <version>Version 1.0, 01/02/2014</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+ <models/>
+ <environment>
+  <constants>
+	<variable>
+    <type>int</type>
+    <name>igfirm_fin_man_debug</name>
+    <description>debug flag</description>
+   </variable>
+		<variable>
+    <type>int</type>
+    <name>switch_igfirm_endogenous_innovation_probability</name>
+    <description>Switch for enogeneous r and probability: if 1 then the probability of success depends on the mean revenues</description>
+   </variable>
+		<variable>
+    <type>double</type>
+    <name>igfirm_exogenous_innovation_probability</name>
+    <description>Switch for enogeneous r and probability: if 1 then the probability of success depends on the mean revenues</description>
+   </variable>
+<variable>
+    <type>double</type>
+    <name>power_of_end_probability_function</name>
+    <description>Power of the function determining the endogenous probability of a successful innovation.</description>
+   </variable>
+<variable>
+    <type>int</type>
+    <name>igfirm_producer_debug</name>
+    <description>debug flag</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>igfirm_exogenous_productivity_progress</name>
+    <description>Gives the increase of productivity of an innovation if igfirm is switch off.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>symmetric_shock</name>
+    <description>Binary parameter to set if the energy shock is symmetric.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>energy_shock_start</name>
+    <description>Day when the energy shock starts.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>energy_shock_end</name>
+    <description>Day when the energy shock ends.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>const_energy_shock_intensity</name>
+    <description>Mark up on the capital goods price that flows out of the system, representing energy costs.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>energy_shock_frequency</name>
+    <description>The frequency at which the energy price is updated.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>transition_phase</name>
+    <description></description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>innovation_by_random</name>
+    <description>Timing of an innovation can be randomly or predetermined.</description>
+   </variable>
+	<variable>
+    <type>int</type>
+    <name>ig_good_limited_offer</name>
+    <description>Binary variable: If eq 1 then the IG firm offers a limited range of goods other wise it offers all goods it has ever developed</description>
+   </variable>
+<variable>
+    <type>int</type>
+    <name>max_offer_ig_good</name>
+    <description>Maximum number of IG goods offered if ig_good_limited_offer equals 1</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>initial_frontier_firm_transition_phase</name>
+    <description>The initial value of firm's memory variable technology_frontier.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>initial_productivity_firm</name>
+    <description>This variable can be used to set the initial productivity of firm's capital stock and change it by setting up an experiment with the ExpGUI.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>initial_specific_skills</name>
+    <description>This variable can be used for setting the specific skills.</description>
+   </variable>
+   <variable>
+    <type>int</type>
+    <name>strenght_of_tech_progress</name>
+    <description>This sets the strenght of tech. progress if it is predetermined. 1 is low, 2 is medium, and 3 is high.</description>
+   </variable>
+ <variable>
+    <type>double</type>
+    <name>linear_combination_pricing_ig_good</name>
+    <description>This sets the weights of the linear combination for the ig price setting.</description>
+   </variable>
+   <variable>
+    <type>double</type>
+    <name>initial_capital_price_wage_ratio</name>
+    <description>This variable can be used for setting the ratio between the capital price and the wage offer.</description>
+   </variable>
+  </constants>
+  <functionFiles>
+   <file>IGFirm_Producer_Functions.c</file>
+  </functionFiles>
+  <timeUnits/>
+  <dataTypes>
+   <dataType>
+    <name>capital_good_request</name>
+    <description>Holds the capital good orders of the firms</description>
+    <variables>
+     <variable>
+      <type>int</type>
+      <name>firm_id</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>capital_good_order</name>
+      <description></description>
+     </variable>
+      <variable>
+      <type>int</type>
+      <name>vintage</name>
+      <description></description>
+     </variable>	
+    </variables>
+   </dataType>
+<dataType>
+    <name>vintage</name>
+    <description>Holds information about the different vintages.</description>
+    <variables>
+     <variable>
+      <type>double</type>
+      <name>productivity</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>price</name>
+      <description></description>
+     </variable>
+       <variable>
+      <type>double</type>
+      <name>discounted_productivity</name>
+      <description></description>
+     </variable>
+     <variable>
+      <type>double</type>
+      <name>sales</name>
+      <description></description>
+     </variable>	
+    </variables>
+   </dataType>
+  <dataType>
+    <name>adt_sales_per_vintage</name>
+    <description>Holds information about the sales of each vintage.</description>
+    <variables>
+     <variable>
+      <type>double</type>
+      <name>productivity_of_vintage</name>
+      <description></description>
+     </variable>
+      <variable>
+      <type>double</type>
+      <name>sales</name>
+      <description></description>
+     </variable>
+      <variable>
+      <type>double</type>
+      <name>revenue</name>
+      <description></description>
+     </variable>		
+    </variables>
+   </dataType>
+
+  </dataTypes>
+ </environment>
+ <agents>
+  <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory>
+    <variable>
+     <type>double</type>
+     <name>productivity</name>
+     <description>Current productivity of the offered capital good</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>capital_good_price</name>
+     <description>Current price of the offered capital good</description>
+    </variable>
+ 	<variable>
+     <type>vintage_array</type>
+     <name>vintages</name>
+     <description>The offered technology vintages</description>
+    </variable>
+      <variable>
+     <type>adt_sales_per_vintage_array</type>
+     <name>sales_per_vintage</name>
+     <description>Sales per vintage</description>
+    </variable>
+ <variable>
+     <type>double</type>
+     <name>mean_productivity_of_sales</name>
+     <description>Averaged productivity of sold capital goods within the last production period.</description>
+    </variable>
+	<variable>
+     <type>double</type>
+     <name>ratio_sold_productivity_best_practice</name>
+     <description>Ratio of the Averaged productivity of sold capital goods and the best practice technology.</description>
+    </variable>
+	<variable>
+    <type>double</type>
+    <name>igfirm_endogenous_innovation_probability</name>
+    <description>10. Probability that the investment goods producer innovate a new technology if igfirm is switchoff.</description>
+   </variable>
+    <variable>
+     <type>double</type>
+     <name>revenue_per_day</name>
+     <description>Revenue of the current  day</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>net_profit</name>
+     <description>Earnings minus tax payment</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>current_shares_outstanding</name>
+     <description>Number of shares outstanding</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>energy_price_markup</name>
+     <description>Mark up on capital goods price.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>energy_costs_per_day</name>
+     <description>The share of the daily capital bill that are energy costs.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>earnings_per_day</name>
+     <description>The collected revenues minus energy costs.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>cum_energy_costs</name>
+     <description>This is to compute the total expenses for energy.</description>
+    </variable>
+    <variable>
+     <type>double_array</type>
+     <name>last_net_profits</name>
+     <description>Array of the planned production quantities in the past</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>mean_sales_last_months</name>
+     <description>Mean of sales over the last months.</description>
+    </variable>
+    <variable>
+     <type>double_array</type>
+     <name>last_sales</name>
+     <description>Array of the last sales in the past</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>dividend_payment</name>
+     <description>Dividend payment of the IGFirm.</description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>duration_until_next_innovation</name>
+     <description>Period counter after the last innovation.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>unit_costs</name>
+     <description>Costs per unit of output.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>sales</name>
+     <description>Number of units sold.</description>
+    </variable>
+	  <variable>
+     <type>double</type>
+     <name>capital_good_demand</name>
+     <description>Capital good demand</description>
+    </variable>
+  <variable>
+     <type>double</type>
+     <name>capital_good_demand_last_month</name>
+     <description>Capital good demand of the previous month</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>sales_last_month</name>
+     <description>Number of units sold in the last n periods.</description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>cum_revenue</name>
+     <description>Revenue in the actual period.</description>
+    </variable>
+	    <variable>
+     <type>double</type>
+     <name>cum_revenue_last_month</name>
+     <description>Revenue in the actual period.</description>
+    </variable>
+    <variable>
+     <type>int_array</type>
+     <name>innovation_sheme_low_progress</name>
+     <description>This is the innovation sheme if low technological progress is selected</description>
+    </variable>
+    <variable>
+     <type>int_array</type>
+     <name>innovation_sheme_medium_progress</name>
+     <description>This is the innovation sheme if medium technological progress is selected</description>
+    </variable>
+    <variable>
+     <type>int_array</type>
+     <name>innovation_sheme_high_progress</name>
+     <description>This is the innovation sheme if high technological progress is selected</description>
+    </variable>
+ <variable>
+     <type>double</type>
+     <name>mean_general_skills</name>
+     <description>Average value of general skills</description>
+    </variable>
+	  <variable>
+     <type>double</type>
+     <name>mean_adaptation_speed</name>
+     <description>Average adaptation speed in the economy</description>
+    </variable>
+	<variable>
+     <type>adt_list_adaptation_speed_array</type>
+     <name>list_adaptation_speed</name>
+     <description>List of adaptation speeds per skill group</description>
+    </variable>
+     <variable>
+     <type>double</type>
+     <name>productivity_progress_in_economy</name>
+     <description>Economy wide productivity progress. Used to compute cost incrreases.</description>
+    </variable>
+   <variable>
+     <type>double</type>
+     <name>economy_wide_capital_stock</name>
+     <description>Economy wide productivity progress. Used to compute cost incrreases.</description>
+    </variable>
+   </memory>
+   <functions>
+	 <function>
+     <name>IGFirm_initialize_variables</name>
+     <description>IGFirm resets some variables at the beginning of the production cycle.</description>
+     <currentState>Start_IGFirm_Productivity</currentState>
+     <nextState>01a</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>a.day_of_month_to_act</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+	 <function>
+     <name>idle</name>
+     <description>IG firm does nothing.</description>
+     <currentState>Start_IGFirm_Productivity</currentState>
+     <nextState>01a</nextState>
+     <condition>
+		<not>
+      <time>
+       <period>monthly</period>
+       <phase>a.day_of_month_to_act</phase>
+      </time>
+	</not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_innovation_process</name>
+     <description>IGFirm updates productivity if there was an innovation.</description>
+     <currentState>01a</currentState>
+     <nextState>01</nextState>
+     <condition>
+      <time>
+       <period>monthly</period>
+       <phase>a.day_of_month_to_act</phase>
+      </time>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_idle</name>
+     <description>IGFirm does nothing.</description>
+     <currentState>01a</currentState>
+     <nextState>01</nextState>
+     <condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>a.day_of_month_to_act</phase>
+       </time>
+      </not>
+     </condition>
+     <inputs/>
+     <outputs/>
+    </function>
+    <function>
+     <name>IGFirm_set_price_send_info</name>
+     <description>IGFirm sets the prices and sends the information on prices and productivities of their capital goods.</description>
+     <currentState>01</currentState>
+     <nextState>01kk</nextState>
+     <inputs/>
+     <outputs>
+      <output>
+       <messageName>productivity</messageName>
+      </output>
+     </outputs>
+    </function>
+	<function>
+     <name>IGFirm_idle</name>
+     <description>IGFirm does nothing</description>
+     <currentState>01kk</currentState>
+     <nextState>02</nextState>
+	<condition>
+      <not>
+       <time>
+        <period>monthly</period>
+        <phase>a.day_of_month_to_act</phase>
+       </time>
+      </not>
+     </condition>	
+     <inputs/>
+     <outputs/>
+	</function>
+    <function>
+     <name>IGFirm_receive_order_delivers_capital_goods</name>
+     <description>IGFirm receives order messages from firms and sends the capital goods.</description>
+     <currentState>02</currentState>
+     <nextState>03</nextState>
+     <inputs>
+      <input>
+       <messageName>capital_good_request</messageName>
+      </input>
+     </inputs>
+     <outputs>
+      <output>
+       <messageName>capital_good_delivery</messageName>
+      </output>
+     </outputs>
+    </function>
+    <function>
+     <name>IGFirm_calc_revenue</name>
+     <description>IGFirm calculates the revenue and profits.</description>
+     <currentState>03</currentState>
+     <nextState>IGFirm_Start_Financial_Management_Role</nextState>
+     <inputs>
+      <input>
+       <messageName>pay_capital_goods</messageName>
+      </input>
+     </inputs>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+ <messages>
+  <message>
+   <name>productivity</name>
+   <description>IGFirm sends price and productivity of caputal goods.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>IGfirm_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>cap_productivity</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>cap_good_price</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>capital_good_request</name>
+   <description>Firms send the capital good orders.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>firm_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>capital_good_demand</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>int</type>
+     <name>vintage</name>
+     <description></description>
+    </variable>	
+   </variables>
+  </message>
+  <message>
+   <name>capital_good_delivery</name>
+   <description>IGFirm sends the capital goods to the firms.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>firm_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>capital_good_delivery_volume</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>productivity</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>capital_good_price</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+  <message>
+   <name>pay_capital_goods</name>
+   <description>Firms pay the capital goods.</description>
+   <variables>
+    <variable>
+     <type>int</type>
+     <name>firm_id</name>
+     <description></description>
+    </variable>
+    <variable>
+     <type>double</type>
+     <name>capital_bill</name>
+     <description></description>
+    </variable>
+   </variables>
+  </message>
+ </messages>
+</xmodel>

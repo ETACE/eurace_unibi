@@ -1,0 +1,426 @@
+# (Example rules for sim_validator)
+#
+# $Id: test.rules 1892 2009-06-18 16:08:55Z lsc $
+# 
+# Copyright (c) 2009 STFC Rutherford Appleton Laboratory 
+# Author: Lee-Shawn Chin 
+# Date  : June 2009
+# 
+# NOTE: This is a proof-of-concept implementation. It was not designed for
+#       production use but merely to explore what is possible
+#       Use at your own risk ;)
+#
+# Edited: Simon Gemkow
+# Date  : February 2010
+#
+#########################################################################
+::VARIABLES
+
+###################################AGENT: FIRM
+#FIRM_STOCK
+firm_payment_account                        = Firm(firm_stocks_calendar.payment_account)
+firm_value_local_inventory                  = Firm(firm_stocks_calendar.total_value_local_inventory)
+firm_value_capital_stock                    = Firm(firm_stocks_calendar.total_value_capital_stock)
+firm_total_assets                           = Firm(firm_stocks_calendar.total_assets)
+firm_total_debt                             = Firm(firm_stocks_calendar.total_debt)
+firm_equity                                 = Firm(firm_stocks_calendar.equity)
+firm_total_liabilities                      = Firm(firm_stocks_calendar.total_liabilities)
+firm_outstanding_shares                     = Firm(firm_stocks_calendar.current_shares_outstanding)
+firm_payment_account_day_1                  = Firm(firm_stocks_calendar.payment_account_day_1)
+firm_payment_account_day_20                 = Firm(firm_stocks_calendar.payment_account_day_20)
+
+#FIRM_OUTFLOW
+firm_labour_costs                           = Firm(firm_outflows_calendar.labour_costs)
+firm_capital_costs                          = Firm(firm_outflows_calendar.capital_costs)
+firm_energy_costs                           = Firm(firm_outflows_calendar.energy_costs)
+firm_tax_payment                            = Firm(firm_outflows_calendar.tax_payment)
+firm_debt_installment                       = Firm(firm_outflows_calendar.total_debt_installment_payment)
+firm_interest_payment                       = Firm(firm_outflows_calendar.total_interest_payment)
+firm_dividend_payment                       = Firm(firm_outflows_calendar.total_dividend_payment)
+firm_value_repurchased_shares               = Firm(firm_outflows_calendar.value_of_repurchased_shares)
+firm_total_expenses                         = Firm(firm_outflows_calendar.total_expenses)
+
+#FIRM_INFLOW
+firm_revenue                                = Firm(firm_inflows_calendar.cum_revenue)
+firm_new_loans                              = Firm(firm_inflows_calendar.new_loans)
+firm_value_of_issued_share                  = Firm(firm_inflows_calendar.value_of_issued_shares)
+firm_subsidy                                = Firm(firm_inflows_calendar.subsidy)
+firm_total_income                           = Firm(firm_inflows_calendar.total_income)
+firm_net_inflow                             = Firm(firm_inflows_calendar.net_inflow)
+
+firm_active                         		= Firm(active)
+firm_total_sold_quantity_volume     = Firm(sold_quantity_in_calendar_month)
+
+################################AGENT: IGFIRM
+#IGFIRM_STOCK
+igfirm_payment_account                      = IGFirm(igfirm_stocks_calendar.payment_account)
+igfirm_value_local_inventory                = IGFirm(igfirm_stocks_calendar.total_value_local_inventory)
+igfirm_value_capital_stock                  = IGFirm(igfirm_stocks_calendar.total_value_capital_stock)
+igfirm_total_assets                         = IGFirm(igfirm_stocks_calendar.total_assets)
+igfirm_total_debt                           = IGFirm(igfirm_stocks_calendar.total_debt)
+igfirm_equity                               = IGFirm(igfirm_stocks_calendar.equity)
+igfirm_total_liabilities                    = IGFirm(igfirm_stocks_calendar.total_liabilities)
+igfirm_outstanding_shares                   = IGFirm(igfirm_stocks_calendar.current_shares_outstanding)
+igfirm_payment_account_day_1                = IGFirm(igfirm_stocks_calendar.payment_account_day_1)
+igfirm_payment_account_day_20               = IGFirm(igfirm_stocks_calendar.payment_account_day_20)
+
+#IGFIRM_OUTFLOW
+igfirm_labour_costs                         = IGFirm(igfirm_outflows_calendar.labour_costs)
+igfirm_capital_costs                        = IGFirm(igfirm_outflows_calendar.capital_costs)
+igfirm_energy_costs                         = IGFirm(igfirm_outflows_calendar.energy_costs)
+igfirm_tax_payment                          = IGFirm(igfirm_outflows_calendar.tax_payment)
+igfirm_debt_installment                     = IGFirm(igfirm_outflows_calendar.total_debt_installment_payment)
+igfirm_interest_payment                     = IGFirm(igfirm_outflows_calendar.total_interest_payment)
+igfirm_dividend_payment                     = IGFirm(igfirm_outflows_calendar.total_dividend_payment)
+igfirm_value_repurchased_shares             = IGFirm(igfirm_outflows_calendar.value_of_repurchased_shares)
+igfirm_total_expenses                       = IGFirm(igfirm_outflows_calendar.total_expenses)
+
+#IGFIRM_INFLOW
+igfirm_revenue                              = IGFirm(igfirm_inflows_calendar.cum_revenue)
+igfirm_new_loans                            = IGFirm(igfirm_inflows_calendar.new_loans)
+igfirm_value_of_issued_share                = IGFirm(igfirm_inflows_calendar.value_of_issued_shares)
+igfirm_subsidy                              = IGFirm(igfirm_inflows_calendar.subsidy)
+igfirm_total_income                         = IGFirm(igfirm_inflows_calendar.total_income)
+igfirm_net_inflow                           = IGFirm(igfirm_inflows_calendar.net_inflow)
+
+igfirm_active                         		= IGFirm(active)
+
+################################AGENT: HOUSEHOLD
+#HOUSEHOLD_STOCK
+household_payment_account                   = Household(household_stocks_calendar.payment_account)
+household_portfolio_value                   = Household(household_stocks_calendar.portfolio_value)
+household_total_assets                      = Household(household_stocks_calendar.total_assets)
+household_nr_assets                         = Household(household_stocks_calendar.nr_assets)
+household_payment_account_day_1             = Household(household_stocks_calendar.payment_account_day_1)
+household_payment_account_day_20            = Household(household_stocks_calendar.payment_account_day_20)
+
+#HOUSEHOLD_OUTFLOWS
+household_consumption_expenditure           = Household(household_outflows_calendar.consumption_expenditure)
+household_tax_payment                       = Household(household_outflows_calendar.tax_payment)
+household_restitution_payment               = Household(household_outflows_calendar.restitution_payment)
+household_asset_purchases                   = Household(household_outflows_calendar.asset_purchases)
+household_total_expenses                    = Household(household_outflows_calendar.total_expenses)
+
+#HOUSEHOLD_INFLOWS
+household_wage                              = Household(household_inflows_calendar.wage)
+household_unemployment_benefit              = Household(household_inflows_calendar.unemployment_benefit)
+household_subsidies                         = Household(household_inflows_calendar.subsidies)
+household_transfer                          = Household(household_inflows_calendar.transfer)
+household_gov_interest                      = Household(household_inflows_calendar.gov_interest)
+household_asset_sales                       = Household(household_inflows_calendar.asset_sales)
+household_total_dividends                   = Household(household_inflows_calendar.total_dividends)
+household_total_income                      = Household(household_inflows_calendar.total_income)
+household_net_inflow                        = Household(household_inflows_calendar.net_inflow)
+
+################################AGENT: BANK
+#BANK_STOCK
+bank_cash                                   = Bank(bank_stocks_calendar.cash)
+bank_total_credit                           = Bank(bank_stocks_calendar.total_credit)
+bank_total_assets                           = Bank(bank_stocks_calendar.total_assets)
+bank_deposits                               = Bank(bank_stocks_calendar.deposits)
+bank_ecb_debt                               = Bank(bank_stocks_calendar.ecb_debt)
+bank_equity                                 = Bank(bank_stocks_calendar.equity)
+bank_total_liabilities                      = Bank(bank_stocks_calendar.total_liabilities)
+bank_outstanding_shares                     = Bank(bank_stocks_calendar.current_shares_outstanding)
+bank_cash_day_1                             = Bank(bank_stocks_calendar.cash_day_1)
+bank_cash_day_20                            = Bank(bank_stocks_calendar.cash_day_20)
+
+#BANK_OUTFLOWS
+bank_firm_loan_issues                       = Bank(bank_outflows_calendar.firm_loan_issues)
+bank_debt_installment_to_ecb                = Bank(bank_outflows_calendar.debt_installment_to_ecb)
+bank_ecb_interest_payment                   = Bank(bank_outflows_calendar.ecb_interest_payment)
+bank_dividend_payment                       = Bank(bank_outflows_calendar.dividend_payment)
+bank_tax_payment                            = Bank(bank_outflows_calendar.tax_payment)
+bank_deposit_outflow                        = Bank(bank_outflows_calendar.deposit_outflow)
+bank_total_expenses                         = Bank(bank_outflows_calendar.total_expenses)
+
+#BANK_INFLOWS
+bank_received_loan_installment              = Bank(bank_inflows_calendar.firm_loan_installments)
+bank_received_interest_payment              = Bank(bank_inflows_calendar.firm_interest_payments)
+bank_new_ecb_debt                           = Bank(bank_inflows_calendar.new_ecb_debt)
+bank_deposit_inflow                         = Bank(bank_inflows_calendar.deposit_inflow)
+bank_total_income                           = Bank(bank_inflows_calendar.total_income)
+bank_net_inflow                             = Bank(bank_inflows_calendar.net_inflow)
+bank_net_deposit_inflow                     = Bank(bank_inflows_calendar.net_deposit_inflow)
+
+
+################################AGENT: GOVERNMENT
+#GOVERNMENT_STOCKS
+gov_payment_account                         = Government(gov_stocks_calendar.payment_account)
+gov_total_assets                            = Government(gov_stocks_calendar.total_assets)
+gov_value_bonds_outstanding                 = Government(gov_stocks_calendar.value_bonds_outstanding)
+gov_ecb_debt                                = Government(gov_stocks_calendar.ecb_money)
+gov_equity                                  = Government(gov_stocks_calendar.equity)
+gov_total_liabilities                       = Government(gov_stocks_calendar.total_liabilities)
+gov_nr_bonds_oustanding                     = Government(gov_stocks_calendar.nr_bonds_outstanding)
+gov_payment_account_day_1                   = Government(gov_stocks_calendar.payment_account_day_1)
+gov_payment_account_day_20                  = Government(gov_stocks_calendar.payment_account_day_20)
+
+#GOVERNMENT_OUTFLOWS
+gov_investment_expenditure                  = Government(gov_outflows_calendar.investment_expenditure)
+gov_consumption_expenditure                 = Government(gov_outflows_calendar.consumption_expenditure)
+gov_benefit_payment                         = Government(gov_outflows_calendar.benefit_payment)
+gov_subsidy_household                       = Government(gov_outflows_calendar.subsidy_payment_household)
+gov_subsidy_firm                            = Government(gov_outflows_calendar.subsidy_payment_firm)
+gov_transfer_household                      = Government(gov_outflows_calendar.transfer_payment_household)
+gov_transfer_firm                           = Government(gov_outflows_calendar.transfer_payment_firm)
+gov_bond_interest_payment                   = Government(gov_outflows_calendar.bond_interest_payment)
+gov_debt_installment                        = Government(gov_outflows_calendar.debt_installment)
+gov_bond_repurchase                         = Government(gov_outflows_calendar.total_bond_repurchase)
+gov_total_expenses                          = Government(gov_outflows_calendar.total_expenses)
+
+#GOVERNMENT_INFLOWS
+gov_tax_revenue                             = Government(gov_inflows_calendar.tax_revenues)
+gov_restitution_payment                     = Government(gov_inflows_calendar.restitution_payment)
+gov_bond_financing                          = Government(gov_inflows_calendar.total_bond_financing)
+gov_money_financing                         = Government(gov_inflows_calendar.total_money_financing)
+gov_ecb_dividend                         	= Government(gov_inflows_calendar.ecb_dividend)
+gov_total_income                            = Government(gov_inflows_calendar.total_income)
+gov_net_inflow                              = Government(gov_inflows_calendar.net_inflow)
+
+################################AGENT: CentralBank
+#ECB_STOCKS
+ecb_cash                                    = CentralBank(ecb_stocks_calendar.cash)
+ecb_gov_bond_holdings                       = CentralBank(ecb_stocks_calendar.gov_bond_holdings)
+ecb_fiat_money_banks                          = CentralBank(ecb_stocks_calendar.fiat_money_banks)
+ecb_fiat_money_govs                           = CentralBank(ecb_stocks_calendar.fiat_money_govs)
+ecb_total_assets                            = CentralBank(ecb_stocks_calendar.total_assets)
+ecb_payment_account_banks                   = CentralBank(ecb_stocks_calendar.payment_account_banks)
+ecb_payment_account_govs                    = CentralBank(ecb_stocks_calendar.payment_account_govs)
+ecb_fiat_money                              = CentralBank(ecb_stocks_calendar.fiat_money)
+ecb_equity                                  = CentralBank(ecb_stocks_calendar.equity)
+ecb_total_liabilities                       = CentralBank(ecb_stocks_calendar.total_liabilities)
+ecb_nr_gov_bonds                            = CentralBank(ecb_stocks_calendar.nr_gov_bonds)
+
+#ECB_OUTFLOWS
+ecb_gov_bond_purchase                       = CentralBank(ecb_outflows_calendar.gov_bond_purchase)
+ecb_bank_fiat_money                         = CentralBank(ecb_outflows_calendar.bank_fiat_money)
+ecb_gov_deposits                            = CentralBank(ecb_outflows_calendar.gov_deposits)
+ecb_bank_deposits                           = CentralBank(ecb_outflows_calendar.bank_deposits)
+ecb_dividend_payment                        = CentralBank(ecb_outflows_calendar.dividend_payment)
+ecb_total_expenses                          = CentralBank(ecb_outflows_calendar.total_expenses)
+
+#ECB_INFLOWS
+ecb_bank_interest                           = CentralBank(ecb_inflows_calendar.bank_interest)
+ecb_bank_debt_installment                   = CentralBank(ecb_inflows_calendar.bank_debt_installment)
+ecb_gov_interst                             = CentralBank(ecb_inflows_calendar.gov_interest)
+ecb_gov_deposits                            = CentralBank(ecb_inflows_calendar.gov_deposits)
+ecb_bank_deposits                           = CentralBank(ecb_inflows_calendar.bank_deposits)
+ecb_total_income                            = CentralBank(ecb_inflows_calendar.total_income)
+ecb_net_inflow                              = CentralBank(ecb_inflows_calendar.net_inflow)
+
+################################AGENT: EUROSTAT
+eurostat_no_firms                   = Eurostat(no_firms)
+eurostat_active_firms               = Eurostat(no_active_firms)
+eurostat_no_firm_deaths             = Eurostat(no_firm_deaths)
+eurostat_sold_quantity      		= Eurostat(monthly_sold_quantity)
+#eurostat_total_sold_quantity_volume= Eurostat(export_volume_matrix[])
+#eurostat_total_sold_quantity_value = Eurostat(export_value_matrix[])
+eurostat_investment_value   		= Eurostat(monthly_investment_value)
+eurostat_gdp                		= Eurostat(gdp)
+
+#Mall
+#mall_total_sold_quantity_volume    = Mall(export_volume_matrix[])
+#mall_total_sold_quantity_value     = Mall(export_value_matrix[])
+
+#########################################################################
+::CONSTANTS
+
+# while not necessary, using all caps for constants help us to identify
+# them within the rules
+PRECISION = 1.0 # tolerance when comparing doubles
+
+#########################################################################
+::RULES
+
+
+########################## Balance Sheets ################################
+#RULE 1: VERIFIED 
+#Firm balance sheet: assets and liabilities
+#firm_payment_account + firm_value_local_inventory + firm_value_capital_stock = firm_total_debt + firm_equity
+abs( firm_payment_account + firm_value_local_inventory + firm_value_capital_stock - firm_total_debt - firm_equity)< PRECISION
+
+#RULE 2: VERIFIED 
+#IGFirm balance sheet: assets and liabilities
+#igfirm_payment_account + igfirm_value_local_inventory  = igfirm_total_debt + igfirm_equity
+abs( igfirm_payment_account + igfirm_value_local_inventory + igfirm_value_capital_stock - igfirm_total_debt - igfirm_equity)< PRECISION
+
+#RULE 3: VERIFIED 
+#Bank balance sheet: assets and liabilities
+#bank_cash + bank_total_credit = bank_deposits + bank_ecb_debt + bank_equity
+abs( bank_cash + bank_total_credit - bank_deposits - bank_ecb_debt - bank_equity)< PRECISION
+
+#RULE 4: VERIFIED 
+#Government balance sheet: assets and liabilities
+#gov_payment_account = gov_value_bonds_outstanding + gov_ecb_debt + gov_equity
+abs( gov_payment_account - gov_value_bonds_outstanding - gov_ecb_debt - gov_equity)< PRECISION
+
+#RULE 5: VERIFIED 
+#CentralBank balance sheet: assets and liabilities
+#ecb_cash + ecb_gov_bond_holdings + ecb_fiat_money_banks = ecb_payment_account_banks + ecb_payment_account_govs + ecb_fiat_money +ecb_equity
+abs( ecb_cash + ecb_gov_bond_holdings + ecb_fiat_money_banks - ecb_payment_account_banks - ecb_payment_account_govs - ecb_fiat_money - ecb_equity)< PRECISION
+
+########################## Internal accounting ################################
+#RULE 6: VERIFIED 
+#Firm internal accounting of monetary flows 
+#firm_net_inflow = firm_payment_account_day_20 - firm_payment_account_day_1
+abs( firm_net_inflow - firm_payment_account_day_20 + firm_payment_account_day_1)< PRECISION
+
+#RULE 7: VERIFIED 
+#IGFirm internal accounting of monetary flows 
+#igfirm_net_inflow = igfirm_payment_account_day_20 - igfirm_payment_account_day_1
+abs( igfirm_net_inflow - igfirm_payment_account_day_20 + igfirm_payment_account_day_1)< PRECISION
+
+#RULE 8: VERIFIED 
+#Household internal accounting of monetary flows 
+#household_net_inflow = household_payment_account_day_20 - household_payment_account_day_1
+abs( household_net_inflow - household_payment_account_day_20 + household_payment_account_day_1)< PRECISION
+
+#RULE 9: VERIFIED 
+#Bank internal accounting of monetary flows 
+#bank_net_inflow = bank_cash_day_20 - bank_cash_day_1
+abs( bank_net_inflow - bank_cash_day_20 + bank_cash_day_1)< PRECISION
+
+#RULE 10: VERIFIED 
+#Government internal accounting of monetary flows 
+#gov_net_inflow = gov_payment_account_day_20 - gov_payment_account_day_1
+abs( gov_net_inflow - gov_payment_account_day_20 + gov_payment_account_day_1)< PRECISION 
+
+########################## Monetary flows between Agents ################################
+
+
+##################### BANK
+#RULE 11: VERIFIED
+#Payment accounts: aggregate bank deposits equals the sum of payment accounts in agent memory
+#bank_deposits = firm_payment_account_day_20 + igfirm_payment_account_day_20 + household_payment_account_day_20
+abs( firm_payment_account_day_20 + igfirm_payment_account_day_20 + household_payment_account_day_20 - bank_deposits) < PRECISION 
+
+#RULE 12: VERIFIED
+#Credit money: aggregate Bank credit outstanding equals total loans to firms.
+#bank_credit = firm_total_debt + igfirm_total_debt
+abs( bank_total_credit - firm_total_debt - igfirm_total_debt ) < PRECISION
+
+#RULE 13: VERIFIED
+#Net inflows: the change of the banks deposits equals the sum of the agents net inflows.
+#bank_net_deposit_inflow = firm_net_inflow + igfirm_net_inflow + household_net_inflow
+abs( firm_net_inflow + igfirm_net_inflow + household_net_inflow - bank_net_deposit_inflow) < PRECISION 
+
+#RULE 14: VERIFIED
+#Debt installment payments by firms to banks and the payments received by banks are equal.
+#firm_debt_installment + igfirm_debt_installment = bank_received_loan_installment
+abs( firm_debt_installment + igfirm_debt_installment - bank_received_loan_installment) < PRECISION
+
+#RULE 15: VERIFIED
+#Interest payments by firms to banks are equal to interest payments received.
+#firm_interest_payment + igfirm_interest_payment = bank_received_interest_payment
+abs( firm_interest_payment + igfirm_interest_payment - bank_received_interest_payment) < PRECISION
+
+##################### REAL SECTOR
+#RULE 16: VERIFIED
+#Dividend payments send and received are equal.
+#firm_dividend_payment + igfirm_dividend_payment + bank_dividend_payment = household_total_dividends
+abs( firm_dividend_payment + igfirm_dividend_payment + bank_dividend_payment - household_total_dividends) < PRECISION  
+
+#RULE 17: VERIFIED
+#Consistency between IGFirm sales revenues and Firm capital costs.
+#firm_capital_costs = igfirm_revenue
+abs( firm_capital_costs - igfirm_revenue) < PRECISION
+
+#RULE 18: VERIFIED
+#Consistency between IGFirm and Firm labour costs and Households received wages.
+#household_wage = firm_labour_costs + igfirm_labour_costs
+abs( household_wage - firm_labour_costs - igfirm_labour_costs) < PRECISION
+
+#RULE 19: VERIFIED
+#Consistency between Firm revenues and Households consumption expenditures
+#household_consumption_expenditure = firm_revenue
+abs( household_consumption_expenditure - firm_revenue) < PRECISION
+
+##################### EUROSTAT
+#RULE 20: VERIFIED
+#Definition of GDP.
+#eurostat_gdp = eurostat_investment_value + household_consumption_expenditure + gov_consumption_expenditure
+abs( eurostat_gdp - eurostat_investment_value - household_consumption_expenditure - gov_consumption_expenditure ) < PRECISION 
+
+#RULE 21: VERIFIED
+#Check the number of active firms.
+#eurostat_no_firms = firm_active + igfirm_active + eurostat_no_firm_bankruptcies
+abs( eurostat_active_firms - firm_active - igfirm_active) < PRECISION
+
+#RULE 22: VERIFIED
+#Material quantity conservation rule: Eurostat total sold quantity compared with firm data on number of goods sold (in volume).
+#eurostat_sold_quantity = firm_total_sold_quantity_volume
+abs( eurostat_sold_quantity - firm_total_sold_quantity_volume ) < PRECISION
+
+#RULE 23: VERIFIED
+#Investments in monetary value: Eurostat data (aggregated across the firms' investment costs) equals the IGFirm revenues.
+#eurostat_investment_value = igfirm_revenue
+abs( eurostat_investment_value - igfirm_revenue ) < PRECISION
+
+
+##################### GOV
+#RULE 24: VERIFIED
+#Taxes paid equal tax revenues. 
+#gov_tax_revenue = firm_tax_payment + igfirm_tax_payment + household_tax_payment + bank_tax_payment
+abs( gov_tax_revenue - firm_tax_payment - igfirm_tax_payment - household_tax_payment - bank_tax_payment) < PRECISION 
+
+#RULE 25: VERIFIED
+#Consistency of unemployment benefits paid by governments and received by households.
+#gov_benefit_payment - gov_restitution_payment = household_unemployment_benefit - household_restitution_payment
+abs( gov_benefit_payment - gov_restitution_payment - household_unemployment_benefit + household_restitution_payment)< PRECISION
+
+
+#RULE 26: VERIFIED
+#Total number of shares outstanding equals the total number of shares in household and ECB portfolios
+#Firm shares + IGFirm shares + Bank shares + Gov bonds = Household's holdings of shares and bonds + ECB's holdings of Gov bonds
+#household_nr_assets + ecb_nr_gov_bonds = firm_outstanding_shares + igfirm_outstanding_shares + bank_outstanding_shares + gov_nr_bonds_oustanding
+abs( firm_outstanding_shares + igfirm_outstanding_shares + bank_outstanding_shares + gov_nr_bonds_oustanding - household_nr_assets - ecb_nr_gov_bonds) < PRECISION
+
+##################### ECB
+#RULE 27: VERIFIED
+#Deposits at ECB
+#bank_cash + gov_payment_account = ecb_payment_account_banks + ecb_payment_account_govs
+abs( bank_cash + gov_payment_account - ecb_payment_account_banks - ecb_payment_account_govs)< PRECISION
+
+#RULE 28: VERIFIED
+#ECB fiat money is by definition the sum of the fiat money created for governments and for banks.
+#ecb_fiat_money = ecb_fiat_money_govs + ecb_fiat_money_banks
+abs( ecb_fiat_money - ecb_fiat_money_banks - ecb_fiat_money_govs) < PRECISION
+
+#RULE 29: VERIFIED
+#ECB fiat money banks is by definition the fiat money created for banks when they take on ECB debt.
+#ecb_fiat_money_banks = bank_ecb_debt
+abs( ecb_fiat_money_banks - bank_ecb_debt) < PRECISION
+
+#RULE 30: VERIFIED
+#The interest payments by banks on central bank loans equals the ECB's interest receipts.
+#bank_ecb_interest_payment = ecb_bank_interest
+abs( bank_ecb_interest_payment - ecb_bank_interest) < PRECISION
+
+#RULE 31: VERIFIED
+#The ECB dividend payment to Governments equals the dividend received.
+#ecb_dividend_payment = gov_ecb_dividend
+abs( ecb_dividend_payment - gov_ecb_dividend) < PRECISION
+
+#RULE 32: VERIFIED
+#Monetary conservation rule
+#All deposits in the banking sector plus bank equity, plus all idle cash balances held in the public sector (government payment account and ECB cash), 
+#equals all the credit money created by the banks plus all the fiat money created by the central bank.
+#bank_deposits + bank_equity + gov_payment_account + ecb_cash = bank_credit + ecb_fiat_money 
+abs( bank_deposits + bank_equity + gov_payment_account + ecb_cash - bank_total_credit - ecb_fiat_money) < PRECISION
+
+
+#RULE 33: VERIFIED
+#Simplified Monetary conservation rule
+#bank_cash + gov_payment_account = ecb_fiat_money_govs
+abs( bank_cash + gov_payment_account - ecb_fiat_money_govs)< PRECISION
+
+                         
+######## RULES THAT CANNOT BE CHECKED YET (since sums over arrays are not possible)
+#RULE XX: TO BE CHECKED 
+#Comparing Eurostat export matrix with Mall export matrix (in volume)
+#abs( eurostat_total_sold_quantity_value - mall_total_sold_quantity_volume ) < PRECISION
+
+#RULE XX: TO BE CHECKED
+#Comparing Eurostat export matrix with Mall export matrix (in value)
+#abs( eurostat_total_sold_quantity_value - mall_total_sold_quantity_value ) < PRECISION

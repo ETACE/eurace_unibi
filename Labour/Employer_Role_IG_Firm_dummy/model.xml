@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://flame.ac.uk/schema/xmml_v2.xsd">
+ <name>Labour Market dummy</name>
+ <version>Version 1.0, 01/01/2010</version>
+ <author>Simon Gemkow, Philipp Harting, Sander van der Hoog</author>
+ <description></description>
+	 <agents> 
+ <xagent>
+   <name>IGFirm</name>
+   <description></description>
+   <memory/>
+   <functions>
+   <function>
+     <name>IGFirm_idle</name>
+     <description>IGFirm does nothing.</description>
+     <currentState>IGFirm_End_Financial_Management</currentState>
+     <nextState>02</nextState>
+     <inputs/>
+     <outputs/>
+    </function>
+   </functions>
+  </xagent>
+ </agents>
+  <message/>
+</xmodel>
