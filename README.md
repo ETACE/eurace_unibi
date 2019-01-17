@@ -1,8 +1,20 @@
 # The Eurace@Unibi Model
 
-This is the source code of EURACE@Unibi Model.
-There is also a virtual machine with everything pre-compiled (with the model at v1.0):
-http://www.wiwi.uni-bielefeld.de/lehrbereiche/vwl/etace/Eurace_Unibi/Virtual_Appliance.
+This is the source code of the Eurace@Unibi Model.
+
+# Current version: 
+
+1.0.1 (April 2016)
+
+# Pre-installed version
+
+There is a virtual appliance with everything pre-compiled (all FLAME dependencies, the included model is at v1.0):
+
+Download link:
+https://gregorboehl.com/live/etace-v.0.997.1.ova
+
+Documentation:
+http://www.wiwi.uni-bielefeld.de/lehrbereiche/vwl/etace/Eurace_Unibi/Virtual_Appliance
 
 # Installation
 
@@ -67,4 +79,4 @@ Contributing
 Copyright
 ---------
 
-Copyright (c) 2014 Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog, Michael Neugart. See LICENSE for further details.
+Copyright (c) 2014-2019 Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog, Michael Neugart. See LICENSE for further details.
