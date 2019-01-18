@@ -10,9 +10,14 @@ This is the source code of the Eurace@Unibi Model.
 
 **Dependencies**
 
-gcc 4.4
+GCC 4.4 or higher (or other C compiler)
 
-gsl 2.4  (GNU  Scientific  Library)
+GSL 2.4 or higher (GNU  Scientific  Library)
+
+FLAME XParser 0.17.1 (https://github.com/FLAME-HPC/xparser/archive/0.17.1.tar.gz)
+
+FLAME Libmboard 0.3.1 (https://github.com/FLAME-HPC/libmboard/archive/master.zip)
+
 
 # Pre-installed version
 
