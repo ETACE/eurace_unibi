@@ -2,9 +2,17 @@
 
 This is the source code of the Eurace@Unibi Model.
 
-# Current version: 
+**Version history:**
+
+1.0.0 (April 2014)
 
 1.0.1 (April 2016)
+
+**Dependencies**
+
+gcc 4.4
+
+gsl 2.4  (GNU  Scientific  Library)
 
 # Pre-installed version
 
