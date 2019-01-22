@@ -204,7 +204,7 @@ int Firm_calc_production_quantity()
 
     /*checking whether or not the current mall stocks are below the critical values         
      * (sS-Rule) If this is the case refill the stock up to the max stock */
-     for(int i = 0; i < CURRENT_MALL_STOCKS.size; i++)
+     for(i = 0; i < CURRENT_MALL_STOCKS.size; i++)
       {
 		STOCK +=CURRENT_MALL_STOCKS.array[i].current_stock;
 		CRITICAL_STOCK += CURRENT_MALL_STOCKS.array[i].critical_stock;
@@ -240,7 +240,7 @@ int Firm_calc_production_quantity()
 
         /*Smoothing of production quantity in order to avoid high fluctuations*/
         double mean_production_quantity=0;
-        for(int i = 0; i < LAST_PLANNED_PRODUCTION_QUANTITIES.size; i++)
+        for( i = 0; i < LAST_PLANNED_PRODUCTION_QUANTITIES.size; i++)
         {
             mean_production_quantity += LAST_PLANNED_PRODUCTION_QUANTITIES.array[i];
         }
@@ -1267,7 +1267,7 @@ int Firm_calc_pay_costs()
 		LABOUR_COSTS_PRODUCTION = 0.0;
 
 		// Pay labour production costs
-        for(int i=0; i<EMPLOYEES.size;i++)
+        for(i=0; i<EMPLOYEES.size;i++)
         {
             LABOUR_COSTS_PRODUCTION += EMPLOYEES.array[i].wage;
 
@@ -1281,7 +1281,7 @@ int Firm_calc_pay_costs()
 		
 		R_AND_D_INVESTMENTS_PER_MONTH = 0.0;
 	
-		for(int i=0; i<R_AND_D_EMPLOYEES.size;i++)
+		for(i=0; i<R_AND_D_EMPLOYEES.size;i++)
         {
             R_AND_D_INVESTMENTS_PER_MONTH += R_AND_D_EMPLOYEES.array[i].wage;
 
@@ -1301,7 +1301,7 @@ int Firm_calc_pay_costs()
         {
             
             CALC_CAPITAL_COSTS = 0;
-        for( i = 0; i<CAPITAL_FINANCING.size;i++) 
+        for(i = 0; i<CAPITAL_FINANCING.size;i++) 
             {
                 if(CAPITAL_FINANCING.array[i].nr_periods_before_repayment==0)
                 {
@@ -1468,11 +1468,12 @@ int Firm_calc_revenue()
      char *filename;
     REVENUE_PER_DAY=0.0;
     TOTAL_SOLD_QUANTITY=0.0;
+    int i;
 
     /*calc the daily revenue and sum up the monthly revenue*/
     START_SALES_MESSAGE_LOOP
     
-        for(int i=0; i< SOLD_QUANTITIES.size; i++)
+        for(i=0; i< SOLD_QUANTITIES.size; i++)
         {
             if(sales_message->mall_id ==  SOLD_QUANTITIES.array[i].mall_id)
             {
@@ -1505,7 +1506,7 @@ int Firm_calc_revenue()
         
 
         //Update mall stocks
-        for(int i=0; i< CURRENT_MALL_STOCKS.size; i++)
+        for(i=0; i< CURRENT_MALL_STOCKS.size; i++)
         {
             if(sales_message->mall_id ==  CURRENT_MALL_STOCKS.array[i].mall_id)
             {
@@ -1639,12 +1640,13 @@ int Firm_update_specific_skills_of_workers()
 {
 
 	int flag =0;
+	int i;
 
     START_SPECIFIC_SKILL_UPDATE_MESSAGE_LOOP
 		
 		flag=0;        
 
-        for(int i=0; i<EMPLOYEES.size;i++)
+        for(i=0; i<EMPLOYEES.size;i++)
         {
             if(specific_skill_update_message->id==EMPLOYEES.array[i].id)
             {
@@ -1661,7 +1663,7 @@ int Firm_update_specific_skills_of_workers()
 		
 		if(flag==0)
 		{
-  			for(int i=0; i<R_AND_D_EMPLOYEES.size;i++)
+  			for(i=0; i<R_AND_D_EMPLOYEES.size;i++)
         	{
         	    if(specific_skill_update_message->id==R_AND_D_EMPLOYEES.array[i].id)
          	    {
