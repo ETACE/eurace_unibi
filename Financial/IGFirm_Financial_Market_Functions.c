@@ -8,7 +8,6 @@
  */
 int IGFirm_remains_in_bankruptcy(void)
 {
-	//printf("Error in Bankruptcy: IGFirm %d remains in bankruptcy. External financial needs: %f\n", ID, EXTERNAL_FINANCIAL_NEEDS);
 	printf("Error in Bankruptcy: IGFirm %d remains in bankruptcy.\n", ID);
 	return 0;
 }

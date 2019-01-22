@@ -130,7 +130,7 @@ int Firm_get_loan()
         int bank_id=0;
         double loan_value=0.0;
         double interest_rate=0.0;
-        double interest_amount=0.0;
+        double __attribute__ ((unused)) interest_amount=0.0;
         double installment_amount=0.0;
         double var_per_installment=0.0;
         double residual_var=0.0;
@@ -228,7 +228,6 @@ int Firm_get_loan()
         
         if (PAYMENT_ACCOUNT >= TOTAL_FINANCIAL_NEEDS)
             {           
-                //printf("Firm_financial_needs, External financing: case 1.");
                 EXTERNAL_FINANCIAL_NEEDS = 0.0;                   
             }
             else

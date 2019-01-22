@@ -72,7 +72,7 @@ int Household_respond_questionnaire()
 	
 	int i;
 	
-	double price, quality, mean_price_growth;
+	double price, quality;
 	double random_number, logit, logit_denominator,logit_sum;
 	
 
@@ -100,9 +100,6 @@ int Household_respond_questionnaire()
 	}
 	
 	quality = questionnaire_pricing_message->quality; 
-	mean_price_growth = 0.5* questionnaire_pricing_message->average_price_growth;
-
-
 
 	for(i=0;i<CURRENT_PRICE_QUALITY_LIST.size;i++)
 	{			
@@ -113,17 +110,10 @@ int Household_respond_questionnaire()
 		}
 	}
 
-
-
-
-	//printf("average_quality %f\n",average_quality);
-
 	logit = 0;
 
 	for(i=0; i< price_list.size; i++)
-	{		
-		int positive_response=0;
-		
+	{				
 		logit_denominator=exp(GAMMA_CONST*(GAMMA_QUALITY*log(quality) -log(price_list.array[i]))) + logit_sum;
 	 
 		logit= exp(GAMMA_CONST*(GAMMA_QUALITY*log(quality) -log(price_list.array[i])))/ logit_denominator;
@@ -194,16 +184,10 @@ int Household_respond_questionnaire()
 		}
 	}
 
-
-
-	//printf("average_quality %f\n",average_quality);
-
 	logit = 0;
 
 	for(i=0; i< price_list.size; i++)
-	{		
-		int positive_response=0;
-		
+	{				
 		logit_denominator=exp(GAMMA_CONST*(GAMMA_QUALITY*log(quality) -log(price_list.array[i]))) + logit_sum;
 	 
 		logit= exp(GAMMA_CONST*(GAMMA_QUALITY*log(quality) -log(price_list.array[i])))/ logit_denominator;

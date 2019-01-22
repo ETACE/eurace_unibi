@@ -625,12 +625,9 @@ int Firm_send_payments_to_bank()
      FILE *file1;
      char *filename;
 	int i;
-	double value_at_risk;
      
     add_bank_account_update_message(ID, BANK_ID, PAYMENT_ACCOUNT);
 
-	//Total VAR for loans
-	value_at_risk=0.0;
 	for (i=0;i<LOANS.size;i++)
 	{
 		//Send credit_var_update msg to bank

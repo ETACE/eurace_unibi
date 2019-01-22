@@ -199,8 +199,6 @@ int Firm_compute_dividends()
 		#ifdef _DEBUG_MODE    
 		if (PRINT_DEBUG_FINMAN)
 		{ 
-			//printf("Case 1: PAYMENT_ACCOUNT %f < CONST_DIVIDEND_TRESHOLD_FULL_PAYOUT*average_revenue %f\n",PAYMENT_ACCOUNT, CONST_DIVIDEND_TRESHOLD_FULL_PAYOUT*average_revenue );
-
 			printf("Case 1: below threshold DIVIDEND %f = %2.2f * average_net_earnings  %f\n [PAYMENT_ACCOUNT %f < %2.2f *average_revenue %f or average_revenue=0]\n",TOTAL_DIVIDEND_PAYMENT,CONST_DIVIDEND_EARNINGS_RATIO , average_net_earnings, PAYMENT_ACCOUNT, CONST_DIVIDEND_TRESHOLD_FULL_PAYOUT, average_revenue);
 		}    
 		#endif
@@ -218,8 +216,6 @@ int Firm_compute_dividends()
 		#ifdef _DEBUG_MODE    
 		if (PRINT_DEBUG_FINMAN)
 		{ 
-			//	printf("Case 2: PAYMENT_ACCOUNT %f > CONST_DIVIDEND_TRESHOLD_FULL_PAYOUT*average_revenue %f\n",PAYMENT_ACCOUNT, CONST_DIVIDEND_TRESHOLD_FULL_PAYOUT*average_revenue );
-
 			printf("Case 2: above threshold DIVIDEND %f = 1.0 * average_net_earnings  %f\n [PAYMENT_ACCOUNT %f > %2.2f *average_revenue %f & average_revenue>0]\n",TOTAL_DIVIDEND_PAYMENT, average_net_earnings, PAYMENT_ACCOUNT, CONST_DIVIDEND_TRESHOLD_FULL_PAYOUT, average_revenue);
 		}    
 		#endif
@@ -408,7 +404,6 @@ int Firm_compute_total_liquidity_needs()
     //CASE 1: No external financing needed
     if (PAYMENT_ACCOUNT >= TOTAL_FINANCIAL_NEEDS)
     {
-        //printf("Firm_financial_needs, External financing: case 1.");
         EXTERNAL_FINANCIAL_NEEDS = 0.0;
     }
     else
@@ -723,7 +718,6 @@ int Firm_execute_financial_payments()
             //decrease the value of the loan with the debt_installment_payment:
             LOANS.array[i].loan_value -= LOANS.array[i].installment_amount;
 
-            //printf("\n Loan item %d: nr_periods_before_repayment=%d\n", i, LOANS.array[i].nr_periods_before_repayment);
             LOANS.array[i].nr_periods_before_repayment -= 1;
 
 			//21.1.2013: Recompute: credit default risk per loan
@@ -735,22 +729,15 @@ int Firm_execute_financial_payments()
             
             //Add loan_value to the current total debt
             TOTAL_DEBT += LOANS.array[i].loan_value;
-            //printf("\n Loan item %d: adding debt value =%2.2f\n", i, LOANS.array[i].loan_value);
-            //printf("\n TOTAL_DEBT=%2.2f\n", TOTAL_DEBT);
-
-	    //printf("Now subtracted debt_installment_payment from loan_value: %f (new value:%f).\n", LOANS.array[i].debt_installment_payment, LOANS.array[i].loan_value);
 
 	    #ifdef _DEBUG_MODE
             if (PRINT_DEBUG_FINMAN)
-	    //if (DAY>TIME_DEBUG_PROBE)
             {
-		//if(ID==ID_DEBUG_PROBE)
-		//{
+
 			printf("\n\n\t Repayment LOAN ID: %d of %d", i, LOANS.size);
 			printf("\n\t |%8s|%8s|%8s|%8s|%8s|%8s|%8s|", "N","loan","install","interest","tot_var","var_inst", "bank");
 			printf("\n\t |%8d|%+5.2f|%+5.2f|%+5.2f|%+5.2f|%+5.2f|%8d|", LOANS.array[i].nr_periods_before_repayment, LOANS.array[i].loan_value, LOANS.array[i].installment_amount, LOANS.array[i].interest_rate, LOANS.array[i].residual_var, LOANS.array[i].var_per_installment, LOANS.array[i].bank_id);
 
-		//}
             }
             #endif
             
@@ -790,7 +777,6 @@ int Firm_execute_financial_payments()
         //* add value to total debt
         if (LOANS.array[i].nr_periods_before_repayment==CONST_INSTALLMENT_PERIODS+1)
         {
-            //printf("\n Loan item %d: nr_periods_before_repayment=%d\n", i, LOANS.array[i].nr_periods_before_repayment);
             LOANS.array[i].nr_periods_before_repayment -= 1;
 
   	    //21.1.2013: Recompute: credit default risk per loan
@@ -801,8 +787,6 @@ int Firm_execute_financial_payments()
             
             //Add loan_value to the current total debt
             TOTAL_DEBT += LOANS.array[i].loan_value;
-            //printf("\n Loan item %d: adding debt value =%2.2f\n", i, LOANS.array[i].loan_value);
-            //printf("\n TOTAL_DEBT=%2.2f\n", TOTAL_DEBT);
 	    
             //add_installment_message(bank_id, installment_amount, interest_amount, var_per_installment)
 	    	// for new loans: no installment and interest payment in first period, mesg is for value_at_risk computation of  bank
@@ -810,14 +794,11 @@ int Firm_execute_financial_payments()
 
     	    #ifdef _DEBUG_MODE
             if (PRINT_DEBUG_FINMAN)
-//			if (DAY>TIME_DEBUG_PROBE)
             {
-	//			if(ID==ID_DEBUG_PROBE)
-	//			{
+
 		            printf("\n\t Fresh LOAN ID: %d of %d",i, LOANS.size);
 					printf("\n\t |%8s|%8s|%8s|%8s|%8s|%8s|%8s|", "N","loan","install","interest","tot_var","var_inst", "bank");
 					printf("\n\t |%8d|%+5.2f|%+5.2f|%+5.2f|%+5.2f|%+5.2f|%8d|", LOANS.array[i].nr_periods_before_repayment, LOANS.array[i].loan_value, LOANS.array[i].installment_amount, LOANS.array[i].interest_rate, LOANS.array[i].residual_var, LOANS.array[i].var_per_installment, LOANS.array[i].bank_id);
-//				}
 			}
             #endif
 
@@ -835,7 +816,6 @@ int Firm_execute_financial_payments()
         //* remove the loan item.
         if (LOANS.array[i].nr_periods_before_repayment==0)
         {
-            //printf("\n Loan item %d: nr_periods_before_repayment=%d\n", i, LOANS.array[i].nr_periods_before_repayment);
             remove_debt_item(&LOANS, i);
 
     	    #ifdef _DEBUG_MODE
@@ -1084,8 +1064,8 @@ int Firm_bankruptcy_rescale_loans()
 	double nr_rescalings_left; 
 	
     #ifdef _DEBUG_MODE  
-        char * filename;
-        FILE * file1;
+        __attribute__ ((unused)) char * filename;
+        __attribute__ ((unused)) FILE * file1;
     #endif
     
     //Effect on credit market: write off debt

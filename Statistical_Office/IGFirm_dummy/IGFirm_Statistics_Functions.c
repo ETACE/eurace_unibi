@@ -30,7 +30,6 @@ int IGFirm_reset_variables()
 
 	double total_assets = 0.0;
 	double equity = 0.0;
-	double total_debt = 0.0;
 	
 	if (DAY==1)
 	{
@@ -148,9 +147,6 @@ int IGFirm_send_data_to_Eurostat()
 		0,0, 0,0,0, 0,
 		0,
 		0, 0,	0, 0, 0,0,0, 0, 0, 0, 0, 0, 0,AGE, 0,0,0,0,0,IGFIRM_OUTFLOWS_CALENDAR.total_dividend_payment);
-
-	//printf("In Firm_send_data: Firm %d OUTPUT: %.2f\n", ID, OUTPUT);
-	//printf("In Firm_send_data: Firm %d PLANNED_OUTPUT: %.2f\n", ID, PLANNED_OUTPUT);
         
     return 0;       
 }
@@ -180,14 +176,11 @@ int IGFirm_compute_stock_flows()
 	IGFIRM_INFLOWS_CALENDAR.total_income -
 	IGFIRM_OUTFLOWS_CALENDAR.total_expenses;
 
-	int i;
 	double total_value_local_inventory = 0.0;
 	double total_assets = 0.0;
 	double equity = 0.0;
 	double total_debt = 0.0;
 	
-  
-
     total_assets = PAYMENT_ACCOUNT;
 
     equity = total_assets - total_debt;

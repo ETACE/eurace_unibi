@@ -169,11 +169,10 @@ int Household_human_capital_policy()
 
 	START_HUMAN_CAPITAL_POLICY_NEW_GENERAL_SKILL_NOTIFICATION_MESSAGE_LOOP
 
-	//printf("GENERAL_SKILL vorher: %d \n",GENERAL_SKILL);
-	GENERAL_SKILL = human_capital_policy_new_general_skill_notification_message->general_skills;
+		GENERAL_SKILL = human_capital_policy_new_general_skill_notification_message->general_skills;
 
-	HUMAN_CAPITAL_POLICY_FLAG = 0;
-	//printf("GENERAL_SKILL nachher: %d \n",GENERAL_SKILL);
+		HUMAN_CAPITAL_POLICY_FLAG = 0;
+		
 	FINISH_HUMAN_CAPITAL_POLICY_NEW_GENERAL_SKILL_NOTIFICATION_MESSAGE_LOOP
 return 0;
 }

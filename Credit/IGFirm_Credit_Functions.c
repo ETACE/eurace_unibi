@@ -281,7 +281,6 @@ int IGFirm_ask_loan()
         
         if (PAYMENT_ACCOUNT >= TOTAL_FINANCIAL_NEEDS)
             {           
-                //printf("Firm_financial_needs, External financing: case 1.");
                 EXTERNAL_FINANCIAL_NEEDS = 0.0;                   
             }
             else

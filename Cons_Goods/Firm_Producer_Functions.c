@@ -134,7 +134,7 @@ int Firm_calc_production_quantity()
 
     double production_volume = 0;
     double prod_vol, local_buffer;
-    int i,j,k;
+    int i,j;
     FILE *file1;
      char *filename;    
     
@@ -181,7 +181,7 @@ int Firm_calc_production_quantity()
      		    {
 					if(ID==ID_DEBUG_PROBE)
       			    {	
-					   printf("\n CURRENT_MALL_STOCKS.array[i].critical_stock %f \t LINEAR_REGRESSION_MARKET_SIZE.array[j].intercept %f \t LINEAR_REGRESSION_MARKET_SIZE.array[j].regressor %f \t COUNTER_MONTH_SINCE_LAST_PRICE_SETTING %d \t LINEAR_REGRESSION_MARKET_SIZE.array[j].variance %f, 	Buffer:  %f    ESTIMATED_MARKET_SHARE\n ",CURRENT_MALL_STOCKS.array[j].critical_stock, LINEAR_REGRESSION_MARKET_SIZE.array[i].intercept,LINEAR_REGRESSION_MARKET_SIZE.array[i].regressor,  COUNTER_MONTH_SINCE_LAST_PRICE_SETTING,LINEAR_REGRESSION_MARKET_SIZE.array[i].variance, local_buffer, ESTIMATED_MARKET_SHARE);
+					   printf("\n CURRENT_MALL_STOCKS.array[i].critical_stock %f \t LINEAR_REGRESSION_MARKET_SIZE.array[j].intercept %f \t LINEAR_REGRESSION_MARKET_SIZE.array[j].regressor %f \t COUNTER_MONTH_SINCE_LAST_PRICE_SETTING %d \t LINEAR_REGRESSION_MARKET_SIZE.array[j].variance %f, 	Buffer:  %f    ESTIMATED_MARKET_SHARE %f\n ",CURRENT_MALL_STOCKS.array[j].critical_stock, LINEAR_REGRESSION_MARKET_SIZE.array[i].intercept,LINEAR_REGRESSION_MARKET_SIZE.array[i].regressor,  COUNTER_MONTH_SINCE_LAST_PRICE_SETTING,LINEAR_REGRESSION_MARKET_SIZE.array[i].variance, local_buffer, ESTIMATED_MARKET_SHARE);
 		        	}        
 				}
  				 #endif		
@@ -283,10 +283,6 @@ int Firm_calc_production_quantity()
             free(filename);
         }  
         
-        
-        //printf("In calculate production: Firm %d PLANNED_PRODUCTION_QUANTITY %f\n", ID, PLANNED_PRODUCTION_QUANTITY);
-        //printf("In calculate production: Firm %d PLANNED_OUTPUT %f\n", ID, PLANNED_OUTPUT);
-        
     return 0;
 
 }
@@ -314,10 +310,8 @@ int Firm_calc_input_demands()
    	 /*Getting information about the offered vintages*/
         START_PRODUCTIVITY_MESSAGE_LOOP
             
-         //printf("productivity_message->cap_productivity  %f, \n productivity_message->cap_good_price %f \n",productivity_message->cap_productivity,productivity_message->cap_good_price );
 		add_adt_technology_vintages(&TECHNOLOGY_VINTAGES,productivity_message->cap_productivity, productivity_message->cap_good_price,0.0);	
 			
-        
         FINISH_PRODUCTIVITY_MESSAGE_LOOP
 	
 		
@@ -545,9 +539,6 @@ int Firm_calc_input_demands()
 				DEMAND_CAPITAL_STOCK = INV_INERTIA*TOTAL_CAPITAL_DEPRECIATION_UNITS;
 				PLANNED_PRODUCTION_QUANTITY = DEMAND_CAPITAL_STOCK*min(TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].productivity,MEAN_SPECIFIC_SKILLS) + feasible_output;
 			}
-
-
-			//printf("DEMAND_CAPITAL_STOCK %f PLANNED_PRODUCTION_QUANTITY %f  feasible_output%f\n",DEMAND_CAPITAL_STOCK,PLANNED_PRODUCTION_QUANTITY,feasible_output);
 	
 			EMPLOYEES_NEEDED_PRODUCTION = round_double_to_int(TOTAL_UNITS_CAPITAL_STOCK + DEMAND_CAPITAL_STOCK);
 
@@ -602,8 +593,6 @@ int Firm_calc_input_demands()
 	    }
         }
         #endif
-
-        //printf("Firm: %d  Labour: %d  Capital: %f  PLANNED_PROD_COSTS: %f\n", ID,EMPLOYEES_NEEDED,NEEDED_CAPITAL_STOCK,PLANNED_PRODUCTION_COSTS);
     
     return 0;
 }
@@ -620,8 +609,6 @@ int Firm_calc_input_demands()
  */
 int Firm_calc_production_quantity_2()
 {
-    //printf("Firm_calc_production_quantity_2() ID: %d\n",ID);
-
     double decrement;
     double diff;
     diff = PLANNED_PRODUCTION_QUANTITY;
@@ -631,8 +618,6 @@ int Firm_calc_production_quantity_2()
     //Here we set a fraction of the planned production quantity
     decrement = ADAPTION_PRODUCTION_VOLUME_DUE_TO_INSUFFICIENT_FINANCES*PLANNED_PRODUCTION_QUANTITY;
     
-        
-        //if( FINANCIAL_RESOURCES_FOR_PRODUCTION>0.0)
         if( PAYMENT_ACCOUNT>1e-6)
         {
             
@@ -692,17 +677,13 @@ int Firm_calc_production_quantity_2()
 			EMPLOYEES_NEEDED_INNOVATION=0;
             Firm_calc_input_demands_2();
         }
-    
-    //printf("Labour: %d  Capital: %f  PLANNED_PROD_COSTS: %f\n", EMPLOYEES_NEEDED,NEEDED_CAPITAL_STOCK,PLANNED_PRODUCTION_COSTS);
-    
+        
         //Compute the diff
         diff -= PLANNED_PRODUCTION_QUANTITY;
         
         //Set planned production value that is retained in memory during the month:
         PLANNED_OUTPUT = PLANNED_PRODUCTION_QUANTITY;
 
-        //printf("In calculate production 2: Firm %d PLANNED_PRODUCTION_QUANTITY %.2f (-%.2f)\n", ID, PLANNED_PRODUCTION_QUANTITY, diff);
-        //printf("In calculate production 2: Firm %d PLANNED_OUTPUT %.2f (-%.2f)\n", ID, PLANNED_OUTPUT, diff);
 	#ifdef _DEBUG_MODE
         if (PRINT_DEBUG_PRODUCTION)
         { 
@@ -737,7 +718,6 @@ int Firm_calc_production_quantity_2()
 int Firm_send_capital_demand()
 {
     //Check how many units of the consumption good can be produced with the current labor force. 
-
 
 	//Recalc capital demand if rationed at the labor market	
 	DEMAND_CAPITAL_STOCK = max(0,NO_EMPLOYEES_PRODUCTION-TOTAL_UNITS_CAPITAL_STOCK);
@@ -787,8 +767,6 @@ int Firm_receive_capital_goods()
         /*Determine the weighted average productivity of the total capital stock*/
     
         /*Update of productivity*/
-
-	//printf("capital_good_delivery_message->capital_good_delivery_volume %f \n",capital_good_delivery_message->capital_good_delivery_volume);
 		
         /*Update of current value of capital stock*/
  
@@ -910,7 +888,6 @@ int Firm_receive_capital_goods()
 
 int Firm_execute_production()
 {
-    double diff;
 	int i,e;
 
     
@@ -958,36 +935,24 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 			{
 				// Amount of vintage type: CAPITAL_STOCK_VINTAGES.array[i]
 				temp_capital_amount = CAPITAL_STOCK_VINTAGES.array[i].amount;
-				//printf("FIRM: %d  temp_capital_amount: %f\n",ID,temp_capital_amount);
-				//printf(" \n");
 
 				// As long as capital of this type and employees are left. Start: w = 0	-> no employee worked yet.			
 				while((temp_capital_amount > 1e-05) && (w < EMPLOYEES.size))
 				{
-					//printf("WHILE_LOOP:----- FIRM: %d  temp_capital_amount: %f; w: %d; employee_usage: %f\n",ID,temp_capital_amount,w,employee_usage);
-					//printf(" \n");
 
 					// Capital amount of vintage type is larger than 1. Need more than 1 worker to use this type of capital.
 					if(temp_capital_amount >= (1 + 1e-05))
 					{
-						//printf("if(temp_capital_amount >= 1) \n");
-
 						// Employee_usage is 0: Employee did not work yet.
 						if(employee_usage < 1e-05)
-						{
-							//printf("if(employee_usage == 0) \n");
-							//printf("BEFORE: PRODUCTION_QUANTITY: %f; \n",PRODUCTION_QUANTITY);				
+						{			
 
 							// One unit of capital and one unit of labor are used.
 							PRODUCTION_QUANTITY+= min(CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
-
-							//printf("AFTER: PRODUCTION_QUANTITY: %f; Productivity: %f; Specific_skill: %f \n",PRODUCTION_QUANTITY,CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);		
-							//printf("BEFORE: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
 		
 							technology += 1*CAPITAL_STOCK_VINTAGES.array[i].productivity;
 							sum_already_used_vintages += 1;
 
-							//printf("After: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
 
 							//Employee learns by using the type of capital if the productivity is higher than its specific skills.
 							if(EMPLOYEES.array[w].specific_skill < CAPITAL_STOCK_VINTAGES.array[i].productivity)
@@ -995,35 +960,22 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 								EMPLOYEES.array[w].specific_skill = EMPLOYEES.array[w].specific_skill + 
 								(CAPITAL_STOCK_VINTAGES.array[i].productivity - EMPLOYEES.array[w].specific_skill)*((1-pow(0.5,1/(20+0.25*(EMPLOYEES.array[w].general_skill-1)*(4-20)))));
 							}
-
-							//printf("LEARNING: %f \n",EMPLOYEES.array[w].specific_skill);
 							
 							//One unit of CAPITAL_STOCK_VINTAGES.array[i] was used. 
 							temp_capital_amount -= 1;
 
-							//printf("temp_capital_amount: %f\n",temp_capital_amount);
-
 							//The employees spent his whole working time on this machine. He cannot work more. 
 							employee_usage = 1.0;
 
-							//printf("employee_usage: %f\n",employee_usage);
-							//printf(" \n");
 						}
 						else// Employee_usage is bigger than 0 but smaller than 1: Employee worked on a different machine but the amount of this machine was smaller than zero.
 						{
-							//printf("if(1 > employee_usage > 0) \n");
-							//printf("BEFORE: PRODUCTION_QUANTITY: %f; \n",PRODUCTION_QUANTITY);
 
 							// (1-employee_usage) units of capital and (1-employee_usage) units of labor are used.
 							PRODUCTION_QUANTITY+= (1-employee_usage)*min(CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
 
-							//printf("AFTER: PRODUCTION_QUANTITY: %f; (1-employee_usage): %f; Productivity: %f; Specific_skill: %f \n",PRODUCTION_QUANTITY,(1-employee_usage),CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
-							//printf("BEFORE: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
-
 							technology += (1-employee_usage)*CAPITAL_STOCK_VINTAGES.array[i].productivity;
 							sum_already_used_vintages += (1-employee_usage);
-
-							//printf("After: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
 
 							//Employee learns by using the type of capital if the productivity is higher than its specific skills.
 							//But only the fraction (1-employee_usage) of his working time.
@@ -1033,58 +985,36 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 								(1-employee_usage)*(CAPITAL_STOCK_VINTAGES.array[i].productivity - EMPLOYEES.array[w].specific_skill)*((1-pow(0.5,1/(20+0.25*(EMPLOYEES.array[w].general_skill-1)*(4-20)))));
 							}
 
-							//printf("LEARNING: %f \n",EMPLOYEES.array[w].specific_skill);
-
 							//(1-employee_usage) units of CAPITAL_STOCK_VINTAGES.array[i] was used. 
 							temp_capital_amount -= (1-employee_usage);
-
-
-							//printf("temp_capital_amount: %f\n",temp_capital_amount);
 
 							//The employees spent the fraction (1-employee_usage) of his working time on this machine. 
 							//Now his working time is complete. He cannot work more. 
 							employee_usage = 1.0;
-
-							//printf("employee_usage: %f\n",employee_usage);					
-							//printf(" \n");
 						}
 						
 						// Employee_usage is 1: Employee worked and cannot work any longer.
 						if(employee_usage > 1 - 1e-05)
 						{
-							////printf("1:if(employee_usage == 1) \n");
-
 							// Next employee.
 							w++;
 
 							//Reset to zero for next worker.
 							employee_usage = 0.0;
-
-							//printf("Next Worker: w: %d \n",w);
-							//printf(" \n");
 						}
 					}
 					else // Capital amount of vintage type is smaller 1.
 					{
-						////printf(" else if(temp_capital_amount < 1)\n");		
 	
 						// Employee_usage is 0: Employee did not work yet.
 						if(employee_usage < 1e-05)
 						{
-							//printf("if(employee_usage == 0) \n");
-							//printf("BEFORE: PRODUCTION_QUANTITY: %f; \n",PRODUCTION_QUANTITY);
-
 
 							// temp_capital_amount units of capital and temp_capital_amount units of labor are used.
 							PRODUCTION_QUANTITY+= temp_capital_amount*min(CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
 
-							//printf("AFTER: PRODUCTION_QUANTITY: %f; temp_capital_amount: %f; Productivity: %f; Specific_skill: %f \n",PRODUCTION_QUANTITY,temp_capital_amount,CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
-							//printf("BEFORE: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
-
 							technology += temp_capital_amount*CAPITAL_STOCK_VINTAGES.array[i].productivity;
 							sum_already_used_vintages += temp_capital_amount;
-
-							//printf("After: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
 
 							//Employee learns by using the type of capital if the productivity is higher than its specific skills.
 							//But only the fraction (temp_capital_amount < 1) of his working time.
@@ -1094,18 +1024,12 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 								temp_capital_amount*(CAPITAL_STOCK_VINTAGES.array[i].productivity - EMPLOYEES.array[w].specific_skill)*((1-pow(0.5,1/(20+0.25*(EMPLOYEES.array[w].general_skill-1)*(4-20)))));
 							}
 
-							//printf("LEARNING: %f \n",EMPLOYEES.array[w].specific_skill);
-
 							//The employees spent the fraction (temp_capital_amount < 1) of his working time on this machine. 
 							//He has to work on a different machine in order to reach his full working time.
 							employee_usage += temp_capital_amount;
-							//printf("employee_usage: %f\n",employee_usage);
 
 							// Amount of vintage type is zero: CAPITAL_STOCK_VINTAGES.array[i]. Use next vintage
-							temp_capital_amount = 0.0;
-							//printf("temp_capital_amount: %f\n",temp_capital_amount);
-
-							
+							temp_capital_amount = 0.0;							
 						}
 						else// Employee_usage is bigger than 0 but smaller than 1: Employee worked on a different machine but the amount of this machine was smaller than zero.
 						{
@@ -1113,19 +1037,11 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 							//But the fraction of working time of the actual worker is smaller
 							if(temp_capital_amount >= (1-employee_usage))
 							{
-								//printf("else if(1 > employee_usage > 0 and temp_capital_amount >= (1-employee_usage)) \n");
-								//printf("BEFORE: PRODUCTION_QUANTITY: %f; \n",PRODUCTION_QUANTITY);
-
 								// (1-employee_usage) units of capital and (1-employee_usage) units of labor are used.
 								PRODUCTION_QUANTITY+= (1-employee_usage)*min(CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
 
-								//printf("AFTER: PRODUCTION_QUANTITY: %f; (1-employee_usage): %f; Productivity: %f; Specific_skill: %f \n",PRODUCTION_QUANTITY,(1-employee_usage),CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
-								//printf("BEFORE: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
-
 								technology += (1-employee_usage)*CAPITAL_STOCK_VINTAGES.array[i].productivity;
 								sum_already_used_vintages += (1-employee_usage);
-
-								//printf("After: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
 
 								//Employee learns by using the type of capital if the productivity is higher than its specific skills.
 								//But only the fraction (1-employee_usage) of his working time.
@@ -1135,35 +1051,22 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 									(1-employee_usage)*(CAPITAL_STOCK_VINTAGES.array[i].productivity - EMPLOYEES.array[w].specific_skill)*((1-pow(0.5,1/(20+0.25*(EMPLOYEES.array[w].general_skill-1)*(4-20)))));
 								}
 
-								//printf("LEARNING: %f \n",EMPLOYEES.array[w].specific_skill);
-
 								//(1-employee_usage) units of CAPITAL_STOCK_VINTAGES.array[i] was used.
 								temp_capital_amount -= (1-employee_usage);
-
-								//printf("temp_capital_amount: %f\n",temp_capital_amount);
 
 								//The employees spent the fraction (1-employee_usage) of his working time on this machine. 
 								//Now his working time is complete. He cannot work more. 
 								employee_usage = 1.0;
 
-								//printf("employee_usage: %f\n",employee_usage);
-								//printf(" \n");
 							}
 							else//if(temp_capital_amount <= (1-employee_usage))
 							{
-								//printf("else if(1 > employee_usage > 0 and temp_capital_amount < (1-employee_usage)) \n");
-								//printf("BEFORE: PRODUCTION_QUANTITY: %f; \n",PRODUCTION_QUANTITY);
 
 								// temp_capital_amount units of capital and temp_capital_amount units of labor are used.
 								PRODUCTION_QUANTITY+= temp_capital_amount*min(CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
 
-								//printf("AFTER: PRODUCTION_QUANTITY: %f; temp_capital_amount: %f; Productivity: %f; Specific_skill: %f \n",PRODUCTION_QUANTITY,temp_capital_amount,CAPITAL_STOCK_VINTAGES.array[i].productivity,EMPLOYEES.array[w].specific_skill);
-								//printf("BEFORE: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
-
 								technology += temp_capital_amount*CAPITAL_STOCK_VINTAGES.array[i].productivity;
 								sum_already_used_vintages += temp_capital_amount;
-
-								//printf("After: technology: %f; sum_already_used_vintages: %f \n",technology,sum_already_used_vintages);
 
 								//Employee learns by using the type of capital if the productivity is higher than its specific skills.
 								//But only the fraction (temp_capital_amount < 1) of his working time.
@@ -1173,34 +1076,24 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 									temp_capital_amount*(CAPITAL_STOCK_VINTAGES.array[i].productivity - EMPLOYEES.array[w].specific_skill)*((1-pow(0.5,1/(20+0.25*(EMPLOYEES.array[w].general_skill-1)*(4-20)))));
 								}
 
-								//printf("LEARNING: %f \n",EMPLOYEES.array[w].specific_skill);
-
 								//The employees spent the fraction (temp_capital_amount < 1) of his working time on this machine. 
 								//He has to work on a different machine in order to reach his full working time.
 								employee_usage += temp_capital_amount;
 
-								//printf("employee_usage: %f\n",employee_usage);
-
 								// Amount of vintage type is zero: CAPITAL_STOCK_VINTAGES.array[i]. Use next vintage
 								temp_capital_amount = 0.0;
 
-								//printf("temp_capital_amount: %f\n",temp_capital_amount);	
-								//printf(" \n");
 							}
 						}
 
 						// Employee_usage is 1: Employee worked.
 						if(employee_usage > 1 - 1e-05)
 						{
-							//printf("2: if(employee_usage == 1) \n");
 
 							// Next employee.
 							w++;
 							//Reset to zero for next employee.
 							employee_usage = 0.0;
-
-							//printf("Next Worker: w: %d \n",w);
-							//printf(" \n");
 						}
 					}
 				}//end while
@@ -1219,7 +1112,6 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 	{
 		UTILIZATION_CAPACITY=0.0;
 	}
-	//printf("TOTAL_UNITS_CAPITAL_STOCK %f  sum_already_used_vintages %f UTILIZATION_CAPACITY%f \n",TOTAL_UNITS_CAPITAL_STOCK,sum_already_used_vintages,UTILIZATION_CAPACITY);
     
     }
     else
@@ -1242,9 +1134,6 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 	EXPECTED_INVESTMENT_NOMINAL_IN_CURRENT_MONTH =EXPECTED_EARNINGS_AND_COSTS_OVER_YEAR[COUNTER_MONTH_SINCE_LAST_PRICE_SETTING].investment_nominal;
 	EXPECTED_ACTUAL_SOLD_QUANTITY_IN_CURRENT_MONTH = EXPECTED_EARNINGS_AND_COSTS_OVER_YEAR[COUNTER_MONTH_SINCE_LAST_PRICE_SETTING].sold_quantity;
     
-    //compute diff between actual and planned
-    diff = PRODUCTION_QUANTITY - PLANNED_PRODUCTION_QUANTITY;
-    
     //Set actual production value that is retained  in memory during the month:
     OUTPUT = PRODUCTION_QUANTITY;
 	// Increment the counter
@@ -1265,10 +1154,6 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
         
     TOTAL_SUPPLY = TOTAL_UNITS_LOCAL_INVENTORY + OUTPUT;
     
-    //printf("In Execute production: Firm %d PRODUCTION_QUANTITY: %.2f (%.2f) \n", ID, PRODUCTION_QUANTITY, diff);
-    //printf("In Execute production: Firm %d OUTPUT: %.2f (%.2f)\n", ID, OUTPUT, diff);
-
-
 	/*Execute Product Innovation*/
 
 	
@@ -1297,7 +1182,7 @@ for(i=CAPITAL_STOCK_VINTAGES.size-1;i>=0;i--)
 
 	if(INNOVATION_SWITCHED_ON==1)
 	{
-		double treshold, max_person_months;
+		double max_person_months;
 		
 		max_person_months = 12*MAX_NO_EMPLOYEES_PRODUCT_INNOVATION; 
 		
@@ -1716,9 +1601,7 @@ int Firm_compute_sales_statistics()
                        	if(SOLD_QUANTITIES.array[i].stock_empty==0)
                         {
            	               add_data_type_sales(&(MALLS_SALES_STATISTICS.array[j].sales), 1 , 
-                           SOLD_QUANTITIES.array[i].sold_quantity);
-                        //printf("ID %d   stock empty, = 0  SOLD_QUANTITIES.array[i].sold_quantity %f\n",ID,SOLD_QUANTITIES.array[i].sold_quantity);
-           	            
+                           SOLD_QUANTITIES.array[i].sold_quantity);           	            
            	         }
            	         else
            	         {
@@ -1726,8 +1609,6 @@ int Firm_compute_sales_statistics()
 						 add_data_type_sales(&(MALLS_SALES_STATISTICS.array[j].sales), 1 , 
                           SOLD_QUANTITIES.array[i].sold_quantity);
 						
-
-                        //printf("ID %d   stock empty, = 1   sold_quantity*(1 + ADAPTION_DELIVERY_VOLUME)  %f\n",ID,SOLD_QUANTITIES.array[i].sold_quantity*(1 + ADAPTION_DELIVERY_VOLUME));
            	         }
             	         SOLD_QUANTITIES.array[i].sold_quantity=0;
                        SOLD_QUANTITIES.array[i].stock_empty=0;

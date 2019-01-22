@@ -29,8 +29,6 @@ int ClearingHouse_send_index_price()
  */
 int ClearingHouse_send_index_info()
 {  
-    int i;
-
     //Compute dividend per share for the stock_index
     #ifdef _DEBUG_MODE
     if (PRINT_DEBUG_CH) 
@@ -46,10 +44,6 @@ int ClearingHouse_send_index_info()
 		STOCK_INDEX.dividend_per_share = MONTHLY_COUNTER_TOTAL_DIVIDEND /STOCK_INDEX.nr_shares;
     else
 		printf("DIVISION BY ZERO: Error in ClearingHouse_send_index_info: STOCK_INDEX.nr_shares = %d", STOCK_INDEX.nr_shares);
-	
-    //Random dividend process
-    //RANDOM_NUMBERS_NORMAL is N(100,1.0) distributed
-    i = random_int(0,RANDOM_NUMBERS_NORMAL.size-1);
     
     //Scale total dividend income of a household to 1% of monthly wage:
     //STOCK_INDEX.dividend_per_share = RANDOM_NUMBERS_NORMAL.array[i]; //Test code: random number

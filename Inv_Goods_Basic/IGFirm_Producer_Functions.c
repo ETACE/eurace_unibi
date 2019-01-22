@@ -93,97 +93,6 @@ int IGFirm_update_productivity()
 		fclose(file1);
 		free(filename);
 	}
-	
-
-/**********************TEST: NORMAL DISTRIBUTION************************************************/
-	/*int l,m,counter;
-	counter = 1000000;
-	double one,two,three,four,five,six,seven,eight,nine,ten,small,big;
-	double diff[counter];
-	double  sum,variance,deviation;
-	sum=0.0;
-	for( l = 0 ; l < counter; l++)
-	{ 
-		random_progress = 0.0;
-		for(j = 0; j < 12; j++)
-		{
-			k = (double)(random_int(0, 1000))/1000;
-			random_progress += ((k - 0.5)/75);	
-		}
-
-		diff[l]= random_progress;
-		random_progress = random_progress/1; //printf("PROGRESS  %f\n",random_progress);
-		//printf("sum %f\n",sum);
-		sum += random_progress;
-
-		if(-0.05 < random_progress && random_progress <= -0.04)
-		{
-			one++;//printf(" 1 \n");
-		}
-		if(-0.04 < random_progress && random_progress <= -0.03)
-		{
-			two++;//printf(" 2 \n");
-		}
-		if(-0.03 < random_progress && random_progress <= -0.02)
-		{
-			three++;//printf(" 3 \n");
-		}
-		if(-0.02 < random_progress  && random_progress <= -0.01)
-		{
-			four++;//printf(" 4 \n");
-		}
-		if(-0.01 < random_progress  && random_progress <= 0)
-		{
-			five++;//printf(" 5 \n");
-		}
-		if(0 < random_progress  && random_progress <= 0.01)
-		{
-			six++;//printf(" 6 \n");
-		}
-		if(0.01 < random_progress  && random_progress <= 0.02)
-		{
-			seven++;//printf(" 7 \n");
-		}
-		if(0.02 < random_progress  && random_progress <= 0.03)
-		{
-			eight++;//printf(" 8 \n");
-		}
-		if(0.03 < random_progress  && random_progress <=0.04)
-		{
-			nine++;//printf(" 9 \n");
-		}
-		if(0.04 < random_progress  && random_progress <=0.05)
-		{
-			ten++;//printf(" 10 \n");
-		}
-		if(-0.05 >= random_progress)
-		{
-			small++;//printf(" small \n");
-		}
-		if(0.05 < random_progress)
-		{
-			big++;//printf(" big \n");
-		}
-
-		
-	}
-
-	sum= sum/counter;
-	printf("sum %f\n",sum);
-
-	for(m=0; m < counter; m++)
-	{	
-		//printf("DIFF %f\n",pow((diff[m] - sum),2));
-		variance += pow((diff[m] - sum),2);
-	}
-
-	variance = variance/counter;
-	printf("VARIANCE  %f\n",variance);
-	deviation = pow(variance,0.5);
-	printf("deviation  %f\n",deviation);
-
-	printf("%f  %f  %f  %f  %f  %f  %f  %f  %f  %f	%f  %f\n" ,one,two,three,four,five, 	
-	six,seven,eight,nine,ten,small, big);*/
 
 	return 0;
 }
@@ -421,13 +330,9 @@ int IGFirm_send_quality_price_info()
 	
 	/*based on the total value of the capital stock and last month investments the firm computes mean mean productivity value for each vintage*/
 
-	//printf(" ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS %f\n", ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS);
-
 	for(i=0;i<VINTAGES.size;i++)
 	{
 		 
-	//printf("ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS %f\n",ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS);
-
 		// here we compute the discounted sum of productivites over a planning period
 		sum =0.0;
 		s_skills = ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS;
@@ -461,22 +366,13 @@ int IGFirm_send_quality_price_info()
 	
 
 	VINTAGES.array[i].discounted_productivity = sum;
-
-//printf("VINTAGES.array[i].discounted_productivity %f discounted_productivity_worst_vintage_last_month %f  price_worst_vintage_last_month %f\n", VINTAGES.array[i].discounted_productivity,discounted_productivity_worst_vintage_last_month, price_worst_vintage_last_month);
 			
 	//Compute new price: Price is a linear combination ofproductivity gains and costs
-
-
-
-	
-	//printf("UNIT_COSTS: %f	PRODUCTIVITY_PROGRESS: %f\n",UNIT_COSTS,PRODUCTIVITY_PROGRESS_IN_ECONOMY);
 
 
 	if(DAY>1)
 	VINTAGES.array[i].price= (1-LINEAR_COMBINATION_PRICING_IG_GOOD)*price_worst_vintage_last_month * VINTAGES.array[i].discounted_productivity  /discounted_productivity_worst_vintage_last_month 
 + LINEAR_COMBINATION_PRICING_IG_GOOD* UNIT_COSTS;
-
-	//printf("VINTAGES.array[%d].price:	%f\n",i,VINTAGES.array[i].price);
 
 		//Send the message:
 		add_productivity_message(ID,VINTAGES.array[i].productivity,VINTAGES.array[i].price);

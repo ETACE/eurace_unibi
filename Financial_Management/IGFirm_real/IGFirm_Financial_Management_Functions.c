@@ -401,7 +401,6 @@ int IGFirm_compute_total_liquidity_needs()
     //CASE 1: No external financing needed
     if (PAYMENT_ACCOUNT >= TOTAL_FINANCIAL_NEEDS)
     {
-        //printf("Firm_financial_needs, External financing: case 1.");
         EXTERNAL_FINANCIAL_NEEDS = 0.0;
     }
     else
@@ -690,8 +689,6 @@ int IGFirm_execute_financial_payments()
         //* send message to bank
         if ((LOANS.array[i].nr_periods_before_repayment>=1)&&(LOANS.array[i].nr_periods_before_repayment<CONST_INSTALLMENT_PERIODS+1))
         {
-            //printf("\n Loan item %d: nr_periods_before_repayment=%d\n", i, LOANS.array[i].nr_periods_before_repayment);
-
             LOANS.array[i].nr_periods_before_repayment -= 1;
 
             //decrease the residual_var of the loan with the var_per_installment:
@@ -709,11 +706,7 @@ int IGFirm_execute_financial_payments()
 
             //Add loan_value to the current total debt
             TOTAL_DEBT += LOANS.array[i].loan_value;
-            //printf("\n Loan item %d: adding debt value =%2.2f\n", i, LOANS.array[i].loan_value);
-            //printf("\n TOTAL_DEBT=%2.2f\n", TOTAL_DEBT);
             
-            //printf("Now subtracted debt_installment_payment from loan_value: %f (new value:%f).\n", LOANS.array[i].debt_installment_payment, LOANS.array[i].loan_value);
-
             #ifdef _DEBUG_MODE
             if (PRINT_DEBUG)
             {
@@ -752,14 +745,10 @@ int IGFirm_execute_financial_payments()
         //* add value to total debt
         else if (LOANS.array[i].nr_periods_before_repayment==CONST_INSTALLMENT_PERIODS+1)
         {
-            //printf("\n Loan item %d: nr_periods_before_repayment=%d\n", i, LOANS.array[i].nr_periods_before_repayment);
-
             LOANS.array[i].nr_periods_before_repayment -= 1;
             
             //Add loan_value to the current total debt
             TOTAL_DEBT += LOANS.array[i].loan_value;
-            //printf("\n Loan item %d: adding debt value =%2.2f\n", i, LOANS.array[i].loan_value);
-            //printf("\n TOTAL_DEBT=%2.2f\n", TOTAL_DEBT);
 	    
     	    #ifdef _DEBUG_MODE
             if (PRINT_DEBUG)
@@ -783,7 +772,6 @@ int IGFirm_execute_financial_payments()
         //* remove the loan item.
         if (LOANS.array[i].nr_periods_before_repayment==0)
         {
-            //printf("\n Loan item %d: nr_periods_before_repayment=%d\n", i, LOANS.array[i].nr_periods_before_repayment);
             remove_debt_item(&LOANS, i);
 
     	    #ifdef _DEBUG_MODE

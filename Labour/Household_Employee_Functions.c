@@ -400,11 +400,6 @@ int Household_UNEMPLOYED_read_job_vacancies_and_send_applications()
 		/*Sorting vacancies regarding their posted wage offer.*/
 		//qsort(vacancy_list.array, vacancy_list.size, sizeof(vacancy),vacancy_list_rank_wage_offer_function);
 
-
-		//printf("NUMBER %d; MONTH %d; applications_per_day %d;\n",NUMBER_APPLICATIONS,MONTH,applications_per_day);
-		//printf("RATIO %f\n",(NUMBER_APPLICATIONS/(MONTH*applications_per_day)))
-		//printf("rand %d; p %d\n",rand,p);
-
 		/*Free the vacancy dynamic array.*/
 		free_vacancy_array(&r_and_d_vacancy_list);
 		free_vacancy_array(&vacancy_list);
@@ -927,14 +922,6 @@ int Household_send_unemployment_benefit_notification()
     /*Add unemployment_benefit to account */
     PAYMENT_ACCOUNT +=  UNEMPLOYMENT_PAYMENT;
 
-    
-  //  if (DAY>238)
-   // printf("\n LAST_LABOUR_INCOME: %f",LAST_LABOUR_INCOME);        
-    //printf("\n PAYMENT_ACCOUNT before: %f",PAYMENT_ACCOUNT);
-    //PAYMENT_ACCOUNT +=  UNEMPLOYMENT_BENEFIT_PCT * LAST_LABOUR_INCOME;
-   //  printf("\n PAYMENT_ACCOUNT after: %f",PAYMENT_ACCOUNT);
-  //  printf("\n UNEMPLOYMENT_BENEFIT_PCT: %f LAST_LABOUR_INCOME: %f",UNEMPLOYMENT_BENEFIT_PCT,LAST_LABOUR_INCOME);
-
     TOTAL_INCOME=  UNEMPLOYMENT_PAYMENT + CUM_TOTAL_DIVIDENDS + MONTHLY_BOND_INTEREST_INCOME;
 
 
@@ -991,7 +978,6 @@ int Household_send_tax_payment()
     //Benefit restitution: repayment of the already received monthly unemployment benefits if recently re-employed
     if (DAY_OF_MONTH_RECEIVE_BENEFIT != DAY_OF_MONTH_RECEIVE_INCOME )
     {
-        //printf("\n DAY: %d DAY_OF_MONTH_RECEIVE_INCOME: %d DAY_OF_MONTH_RECEIVE_BENEFIT: %d",DAY,DAY_OF_MONTH_RECEIVE_INCOME,DAY_OF_MONTH_RECEIVE_BENEFIT);
         restitution_payment = ((DAY_OF_MONTH_RECEIVE_BENEFIT + 
 		(20-DAY_OF_MONTH_RECEIVE_INCOME)%20)/20.0)* UNEMPLOYMENT_PAYMENT;
 		

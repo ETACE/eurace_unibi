@@ -49,7 +49,6 @@ int Eurostat_send_data_to_government()
     int i, region;
     double gdp;
     
-    //printf("AVERAGE_WAGE %f\n",AVERAGE_WAGE);
     //add_mean_wage_for_government_message(1, AVERAGE_WAGE);
 
     //add message for each region
@@ -59,7 +58,6 @@ int Eurostat_send_data_to_government()
         
         gdp = REGION_FIRM_DATA.array[i].gdp;
         
-        printf("\n Region %d GDP=%2.2f\n", region, gdp);
         add_data_for_government_message(region, gdp, AVERAGE_WAGE);
     }
     
@@ -145,7 +143,6 @@ int Eurostat_send_data()
 		
 		gdp = REGION_FIRM_DATA.array[i].gdp;
 		
-		printf("\n Region %d GDP=%2.2f\n", region, gdp);
 		add_data_for_government_message(region, gdp, AVERAGE_WAGE);
 	}
 	

@@ -46,12 +46,8 @@ void IGFirm_compute_dividends_dummy_version(void)
 		CURRENT_DIVIDEND_PER_SHARE = average_last_net_profits/ CURRENT_SHARES_OUTSTANDING;
 	else
 		CURRENT_DIVIDEND_PER_SHARE = 0.0;
-    
-	//printf("\n IGFirm %d CURRENT_DIVIDEND_PER_SHARE %f %f			\n",ID,CURRENT_DIVIDEND_PER_SHARE,CURRENT_SHARES_OUTSTANDING);
-    
-	total_dividend_payment = average_last_net_profits;
-	//printf("3: total_dividend_payment %f \n",total_dividend_payment);
         
+	total_dividend_payment = average_last_net_profits;       
         		
 	//decrease payment_account with the total_dividend_payment
 	//PAYMENT_ACCOUNT -= total_dividend_payment;
