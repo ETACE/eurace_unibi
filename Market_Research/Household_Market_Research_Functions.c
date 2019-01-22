@@ -59,7 +59,8 @@ int Household_respond()
 	INTERVIEWER_ID = id_list.array[random_int(0,id_list.size)];
 
 	add_interview_positive_response_message(ID, REGION_ID, INTERVIEWER_ID);
-	
+
+	free_int_array(&id_list);
 	
 	return 0;
 }
