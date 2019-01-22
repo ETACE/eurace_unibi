@@ -16,7 +16,7 @@ GSL 2.4 or higher (GNU  Scientific  Library)
 
 FLAME XParser 0.17.1 (https://github.com/FLAME-HPC/xparser/archive/0.17.1.tar.gz)
 
-FLAME Libmboard 0.3.1 (https://github.com/FLAME-HPC/libmboard/archive/master.zip)
+FLAME Libmboard master (https://github.com/FLAME-HPC/libmboard/archive/master.zip)
 
 
 # Pre-installed FLAME libraries and model source code
