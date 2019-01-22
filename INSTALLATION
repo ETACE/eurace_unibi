@@ -1,5 +1,30 @@
+Installation
+--
 
-# Installation
+**Dependencies**
+
+GCC 4.4 or higher (or other C compiler)
+
+GSL 2.4 or higher (GNU  Scientific  Library)
+
+FLAME XParser 0.17.1 (https://github.com/FLAME-HPC/xparser/archive/0.17.1.tar.gz)
+
+FLAME Libmboard 0.3.1 (https://github.com/FLAME-HPC/libmboard/archive/master.zip)
+
+
+# Pre-installed FLAME libraries and model source code
+
+There is a virtual appliance with everything pre-compiled: the FLAME components XParser and Libmboard, and the model source code (currently v1.0).
+
+Dependency: Oracle VirtualBox (https://www.virtualbox.org/), or any other virtualization client for ova files.
+
+Download link:
+https://gregorboehl.com/live/etace-v.0.997.1.ova
+
+Documentation:
+http://www.wiwi.uni-bielefeld.de/lehrbereiche/vwl/etace/Eurace_Unibi/Virtual_Appliance
+
+# Installation of FLAME libraries on stand-alone systems
 
 ## 1. Prepare system requirements
 
