@@ -19,9 +19,11 @@ FLAME XParser 0.17.1 (https://github.com/FLAME-HPC/xparser/archive/0.17.1.tar.gz
 FLAME Libmboard 0.3.1 (https://github.com/FLAME-HPC/libmboard/archive/master.zip)
 
 
-# Pre-installed version
+# Pre-installed FLAME libraries and model source code
 
-There is a virtual appliance with everything pre-compiled (all FLAME dependencies, the included model is at v1.0):
+There is a virtual appliance with everything pre-compiled: the FLAME components XParser and Libmboard, and the model source code (currently v1.0).
+
+Dependency: Oracle VirtualBox (https://www.virtualbox.org/), or any other virtualization client for ova files.
 
 Download link:
 https://gregorboehl.com/live/etace-v.0.997.1.ova
@@ -29,7 +31,7 @@ https://gregorboehl.com/live/etace-v.0.997.1.ova
 Documentation:
 http://www.wiwi.uni-bielefeld.de/lehrbereiche/vwl/etace/Eurace_Unibi/Virtual_Appliance
 
-# Installation
+# Installation of FLAME libraries on stand-alone systems
 
 ## 1. Prepare system requirements
 

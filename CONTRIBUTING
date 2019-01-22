@@ -7,8 +7,3 @@ Contributing
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-Copyright
----------
-
-Copyright (c) 2014 Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog, Michael Neugart. See LICENSE for further details.
