@@ -12,7 +12,7 @@ int no_employees_product_innovation_fundable;
 //Check Financial situation:
 
 double equity, assets, total_debt;
-double estimated_fix_costs, estimated_variable_costs, estimated_r_and_d_expenditures;
+double estimated_fix_costs, estimated_variable_costs;
 double total_value_capital_stock;
 double monthly_wage_growth;
 double estimated_mean_wage,no_employees,payment_account,earnings, estimated_mean_wage_r_and_d;
@@ -296,9 +296,6 @@ for(L_max=MAX_NO_EMPLOYEES_PRODUCT_INNOVATION; L_max>=0;L_max--)
 			{
 				estimated_variable_costs = 0.0;
 			}
-
-
-			estimated_r_and_d_expenditures = estimated_mean_wage_r_and_d * L_max;
 		
 			//Check financing:
 		
@@ -336,22 +333,6 @@ for(L_max=MAX_NO_EMPLOYEES_PRODUCT_INNOVATION; L_max>=0;L_max--)
 	
 			equity = assets - total_debt;
 
-				//Print debug:
-			#ifdef _DEBUG_MODE    
-   			if (PRINT_DEBUG_MARKET_RESEARCH)
-			{
-   			if(ID==ID_DEBUG_PROBE)
-			{
-   			
-				
-				//printf("no_employees: %d assets %f total_debt %f equity %f total_value_capital_stock %f payment_account %f \n",L_max, assets, total_debt, equity, total_value_capital_stock, payment_account);
-			
-		
-			}	
-		}
-		#endif
-
-	
 			if(equity <0.0)
 			{
 				flag=1;
@@ -840,9 +821,6 @@ int Firm_send_questionnaire()
 
 			add_questionnaire_innovation_message(ID,PRICE*PRICE_RANGE_INNOVATION.start_price,no_considered_prices_innovation,PRICE_RANGE_INNOVATION.increment*PRICE,MARKET_RESEARCH_DATA_PRODUCT_INNOVATION.array[i].quality,
 		   		VARIABLES_CHANGE.price_index, VARIABLES_CHANGE.quality_index,REMAINING_PERIODS_TO_COMPLETE_PRODUCT_DEVELOPMENT+1);
-
-
-			//printf("PRICE_RANGE_INNOVATION.start_price %f no_considered_prices_innovation %d PRICE_RANGE_INNOVATION.increment*PRICE %f",PRICE_RANGE_INNOVATION.start_price,no_considered_prices_innovation,PRICE_RANGE_INNOVATION.increment*PRICE);
 		}
 	
 	}
@@ -880,9 +858,7 @@ int Firm_send_questionnaire()
 int Firm_count_questionnaire()
 {
 
-	int i,j,considered_time_horizon;
-
-	considered_time_horizon=MARKET_RESEARCH_DATA_PRICING.array[0].estimated_values.size;
+	int i,j;
 
 	START_FILLED_OUT_QUESTIONNAIRE_PRICING_MESSAGE_LOOP
 
@@ -1613,26 +1589,6 @@ int	Firm_set_price()
 
 				}	
 
-			
-
-
-					#ifdef _DEBUG_MODE    
- 		   if (PRINT_DEBUG_MARKET_RESEARCH)
-   			 {
-				  if(ID==ID_DEBUG_PROBE && Y==0)
-     	       {
-		    
-				//printf( "fixed costs %f   Interest costs:  %f      Calc Capital costs  %f\n",MARKET_RESEARCH_DATA_PRICING.array[i].estimated_values.array[Y].estimated_fix_costs,sum_interest_payments,calc_cap_costs);
-					for(j=0;j<temp_loans.size;j++)
-					{
-
-						//printf( "Y: %d t: %d temp_loans.array[j].nr_periods_before_repayment %d  temp_loans.array[j].loan_value %f \n",Y,t,temp_loans.array[j].nr_periods_before_repayment,temp_loans.array[j].loan_value);
-					}
-				}
-
-  		  }
-  		 #endif	
-
 				//Compute input factor needs
 				for(j=capital_stock.size-1;j>=0;j--)
 				{
@@ -1783,28 +1739,6 @@ int	Firm_set_price()
 					labor_costs,capital_costs,sum_interest_payments,estimated_mean_wage,mean_specific_skills,average_productivity,investment_nominal);
 
 
-				#ifdef _DEBUG_MODE    
- 	   if (PRINT_DEBUG_MARKET_RESEARCH)
-   		 {
-			  if(ID==ID_DEBUG_PROBE)
-            {
-		//	if(Y==0)
-		  // printf( "payment_account %f   debt_needed %f \n",payment_account ,  debt_needed );
-			//printf( "earnings %f   realized_output %f  variable costs %f  fixed costs %f   investment_nominal %f \n ", earnings,  realized_output,MARKET_RESEARCH_DATA_PRICING.array[i].estimated_values.array[Y].estimated_variable_costs,MARKET_RESEARCH_DATA_PRICING.array[i].estimated_values.array[Y].estimated_fix_costs, investment_nominal);
-
-			
-			
-		}
-
-    }
-    #endif
-
-
-
-
-
-
-
 				sum_earnings_discounted += pow(1/(1+DISCONT_RATE),t)*earnings;
 				sum_earnings += earnings;			
 
@@ -1852,8 +1786,6 @@ int	Firm_set_price()
             {
 			
 		 printf( "Price: %f   sum_earnings_discounted  %f    sum_earnings %f \n",MARKET_RESEARCH_DATA_PRICING.array[i].price, sum_earnings_discounted ,sum_earnings);
-
-			//printf( "earnings %f  %f \n ", earnings,  realized_output,MARKET_RESEARCH_DATA_PRICING.array[i].estimated_values.array[Y].estimated_variable_costs,MARKET_RESEARCH_DATA_PRICING.array[i].estimated_values.array[Y].estimated_fix_costs, investment_nominal);
 		}
 
     }
@@ -2022,24 +1954,6 @@ int	Firm_set_price()
 				add_debt_item(&temp_loans_at_end_of_year, 0,PROSPECTIVE_VARIABLES.array[Y].loans.array[i].loan_value
 					,PROSPECTIVE_VARIABLES.array[Y].loans.array[i].interest_rate,PROSPECTIVE_VARIABLES.array[Y].loans.array[i].installment_amount
 					,0,0,0,PROSPECTIVE_VARIABLES.array[Y].loans.array[i].nr_periods_before_repayment);
-				
-					#ifdef _DEBUG_MODE    
- 		   if (PRINT_DEBUG_MARKET_RESEARCH)
-   			 {
-				  if(ID==ID_DEBUG_PROBE)
-     	       {
-		    
-					//printf( "fixed costs %f\n",MARKET_RESEARCH_DATA_PRICING.array[i].estimated_values.array[Y].estimated_fix_costs);
-					
-
-					//	printf( "PROSPECTIVE_VARIABLES.array[%d].loans.array[%d].loan_value %f installmet %f periods remaining %d\n",Y,i,PROSPECTIVE_VARIABLES.array[Y].loans.array[i].loan_value, PROSPECTIVE_VARIABLES.array[Y].loans.array[i].installment_amount,PROSPECTIVE_VARIABLES.array[Y].loans.array[i].nr_periods_before_repayment );
-	
-				}
-
-  		  }
-  		 #endif
-
-
 
 			}
 		
@@ -2989,10 +2903,7 @@ BEST_PRICING_ABANDON_STRATEGY.sum_expected_earnings_discounted ,BEST_PRICING_ABA
 
 int Firm_clean_up_arrays()
 {
-
-int i;
-
-	#ifndef _DEBUG_MODE 
+	int i;
 	//Delete MARKET_RESEARCH_DATA_PRICING
 	for(i=MARKET_RESEARCH_DATA_PRICING.size-1;i>=0;i--)
 	{
@@ -3010,7 +2921,6 @@ int i;
 		remove_dt_prospective_variables(&PROSPECTIVE_VARIABLES,i);
 	}
 	
-	 #endif
-return 0;
+	return 0;
 }
 

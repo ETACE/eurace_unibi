@@ -236,9 +236,7 @@ int Firm_send_vacancies()
 int Firm_send_redundancies()
 {
 	int j;
-	int i;
-	int no_redundancies;
-	
+	int i;	
 
 	/*If firm wants to dismiss employees with lowest specific skills first.*/
 	/*sorting employees: highest specific skills first*/

@@ -257,12 +257,8 @@ int IGFirm_dividend_payment()
         CURRENT_DIVIDEND_PER_SHARE = average_last_net_profits/ OUTSTANDING_SHARES;
         else
             CURRENT_DIVIDEND_PER_SHARE = 0.0;
-    
-    //printf("\n IGFirm %d CURRENT_DIVIDEND_PER_SHARE %f %f\n",ID,CURRENT_DIVIDEND_PER_SHARE,OUTSTANDING_SHARES);
-    
-    total_dividend_payment = average_last_net_profits;
-    //printf("3: total_dividend_payment %f \n",total_dividend_payment);
         
+    total_dividend_payment = average_last_net_profits;        
         
     //add dividend_per_share_msg(firm_id, current_dividend_per_share) to shareholders (dividend per share)     
     add_dividend_per_share_message(ID, CURRENT_DIVIDEND_PER_SHARE);

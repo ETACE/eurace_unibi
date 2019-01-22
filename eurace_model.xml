@@ -70,6 +70,11 @@
     <description>Random seed for the run</description>
    </variable>
    <variable>
+    <type>double</type>
+    <name>GSL_RNG_SEED</name>
+    <description>GSL Random Number Generator Seed, compatible with xparser 0.17.1.</description>
+   </variable>
+   <variable>
     <type>int</type>
     <name>total_regions</name>
     <description>Total number of regions.</description>

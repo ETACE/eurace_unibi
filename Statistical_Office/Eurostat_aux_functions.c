@@ -1122,7 +1122,6 @@ void Eurostat_calc_macro_data(void)
             sum_total_sold_quantity  += firm_send_data_message->cum_total_sold_quantity;
     
             /***************** Sum of: output *********************/
-            //printf("Eurostat reads output: %.2f", firm_send_data_message->output);
             sum_region_output += firm_send_data_message->output;
             sum_total_output  += firm_send_data_message->output;
             
@@ -1131,7 +1130,6 @@ void Eurostat_calc_macro_data(void)
             sum_total_cum_revenue  += firm_send_data_message->cum_revenue;
             
             /***************** Sum of: planned_output *********************/
-            //printf("Eurostat reads planned_output: %.2f\n", firm_send_data_message->planned_output);
             sum_region_planned_output += firm_send_data_message->planned_output;
             sum_total_planned_output  += firm_send_data_message->planned_output;
             
@@ -1232,7 +1230,6 @@ void Eurostat_calc_firm_population(void)
         {
 			index=firm_send_data_message->age;
             FIRM_AGE_DISTRIBUTION[index] += 1;
-			//printf("Added an age %d to bin %d: %d firms\n", firm_send_data_message->age, index, FIRM_AGE_DISTRIBUTION[index]);
         }
 
 		else if (age==-1)
@@ -1496,10 +1493,6 @@ void Eurostat_calc_firm_survival_rates(void)
 				                SURVIVAL_RATE_MULTIPERIOD[index3]=
 				                    (double)FIRM_AGE_DISTRIBUTION_MULTIPERIOD[index]/(double)FIRM_AGE_DISTRIBUTION_MULTIPERIOD[index2];
 	
-									//printf("\nEntering element [%d][%d], index: %d, alt=[%d][%d], index2: %d\n", x, i, index, a, i-a, index2);
-									//printf("FIRM_AGE_DISTRIBUTION_MULTIPERIOD[%d][%d]=%d\n", x, i, FIRM_AGE_DISTRIBUTION_MULTIPERIOD[index]);
-									//printf("FIRM_AGE_DISTRIBUTION_MULTIPERIOD[%d][%d]=%d\n", a, i-a, FIRM_AGE_DISTRIBUTION_MULTIPERIOD[index2]);
-									//printf("SURVIVAL_RATE_MULTIPERIOD[%d][%d]=%2f\n", a, i, SURVIVAL_RATE_MULTIPERIOD[index3]);
 				            }
 						}
 				}
@@ -1626,10 +1619,6 @@ void Eurostat_calc_price_index(void)
         else
             printf("\n DIVISION BY ZERO: In Eurostat_aux_functions.c, line 1350:"
                     "REGION_IMPORT_PREVIOUS_VALUE[%d]+EXPORT_PREVIOUS_VALUE_MATRIX[%d][%d](index=%d)=%f", j,j,j,index, REGION_IMPORT_PREVIOUS_VALUE[j]+EXPORT_PREVIOUS_VALUE_MATRIX[index]);
-                    
-        //printf("\n HISTORY_MONTHLY[0].region_data.array[%d].cpi = %f\n", j, HISTORY_MONTHLY[0].region_data.array[j].cpi);
-        //printf("\n REGION_FIRM_DATA.array[%d].cpi = %f\n", j, REGION_FIRM_DATA.array[j].cpi);
-        //printf("\n REGION_FIRM_DATA.array[%d].cpi_last_month = %f\n", j, REGION_FIRM_DATA.array[j].cpi_last_month);
     }                
 
     //Compute overall economy-wide price index: loop over regions

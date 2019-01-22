@@ -114,15 +114,6 @@ int IGFirm_send_vacancies()
 	}
 
 	/*For every skill group send vacancy message with the correspondent wage 			offer*/
-	
-	/*if(VACANCIES > 0 && RESEARCH_VACANCIES > 0)
-	{	
-		add_vacancies_message(ID, REGION_ID, 
-        	WAGE_OFFER_FOR_SKILL_1, WAGE_OFFER_FOR_SKILL_2, 
-        	WAGE_OFFER_FOR_SKILL_3, WAGE_OFFER_FOR_SKILL_4, 
-        	WAGE_OFFER_FOR_SKILL_5,WAGE_OFFER_FOR_RD);
-//printf("Send vacancies: Production and Research\n");
-	}*/
 
 	if(VACANCIES > 0 )//&& RESEARCH_VACANCIES == 0)
 	{	
@@ -346,8 +337,6 @@ int IGFirm_send_random_redundancies()
 	{
 		no_redundancies = no_redundancies+1;
 	}
-
-//printf("random_num: %d;  no_research_redundancies: %d\n",random_num,no_redundancies);	
 	
 	for(i = 0; i < no_redundancies; i++)
 	{	 /*Firing: by chance*/
@@ -834,18 +823,6 @@ int IGFirm_send_vacancies_2()
 		printf("Research-Vacancies %d \n",RESEARCH_VACANCIES);
 	}
 
-	
-	
-	/* If vacancies left */
-	
-	/*if(VACANCIES > 0 && RESEARCH_VACANCIES > 0)
-	{	
-		add_vacancies2_message(ID, REGION_ID, 
-        	WAGE_OFFER_FOR_SKILL_1, WAGE_OFFER_FOR_SKILL_2, 
-        	WAGE_OFFER_FOR_SKILL_3, WAGE_OFFER_FOR_SKILL_4, 
-        	WAGE_OFFER_FOR_SKILL_5,WAGE_OFFER_FOR_RD);
-//printf("Send vacancies: Production and Research\n");
-	}*/
 
 	if(VACANCIES > 0)// && RESEARCH_VACANCIES == 0)
 	{	

@@ -690,7 +690,7 @@ int Bank_accounting()
 			{
 				fprintf(stderr, "\n\n In function Bank_accounting: Bank %d has EQUITY<0, but we ignore this for now.\n", ID);
 				fprintf(stderr, "\n\n Bank %d will automatically stop supplying credit, equity constraint is binding.\n", ID);
-				fprintf(stderr, "\n\n Bank bankruptcy and recapitalization is not implemented yet.\n", ID);
+				fprintf(stderr, "\n\n Bank bankruptcy and recapitalization is not implemented yet.\n");
 			}
 			#endif
 	

@@ -45,7 +45,6 @@ void IGFirm_compute_dividends_real_version(void)
     if(TOTAL_DIVIDEND_PAYMENT<1e-6 && NET_EARNINGS>0.0)
     {
         TOTAL_DIVIDEND_PAYMENT = CONST_DIVIDEND_EARNINGS_RATIO * NET_EARNINGS;
-        //printf("\n In Firm_compute_dividends: setting TOTAL_DIVIDEND_PAYMENT = %2.4f\n", TOTAL_DIVIDEND_PAYMENT):
     }
     
     //Always check:
@@ -108,10 +107,7 @@ void IGFirm_compute_dividends_dummy_version(void)
         	else
 			CURRENT_DIVIDEND_PER_SHARE = 0.0;
     
-    		//printf("\n IGFirm %d CURRENT_DIVIDEND_PER_SHARE %f %f			\n",ID,CURRENT_DIVIDEND_PER_SHARE,CURRENT_SHARES_OUTSTANDING);
-    
     		total_dividend_payment = average_last_net_profits;
-    		//printf("3: total_dividend_payment %f \n",total_dividend_payment);
         
     		//decrease payment_account with the total_dividend_payment
     		//PAYMENT_ACCOUNT -= total_dividend_payment;

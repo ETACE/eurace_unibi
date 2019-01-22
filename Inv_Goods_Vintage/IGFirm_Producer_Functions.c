@@ -80,7 +80,6 @@ int IGFirm_innovation_process()
 {
 	int i;
 
-	double prod_progress ;
 	/*1: complete functionality of the IGFirm -- 0: Exogenous stochastic innovation process  */
 	
 		
@@ -168,8 +167,6 @@ int IGFirm_innovation_process()
 			printf("DAY %d    TRANSITION_PHASE+INNOVATION_SHEME_MEDIUM_PROGRESS.array[0] %d\n",DAY, TRANSITION_PHASE+INNOVATION_SHEME_MEDIUM_PROGRESS.array[0]);
 			if(DAY==TRANSITION_PHASE+INNOVATION_SHEME_MEDIUM_PROGRESS.array[0])
 			{
-				prod_progress =PRODUCTIVITY*IGFIRM_EXOGENOUS_PRODUCTIVITY_PROGRESS;
-
 				PRODUCTIVITY =PRODUCTIVITY*(1+IGFIRM_EXOGENOUS_PRODUCTIVITY_PROGRESS);
 
 				CAPITAL_GOOD_PRICE = CAPITAL_GOOD_PRICE*(1
@@ -187,8 +184,6 @@ int IGFirm_innovation_process()
 		{
 			if(DAY==TRANSITION_PHASE+INNOVATION_SHEME_HIGH_PROGRESS.array[0])
 			{
-				prod_progress =PRODUCTIVITY*IGFIRM_EXOGENOUS_PRODUCTIVITY_PROGRESS;
-
 				PRODUCTIVITY =PRODUCTIVITY*(1+IGFIRM_EXOGENOUS_PRODUCTIVITY_PROGRESS);
 
 				CAPITAL_GOOD_PRICE = CAPITAL_GOOD_PRICE*(1
@@ -207,7 +202,6 @@ int IGFirm_innovation_process()
 
 			if(DAY==TRANSITION_PHASE+INNOVATION_SHEME_LOW_PROGRESS.array[0])
 			{
-				prod_progress =PRODUCTIVITY*IGFIRM_EXOGENOUS_PRODUCTIVITY_PROGRESS;
 
 				PRODUCTIVITY =PRODUCTIVITY*(1+IGFIRM_EXOGENOUS_PRODUCTIVITY_PROGRESS);
 
@@ -251,13 +245,9 @@ int IGFirm_set_price_send_info()
 	
 	/*based on the total value of the capital stock and last month investments the firm computes mean mean productivity value for each vintage*/
 
-	//printf(" ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS %f\n", ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS);
-
 	for(i=0;i<VINTAGES.size;i++)
 	{
 		 
-	//printf("ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS %f\n",ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS);
-
 		// here we compute the discounted sum of productivites over a planning period
 		sum =0.0;
 		s_skills = ECONOMY_WIDE_SPECIFIC_SKILLS_IN_FIRMS;
@@ -296,21 +286,14 @@ int IGFirm_set_price_send_info()
 
 	VINTAGES.array[i].discounted_productivity = sum;
 
-//printf("VINTAGES.array[i].discounted_productivity %f discounted_productivity_worst_vintage_last_month %f  price_worst_vintage_last_month %f\n", VINTAGES.array[i].discounted_productivity,discounted_productivity_worst_vintage_last_month, price_worst_vintage_last_month);
 			
 	//Compute new price: Price is a linear combination ofproductivity gains and costs
-
-
-
-	
-	//printf("UNIT_COSTS: %f	PRODUCTIVITY_PROGRESS: %f\n",UNIT_COSTS,PRODUCTIVITY_PROGRESS_IN_ECONOMY);
 
 
 	if(DAY>1)
 	VINTAGES.array[i].price= (1-LINEAR_COMBINATION_PRICING_IG_GOOD)*price_worst_vintage_last_month * VINTAGES.array[i].discounted_productivity  /discounted_productivity_worst_vintage_last_month 
 + LINEAR_COMBINATION_PRICING_IG_GOOD* UNIT_COSTS;
 
-	//printf("VINTAGES.array[%d].price:	%f\n",i,VINTAGES.array[i].price);
 
 		//Send the message:
 		add_productivity_message(ID,VINTAGES.array[i].productivity,VINTAGES.array[i].price);
@@ -444,14 +427,9 @@ int IGFirm_receive_order_delivers_capital_goods()
  */
 int IGFirm_calc_revenue()
 {
-	int i;
-
 	/*Reset CUM_REVENUE_LAST_MONTH on the first day of every month for getdata and validation check.*/
 	if(DAY%MONTH == 1)
 	{
-	
-			
-
 		CUM_REVENUE_LAST_MONTH = 0.0;
 	}
 

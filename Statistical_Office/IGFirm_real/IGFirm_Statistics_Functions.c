@@ -133,36 +133,9 @@ int IGFirm_receive_data()
 
 				AVERAGE_S_SKILL_OF_5 = 	eurostat_send_specific_skills_message->
 				specific_skill_5;
-
-				/*Updates wage_offer and wages regarding the productivity progress*/
-				if(DAY%20 == 1)
-				{
-					
-//printf("IGFIRM: eurostat_send_specific_skills_message->productivity_progress %f \n",eurostat_send_specific_skills_message->productivity_progress);
-
-					/*if(eurostat_send_specific_skills_message->productivity_progress > 0)
-					{
-						int i;
-						for(i = 0; i< EMPLOYEES.size; i++)
-						{				
-							EMPLOYEES.array[i].wage = EMPLOYEES.array[i].wage*(1+ 	
-							eurostat_send_specific_skills_message->productivity_progress);
-						}
-		
-						for(i = 0; i< RESEARCH_EMPLOYEES.size; i++)
-						{				
-							RESEARCH_EMPLOYEES.array[i].wage = RESEARCH_EMPLOYEES.array[i].wage*(1+ 
-							eurostat_send_specific_skills_message->productivity_progress);
-							
-							WAGE_OFFER_FOR_RD = WAGE_OFFER_FOR_RD
-							*(1+0.5*eurostat_send_specific_skills_message->productivity_progress);
-						}
-					}*/		
-				}
 			
 		}
 		FINISH_EUROSTAT_SEND_SPECIFIC_SKILLS_MESSAGE_LOOP
-
 
 		START_MSG_SKILLS_EUROSTAT_TO_IGFIRM_MESSAGE_LOOP
 
@@ -222,9 +195,6 @@ int IGFirm_send_data_to_Eurostat()
 		AVERAGE_S_SKILL_OF_1, AVERAGE_S_SKILL_OF_2, AVERAGE_S_SKILL_OF_3, AVERAGE_S_SKILL_OF_4, 
 		AVERAGE_S_SKILL_OF_5,
 		0, 0,	0, 0, 0,0, 0, 0, 0, 0, 0, 0,AGE, 0,0,0,0,0,IGFIRM_OUTFLOWS_CALENDAR.total_dividend_payment);
-
-	//printf("In Firm_send_data: Firm %d OUTPUT: %.2f\n", ID, OUTPUT);
-	//printf("In Firm_send_data: Firm %d PLANNED_OUTPUT: %.2f\n", ID, PLANNED_OUTPUT);
         
     return 0;       
 }
