@@ -52,10 +52,10 @@ In order to use the Eurace@Unibi Model Source Code, You agree to and comply with
 
 "This work uses (a modified version of) the Eurace@Unibi Model Source Code, developed by Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog and Michael Neugart. More details on the Eurace@Unibi model can be found in these publications:
 
-Dawid, H., Harting, P., van der Hoog, S., & Neugart, M. (2018a). Macroeconomics with heterogeneous agent models: Fostering transparency, reproducibility and replication. Journal of Evolutionary Economics. DOI:10.4119/unibi/2902981
+Dawid, H., Harting, P., van der Hoog, S., & Neugart, M. (2018a). Macroeconomics with heterogeneous agent models: Fostering transparency, reproducibility and replication. Journal of Evolutionary Economics. DOI:`10.4119/unibi/2902981`
 
 Dawid, H., Gemkow, S., Harting, P., van der Hoog, S., & Neugart, M. (2018b). Agent-based macroeconomic modeling and policy analysis: The Eurace@Unibi Model. In S.-H. Chen, M. Kaboudan, & Y.-R. Du (Eds.), The Oxford Handbook of Computational Economics and Finance (Ch. 17, pp. 490–519). Oxford: Oxford University Press.
-Available online as Working Paper: urn:nbn:de:0070-pub-26224984"
+Available online as Working Paper: `urn:nbn:de:0070-pub-26224984`"
 
 
 (7) You must notify the Owner about any publication that contains results derived from the Standard Version or Modified Version.
