@@ -2903,10 +2903,7 @@ BEST_PRICING_ABANDON_STRATEGY.sum_expected_earnings_discounted ,BEST_PRICING_ABA
 
 int Firm_clean_up_arrays()
 {
-
-int i;
-
-	#ifndef _DEBUG_MODE 
+	int i;
 	//Delete MARKET_RESEARCH_DATA_PRICING
 	for(i=MARKET_RESEARCH_DATA_PRICING.size-1;i>=0;i--)
 	{
@@ -2924,7 +2921,6 @@ int i;
 		remove_dt_prospective_variables(&PROSPECTIVE_VARIABLES,i);
 	}
 	
-	 #endif
-return 0;
+	return 0;
 }
 
