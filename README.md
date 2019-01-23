@@ -16,7 +16,7 @@ GSL 2.4 or higher (GNU  Scientific  Library)
 
 FLAME XParser 0.17.1 (https://github.com/FLAME-HPC/xparser/archive/0.17.1.tar.gz)
 
-FLAME Libmboard 0.3.1 (https://github.com/FLAME-HPC/libmboard/archive/master.zip)
+FLAME Libmboard 0.3.1 (https://github.com/FLAME-HPC/libmboard/archive/0.3.1.zip)
 
 
 # Pre-installed FLAME libraries and model source code
@@ -43,12 +43,13 @@ Make sure to have `cunit` and `gsl` installed.
 ## 2. Install libmboard
 
 On top of the repo root directory, download libmboard master version
-(https://github.com/FLAME-HPC/libmboard/archive/master.zip has more
+(https://github.com/FLAME-HPC/libmboard/archive/0.3.1.zip has more
 bugfixes since 0.3.1) and unzip it
 
 ```bash
 mkdir libmboard
 cd libmboard-master
+chmod +x autogen.sh
 ./autogen.sh
 # Remove --disable-parallel if you have mpi installed
 ./configure --prefix=$(cd ../libmboard; pwd) --disable-parallel

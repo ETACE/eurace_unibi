@@ -8,10 +8,10 @@ addons:
       - libgsl-dev
 
 install:
-  - wget https://github.com/FLAME-HPC/libmboard/archive/master.zip
-  - unzip master.zip
+  - wget https://github.com/FLAME-HPC/libmboard/archive/0.3.1.zip
+  - unzip 0.3.1.zip
   - mkdir libmboard
-  - cd libmboard-master
+  - cd libmboard-0.3.1
   - chmod +x autogen.sh
   - ./autogen.sh
   - ./configure --prefix=$(cd ../libmboard; pwd) --disable-parallel
