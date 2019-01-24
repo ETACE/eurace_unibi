@@ -3,7 +3,7 @@
 set -x
 set -e
 
-LIBMBOARD_VER=0.3.1
+LIBMBOARD_VER=5fd34e83b932dcda5bb6c177277b8557fbe01229
 XPARSER_VER=0.17.1
 
 # install libmboard
