@@ -31,7 +31,10 @@ https://gregorboehl.com/live/etace-v.0.997.1.ova
 Documentation:
 http://www.wiwi.uni-bielefeld.de/lehrbereiche/vwl/etace/Eurace_Unibi/Virtual_Appliance
 
-# Installation of FLAME libraries on stand-alone systems
+# Installation of FLAME libraries on stand-alone systems and building the model
+
+Step 2-4 (installation of FLAME libraries) can also be run via a script
+`./scripts/install_flame.sh`.
 
 ## 1. Prepare system requirements
 
@@ -43,7 +46,7 @@ Make sure to have `cunit` and `gsl` installed.
 ## 2. Install libmboard
 
 On top of the repo root directory, download libmboard 0.3.1
-(https://github.com/FLAME-HPC/libmboard/archive/0.3.1.zip) and unzip it
+(https://github.com/FLAME-HPC/libmboard/archive/0.3.1.tar.gz) and extract the tarball
 
 ```bash
 mkdir libmboard
@@ -54,21 +57,30 @@ chmod +x autogen.sh
 ./configure --prefix=$(cd ../libmboard; pwd) --disable-parallel
 make
 make install
-cd .. # back to the repo root directory
+# back to the repo root directory
+cd ..
 ```
 
-## 3. Install xparser and generate makefile for the model
+## 3. Install xparser
 
 Download xparser 0.17.1 (https://github.com/FLAME-HPC/xparser/archive/0.17.1.tar.gz) and
 extract to xparser/ directory on top of the repo root directory.
 ```bash
 cd xparser
 make
-./xparser ../eurace_model.xml
+# back to the repo root directory
 cd ..
 ```
 
-## 4. Build the model
+## 4. Generate makefile for the model
+```bash
+cd xparser
+./xparser ../eurace_model.xml
+# back to the repo root directory
+cd ..
+```
+
+## 5. Build the model
 
 Be sure to replace LIBMBOARD_DIR in Makefile from `/usr/local` to
 `$(PWD)/libmboard`.
