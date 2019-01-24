@@ -42,13 +42,12 @@ Make sure to have `cunit` and `gsl` installed.
 
 ## 2. Install libmboard
 
-On top of the repo root directory, download libmboard master version
-(https://github.com/FLAME-HPC/libmboard/archive/0.3.1.zip has more
-bugfixes since 0.3.1) and unzip it
+On top of the repo root directory, download libmboard 0.3.1
+(https://github.com/FLAME-HPC/libmboard/archive/0.3.1.zip) and unzip it
 
 ```bash
 mkdir libmboard
-cd libmboard-master
+cd libmboard-0.3.1
 chmod +x autogen.sh
 ./autogen.sh
 # Remove --disable-parallel if you have mpi installed
