@@ -103,7 +103,48 @@ Contributing
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+How to cite
+--
+Any publication that contains results derived from the Eurace@Unibi Soutrce Code must contain the following (or similar) acknowledgement:
+
+This work uses (a modified version of) the Eurace@Unibi model source code, developed by Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog and Michael Neugart. More details on the Eurace@Unibi model can be found in these publications:
+
+Dawid, H., Harting, P., van der Hoog, S., & Neugart, M. (2018a). Macroeconomics with heterogeneous agent models: Fostering transparency, reproducibility and replication. Journal of Evolutionary Economics. DOI:10.4119/unibi/2902981
+
+Dawid, H., Gemkow, S., Harting, P., van der Hoog, S., & Neugart, M. (2018b). Agent-based macroeconomic modeling and policy analysis: The Eurace@Unibi Model. In S.-H. Chen, M. Kaboudan, & Y.-R. Du (Eds.), The Oxford Handbook of Computational Economics and Finance (Ch. 17, pp. 490–519). Oxford: Oxford University Press. Available online as Working Paper: urn:nbn:de:0070-pub-26224984
+
+BiBTeX:
+
+@INCOLLECTION{Dawid_2018,
+	Author = {H. Dawid and S. Gemkow and P. Harting and S. van der Hoog and M. Neugart},
+	Title = {{Agent-Based Macroeconomic Modeling and Policy Analysis: {The Eurace@Unibi} Model}},
+	Editor = {Chen, S-H and Kaboudan M. and Du, Y.-R.},
+	Booktitle = {The Oxford Handbook of Computational Economics and Finance},
+	Publisher = {Oxford University Press},
+	Year = {2018},
+	Chapter = {17},
+	Pages = {490-519},
+}
+
+@ARTICLE{Dawid_2019,
+	author       = {Dawid, Herbert and Harting, Philipp and {van der Hoog}, Sander and Neugart, Michael},
+	title        = {{A Heterogeneous Agent Macroeconomic Model for Policy Evaluation: Improving Transparency and Reproducibility}},
+	year         = {2019},
+	journal 	  = {Journal of Evolutionary Economics},
+}
+
+
 Copyright
 ---------
 
-Copyright (c) 2014-2019 Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog, Michael Neugart. See LICENSE for further details.
+Copyright (c) 2014-2019 Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van der Hoog, Michael Neugart.
+
+License
+--
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This software is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+Disclaimer
+--
+
+The package is provided by the owner and contributors "as is' and without any express or implied warranties. The implied warranties of merchantability, fitness for a particular purpose, or non-infringement are disclaimed to the extent permitted by your local law. unless required by law, no owner or contributor will be liable for any direct, indirect, incidental, or consequential damages arising in any way out of the use of the package, even if advised of the possibility of such damage.
