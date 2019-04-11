@@ -231,7 +231,7 @@ int Household_rank_and_buy_goods_1()
             {
             
                 /*if randum number <= logit then select the corresponding good  */ 
-                if((random_number < logit_firm_id_list.array[j].logit) && (x != 1))
+                if(((double) random_number <= logit_firm_id_list.array[j].logit + 1e-7) && (x != 1))
                 {
                     ORDER_QUANTITY[0].firm_id = logit_firm_id_list.
                     array[j].firm_id;
@@ -419,7 +419,7 @@ int Household_rank_and_buy_goods_2()
             for(j = 0; j < logit_firm_id_list.size;j++)
             {
                 /*if random number <= logit then select the corresponding good  */ 
-                if((random_number < logit_firm_id_list.array[j].logit)
+                if(((double) random_number <= logit_firm_id_list.array[j].logit + 1e-7)
                 && (x!=1))
                 {
                     ORDER_QUANTITY[1].firm_id = logit_firm_id_list
