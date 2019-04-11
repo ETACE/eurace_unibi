@@ -145,6 +145,7 @@ int Household_determine_consumption_budget()
  */
 int Household_rank_and_buy_goods_1()
 {
+    WEEKLY_BUDGET = min(WEEKLY_BUDGET, PAYMENT_ACCOUNT);
     
     //Logit model parameter:
     double sum_weighted_qual_pric_ratios = 0; 
