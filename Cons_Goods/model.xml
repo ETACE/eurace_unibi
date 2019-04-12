@@ -745,6 +745,11 @@
      <name>employees_needed_production</name>
      <description></description>
     </variable>
+    <variable>
+     <type>double</type>
+     <name>remaining_budget_for_hiring</name>
+     <description>remaining budget for hiring new workers</description>
+    </variable>
 		<variable>
      <type>int</type>
      <name>no_employees_production</name>

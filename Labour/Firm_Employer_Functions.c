@@ -419,6 +419,8 @@ int Firm_read_job_applications_send_job_offer_or_rejection()
 	int k;
 	int no_applications;
 
+	double budget_remaining = REMAINING_BUDGET_FOR_HIRING;
+
 	/* Create a job application dynamic array */
 	job_application_array job_application_list; 
 	init_job_application_array(&job_application_list);
@@ -460,39 +462,59 @@ int Firm_read_job_applications_send_job_offer_or_rejection()
 			{
 				/*If applicant has general skill level 1 send job offer with wage offer for general skill level 1.*/
 				case 1:
-					add_job_offer_message(ID, 
-					job_application_list.array[i].worker_id, 
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_1,0);
+					if (WAGE_OFFER_FOR_SKILL_1 <= budget_remaining)
+					{
+						add_job_offer_message(ID, 
+						job_application_list.array[i].worker_id, 
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_1,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_1;
+					}
 					break;
 					
 				case 2:
-					add_job_offer_message(ID, 
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_2,0);
+					if (WAGE_OFFER_FOR_SKILL_2 <= budget_remaining)
+					{
+						add_job_offer_message(ID, 
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_2,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_2;
+					}
 					break;
 
 				case 3:
-					add_job_offer_message(ID,
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_3,0);
+					if (WAGE_OFFER_FOR_SKILL_3 <= budget_remaining)
+					{
+						add_job_offer_message(ID,
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_3,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_3;
+					}
 					break;
 
 				case 4:
-					add_job_offer_message(ID, 
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_4,0);
+					if (WAGE_OFFER_FOR_SKILL_4 <= budget_remaining)
+					{
+						add_job_offer_message(ID, 
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_4,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_4;
+					}
 					break;
 
 				/*If applicant has general skill level 1 send job offer with wage offer for general skill level 5.*/
 				case 5:
-					add_job_offer_message(ID, 
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_5,0);
+					if (WAGE_OFFER_FOR_SKILL_5 <= budget_remaining)
+					{
+						add_job_offer_message(ID, 
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_5,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_5;
+					}
 					break;
 			}
 
@@ -560,38 +582,58 @@ int Firm_read_job_applications_send_job_offer_or_rejection()
 					{
 						/*If the applicant has general skill level 1 send job offer with wage offer for general skill level 1*/
 						case 1:
-							add_job_offer_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_1,0);
+							if (WAGE_OFFER_FOR_SKILL_1 <= budget_remaining)
+							{
+								add_job_offer_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_1,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_1;
+							}
 							break;
-							
+
 						case 2:
-							add_job_offer_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_2,0);
+							if (WAGE_OFFER_FOR_SKILL_2 <= budget_remaining)
+							{
+								add_job_offer_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_2,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_2;
+							}
 							break;
 
 						case 3:
-							add_job_offer_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_3,0);
+							if (WAGE_OFFER_FOR_SKILL_3 <= budget_remaining)
+							{
+								add_job_offer_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_3,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_3;
+							}
 							break;
 
 						case 4:
-							add_job_offer_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_4,0);
+							if (WAGE_OFFER_FOR_SKILL_4 <= budget_remaining)
+							{
+								add_job_offer_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_4,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_4;
+							}
 							break;
 
 						case 5:
-							add_job_offer_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_5,0);
+							if (WAGE_OFFER_FOR_SKILL_5 <= budget_remaining)
+							{
+								add_job_offer_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_5,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_5;
+							}
 							break;
 					}
 
@@ -697,6 +739,7 @@ int Firm_read_job_responses()
 					job_acceptance_message->general_skill, 
 					job_acceptance_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_1;
 					NO_EMPLOYEES_SKILL_1++;
 					break;
 
@@ -707,6 +750,7 @@ int Firm_read_job_responses()
 					job_acceptance_message->general_skill, 
 					job_acceptance_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_2;
 					NO_EMPLOYEES_SKILL_2++;
 					break;
 
@@ -717,6 +761,7 @@ int Firm_read_job_responses()
 					job_acceptance_message->general_skill, 
 					job_acceptance_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_3;
 					NO_EMPLOYEES_SKILL_3++;
 					break;
 
@@ -727,6 +772,7 @@ int Firm_read_job_responses()
 					job_acceptance_message->general_skill, 
 					job_acceptance_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_4;
 					NO_EMPLOYEES_SKILL_4++;
 					break;
 
@@ -737,6 +783,7 @@ int Firm_read_job_responses()
 					job_acceptance_message->general_skill, 
 					job_acceptance_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_5;
 					NO_EMPLOYEES_SKILL_5++;
 					break;
 			}   
@@ -841,6 +888,8 @@ int Firm_read_job_applications_send_job_offer_or_rejection_2()
 	int k;
 	int no_applications;
 
+	double budget_remaining = REMAINING_BUDGET_FOR_HIRING;
+
 	/* Create a job application dynamic array */
 	job_application_array job_application_list; 
 	init_job_application_array(&job_application_list);
@@ -882,38 +931,58 @@ int Firm_read_job_applications_send_job_offer_or_rejection_2()
 			{
 				/*If applicant has general skill level 1 send job offer with wage offer for general skill level 1.*/
 				case 1:
-					add_job_offer2_message(ID, 
-					job_application_list.array[i].worker_id, 
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_1,0);
+					if (WAGE_OFFER_FOR_SKILL_1 <= budget_remaining)
+					{
+						add_job_offer2_message(ID, 
+						job_application_list.array[i].worker_id, 
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_1,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_1;
+					}
 					break;
 					
 				case 2:
-					add_job_offer2_message(ID, 
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_2,0);
+				if (WAGE_OFFER_FOR_SKILL_2 <= budget_remaining)
+					{
+						add_job_offer2_message(ID, 
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_2,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_2;
+					}
 					break;
 
 				case 3:
-					add_job_offer2_message(ID,
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_3,0);
+				if (WAGE_OFFER_FOR_SKILL_3 <= budget_remaining)
+					{
+						add_job_offer2_message(ID,
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_3,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_3;
+					}
 					break;
 
 				case 4:
-					add_job_offer2_message(ID, 
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_4,0);
+				if (WAGE_OFFER_FOR_SKILL_4 <= budget_remaining)
+					{
+						add_job_offer2_message(ID, 
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_4,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_4;
+					}
 					break;
 
 				case 5:
-					add_job_offer2_message(ID, 
-					job_application_list.array[i].worker_id,
-					REGION_ID, 
-					WAGE_OFFER_FOR_SKILL_5,0);
+					if (WAGE_OFFER_FOR_SKILL_5 <= budget_remaining)
+					{
+						add_job_offer2_message(ID, 
+						job_application_list.array[i].worker_id,
+						REGION_ID, 
+						WAGE_OFFER_FOR_SKILL_5,0);
+						budget_remaining -= WAGE_OFFER_FOR_SKILL_5;
+					}
 					break;
 			}
 
@@ -982,39 +1051,58 @@ int Firm_read_job_applications_send_job_offer_or_rejection_2()
 					{
 						/*If the applicant has general skill level 1 send job offer with wage offer for general skill level 1*/
 						case 1:
-							add_job_offer2_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_1,0);
+							if (WAGE_OFFER_FOR_SKILL_1 <= budget_remaining)
+							{
+								add_job_offer2_message(ID, 
+								logit_applications_list.array[j].worker_id, 
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_1,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_1;
+							}
 							break;
-							
+					
 						case 2:
-							add_job_offer2_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_2,0);
+							if (WAGE_OFFER_FOR_SKILL_2 <= budget_remaining)
+							{
+								add_job_offer2_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_2,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_2;
+							}
 							break;
 
 						case 3:
-							add_job_offer2_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_3,0);
+							if (WAGE_OFFER_FOR_SKILL_3 <= budget_remaining)
+							{
+								add_job_offer2_message(ID,
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_3,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_3;
+							}
 							break;
 
 						case 4:
-							add_job_offer2_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_4,0);
+							if (WAGE_OFFER_FOR_SKILL_4 <= budget_remaining)
+							{
+								add_job_offer2_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_4,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_4;
+							}
 							break;
 
-						/*If the applicant has general skill level 1 send job offer with wage offer for general skill level 5*/
 						case 5:
-							add_job_offer2_message(ID, 
-							logit_applications_list.array[j].worker_id,
-							REGION_ID, 
-							WAGE_OFFER_FOR_SKILL_5,0);
+							if (WAGE_OFFER_FOR_SKILL_5 <= budget_remaining)
+							{
+								add_job_offer2_message(ID, 
+								logit_applications_list.array[j].worker_id,
+								REGION_ID, 
+								WAGE_OFFER_FOR_SKILL_5,0);
+								budget_remaining -= WAGE_OFFER_FOR_SKILL_5;
+							}
 							break;
 					}
 
@@ -1124,6 +1212,7 @@ int Firm_read_job_responses_2()
 					job_acceptance2_message->general_skill, 
 					job_acceptance2_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_1;
 					NO_EMPLOYEES_SKILL_1++;
 					break;
 
@@ -1134,6 +1223,7 @@ int Firm_read_job_responses_2()
 					job_acceptance2_message->general_skill, 
 					job_acceptance2_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_2;
 					NO_EMPLOYEES_SKILL_2++;
 					break;
 
@@ -1144,6 +1234,7 @@ int Firm_read_job_responses_2()
 					job_acceptance2_message->general_skill, 
 					job_acceptance2_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_3;
 					NO_EMPLOYEES_SKILL_3++;
 					break;
 
@@ -1154,6 +1245,7 @@ int Firm_read_job_responses_2()
 					job_acceptance2_message->general_skill, 
 					job_acceptance2_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_4;
 					NO_EMPLOYEES_SKILL_4++;
 					break;
 			
@@ -1164,6 +1256,7 @@ int Firm_read_job_responses_2()
 					job_acceptance2_message->general_skill, 
 					job_acceptance2_message->specific_skill,0.0);
 
+					REMAINING_BUDGET_FOR_HIRING -= WAGE_OFFER_FOR_SKILL_5;
 					NO_EMPLOYEES_SKILL_5++;
 					break;
 			}   

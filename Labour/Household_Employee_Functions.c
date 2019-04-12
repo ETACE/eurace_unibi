@@ -973,20 +973,22 @@ int Household_send_tax_payment()
        // char *filename="";
    // #endif
     double restitution_payment=0.0;
+    double restitution_factor=0.0;
     int i;
    
     //Benefit restitution: repayment of the already received monthly unemployment benefits if recently re-employed
     if (DAY_OF_MONTH_RECEIVE_BENEFIT != DAY_OF_MONTH_RECEIVE_INCOME )
     {
-        restitution_payment = ((DAY_OF_MONTH_RECEIVE_BENEFIT + 
-		(20-DAY_OF_MONTH_RECEIVE_INCOME)%20)/20.0)* UNEMPLOYMENT_PAYMENT;
-		
+    	if (DAY_OF_MONTH_RECEIVE_INCOME > DAY_OF_MONTH_RECEIVE_BENEFIT)
+    		restitution_factor = 1.0 - (DAY_OF_MONTH_RECEIVE_INCOME - DAY_OF_MONTH_RECEIVE_BENEFIT)/20.0;
+    	else
+    		restitution_factor = 1.0 - (20 - DAY_OF_MONTH_RECEIVE_BENEFIT + DAY_OF_MONTH_RECEIVE_INCOME)/20.0;
+
+        restitution_payment = restitution_factor * UNEMPLOYMENT_PAYMENT;
+
         //Reset
-        DAY_OF_MONTH_RECEIVE_BENEFIT = DAY_OF_MONTH_RECEIVE_INCOME;   
+        DAY_OF_MONTH_RECEIVE_BENEFIT = DAY_OF_MONTH_RECEIVE_INCOME;
 	}
-    
-     
-    
     
     /*Send a message to the government*/
     add_unemployment_benefit_restitution_message(GOV_ID, restitution_payment);

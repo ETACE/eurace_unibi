@@ -579,7 +579,7 @@ int Firm_in_financial_crisis()
     //Set flag if resolved:
     if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
             + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT
-            + TOTAL_DIVIDEND_PAYMENT)
+            + TOTAL_DIVIDEND_PAYMENT -1e-7)
     {
         FINANCIAL_CRISIS_STATE=0;
         BANKRUPTCY_STATE=0;
@@ -1082,9 +1082,6 @@ int Firm_bankruptcy_rescale_loans()
 	//Condition: ONCE AT START
 	if ((BANKRUPTCY_IDLE_COUNTER == CONST_BANKRUPTCY_IDLE_PERIOD - 1)&&(TOTAL_DEBT>1e-7))
 	{
-		printf("\n\n IT %d Firm_bankruptcy_rescale_loans: Start for ID %d", DAY, ID);
-		printf("\n\t Setting TARGET_DEBT at BANKRUPTCY_IDLE_COUNTER %d\n", BANKRUPTCY_IDLE_COUNTER);
-
 		//Renegotiating debt: refunding credit, computing bad debt
 		 TOTAL_ASSETS = TOTAL_VALUE_CAPITAL_STOCK + PAYMENT_ACCOUNT;
 

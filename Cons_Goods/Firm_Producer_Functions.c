@@ -6,6 +6,30 @@
 
 /* Library functions */
 
+/*
+ * Function to calculate the expected wage bill
+ */
+double firm_calc_expected_wage_bill_production(int no_future_employees)
+{
+	int delta = no_future_employees - NO_EMPLOYEES_PRODUCTION;
+	double expected_wage_bill = 0.0;
+
+	if (delta >= 0)
+	{
+		expected_wage_bill = no_future_employees*(1.04)*MEAN_WAGE;
+	}
+	else
+	{
+		qsort(EMPLOYEES.array, EMPLOYEES.size, sizeof(employee),employee_list_rank_general_skills_function);
+
+		int i;
+		for(i = 0; i < no_future_employees; i++)
+			expected_wage_bill += EMPLOYEES.array[i].wage;
+	}
+
+	return expected_wage_bill;
+}
+
 /** \fn Firm_calc_input_demands_2(), auxiliary function
  * \brief Firms recalculate the labor demand and the demand for capital goods
  * such that these can be financed with the external finances obtained.
@@ -63,15 +87,17 @@ int Firm_calc_input_demands_2()
 	/*Set the capital demand*/
 
 	DEMAND_CAPITAL_STOCK = max(NEEDED_CAPITAL_STOCK-TOTAL_UNITS_CAPITAL_STOCK,0.0);
+
+	double expected_wage_bill = firm_calc_expected_wage_bill_production(EMPLOYEES_NEEDED_PRODUCTION);
         
         /*This computes the financial needings for production*/
         /*Distinction of cases: if subsidies for best practice technol.ogy*/
 		if(POLICY_EXP_BEST_TECHNOLOGY_SUBSIDY==1 && abs_double(TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].productivity - TECHNOLOGICAL_FRONTIER)<1e-5)
 		{
-			PLANNED_PRODUCTION_COSTS = EMPLOYEES_NEEDED_PRODUCTION*(1.04)*MEAN_WAGE + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price*(1-SUBSIDY_PCT);
+			PLANNED_PRODUCTION_COSTS = expected_wage_bill + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price*(1-SUBSIDY_PCT);
 		}else
 		{
-			PLANNED_PRODUCTION_COSTS = EMPLOYEES_NEEDED_PRODUCTION*(1.04)*MEAN_WAGE + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price;
+			PLANNED_PRODUCTION_COSTS = expected_wage_bill + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price;
 		}
 
 		PLANNED_INNOVATION_EXPENDITURES = 	EMPLOYEES_NEEDED_INNOVATION*(1.04)*MEAN_WAGE_R_AND_D;
@@ -546,21 +572,25 @@ int Firm_calc_input_demands()
 
 			
 	}
+
+	DEMAND_CAPITAL_STOCK = max(0.0, NEEDED_CAPITAL_STOCK - TOTAL_UNITS_CAPITAL_STOCK);
 	
 	EMPLOYEES_NEEDED_INNOVATION = OPTIMAL_EMPLOYEES_NEEDED_INNOVATION;
-	
+
+	double expected_wage_bill = firm_calc_expected_wage_bill_production(EMPLOYEES_NEEDED_PRODUCTION);
+
 	/*Financial planning:*/	
 
 	/*Distinction of cases: if subsidies for best practice technology*/
 	if(POLICY_EXP_BEST_TECHNOLOGY_SUBSIDY==1 && abs_double(TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].productivity - TECHNOLOGICAL_FRONTIER)<1e-5)
 	{
 	
-		PLANNED_PRODUCTION_COSTS = EMPLOYEES_NEEDED_PRODUCTION*(1.04)*MEAN_WAGE + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price*(1-SUBSIDY_PCT);
+		PLANNED_PRODUCTION_COSTS = expected_wage_bill + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price*(1-SUBSIDY_PCT);
 	
 	}else
 	{
 		
-		PLANNED_PRODUCTION_COSTS = EMPLOYEES_NEEDED_PRODUCTION*(1.04)*MEAN_WAGE + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price;
+		PLANNED_PRODUCTION_COSTS = expected_wage_bill + DEMAND_CAPITAL_STOCK*TECHNOLOGY_VINTAGES.array[VINTAGE_SELECTED].price;
 
 	}
 
@@ -683,6 +713,18 @@ int Firm_calc_production_quantity_2()
         
         //Set planned production value that is retained in memory during the month:
         PLANNED_OUTPUT = PLANNED_PRODUCTION_QUANTITY;
+
+        double expected_wage_bill = firm_calc_expected_wage_bill_production(EMPLOYEES_NEEDED_PRODUCTION);
+
+		REMAINING_BUDGET_FOR_HIRING = expected_wage_bill;
+		
+		int i=0;
+		for(i=0; i<EMPLOYEES.size;i++)
+			REMAINING_BUDGET_FOR_HIRING -= EMPLOYEES.array[i].wage;
+
+		// if remianing budget < 0, employees will be fired later
+		if(REMAINING_BUDGET_FOR_HIRING < 0)
+			REMAINING_BUDGET_FOR_HIRING = 0;
 
 	#ifdef _DEBUG_MODE
         if (PRINT_DEBUG_PRODUCTION)
