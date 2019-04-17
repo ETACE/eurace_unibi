@@ -516,6 +516,27 @@ int Firm_set_bankruptcy_illiquidity()
     //Type 1: illiquidity
     BANKRUPTCY_INSOLVENCY_STATE  = 0;
     BANKRUPTCY_ILLIQUIDITY_STATE = 1;
+
+    int i;
+    // Fire employees
+    for (i=0;i<EMPLOYEES.size;i++)
+    {
+        add_firing_message(ID, EMPLOYEES.array[i].id);
+    }
+    for (i=EMPLOYEES.size;i>0;i--)
+    {
+        remove_employee(&EMPLOYEES, i-1);
+    }
+
+
+    for (i=0;i<R_AND_D_EMPLOYEES.size;i++)
+    {
+        add_firing_message(ID, R_AND_D_EMPLOYEES.array[i].id);
+    }
+    for (i=R_AND_D_EMPLOYEES.size;i>0;i--)
+    {
+        remove_employee(&R_AND_D_EMPLOYEES, i-1);
+    }
     
     //send msg to malls
     add_bankruptcy_illiquidity_message(ID);
