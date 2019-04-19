@@ -448,11 +448,9 @@ int Firm_check_financial_and_bankruptcy_state()
     if (PAYMENT_ACCOUNT < TOTAL_FINANCIAL_NEEDS)
     {
 
-	
-
         //Code: check if payment account is also less than financial payments
        if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
-                + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT-1e-5)
+                + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT -1e-12)
         {
             //Financial crisis condition
             FINANCIAL_CRISIS_STATE=1;
@@ -600,7 +598,7 @@ int Firm_in_financial_crisis()
     //Set flag if resolved:
     if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
             + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT
-            + TOTAL_DIVIDEND_PAYMENT -1e-7)
+            + TOTAL_DIVIDEND_PAYMENT -1e-12)
     {
         FINANCIAL_CRISIS_STATE=0;
         BANKRUPTCY_STATE=0;
