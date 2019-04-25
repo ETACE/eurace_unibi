@@ -320,7 +320,6 @@ int Firm_calc_input_demands()
 {
 	
     int i,j;
-	double logit_for_print_debug[TECHNOLOGY_VINTAGES.size];
 
 	double employees_needed_inno = 0.0; 
 	
@@ -339,16 +338,11 @@ int Firm_calc_input_demands()
 		add_adt_technology_vintages(&TECHNOLOGY_VINTAGES,productivity_message->cap_productivity, productivity_message->cap_good_price,0.0);	
 			
         FINISH_PRODUCTIVITY_MESSAGE_LOOP
-	
-		
+
+    double logit_for_print_debug[TECHNOLOGY_VINTAGES.size];
+
 	 TECHNOLOGICAL_FRONTIER = TECHNOLOGY_VINTAGES.array[TECHNOLOGY_VINTAGES.size-1].productivity;
      ACTUAL_CAP_PRICE = TECHNOLOGY_VINTAGES.array[TECHNOLOGY_VINTAGES.size-1].price;
-
-	//Setting up the logit print debug array. This array is used for printing out the logits for debugging
-	for(i=0;i<TECHNOLOGY_VINTAGES.size;i++)
-	{
-		logit_for_print_debug[i]=0.0;
-	}
 	
 	/*Depreciation of the capital stock*/
 
