@@ -448,11 +448,9 @@ int Firm_check_financial_and_bankruptcy_state()
     if (PAYMENT_ACCOUNT < TOTAL_FINANCIAL_NEEDS)
     {
 
-	
-
         //Code: check if payment account is also less than financial payments
        if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
-                + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT-1e-5)
+                + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT -1e-12)
         {
             //Financial crisis condition
             FINANCIAL_CRISIS_STATE=1;
@@ -516,6 +514,27 @@ int Firm_set_bankruptcy_illiquidity()
     //Type 1: illiquidity
     BANKRUPTCY_INSOLVENCY_STATE  = 0;
     BANKRUPTCY_ILLIQUIDITY_STATE = 1;
+
+    int i;
+    // Fire employees
+    for (i=0;i<EMPLOYEES.size;i++)
+    {
+        add_firing_message(ID, EMPLOYEES.array[i].id);
+    }
+    for (i=EMPLOYEES.size;i>0;i--)
+    {
+        remove_employee(&EMPLOYEES, i-1);
+    }
+
+
+    for (i=0;i<R_AND_D_EMPLOYEES.size;i++)
+    {
+        add_firing_message(ID, R_AND_D_EMPLOYEES.array[i].id);
+    }
+    for (i=R_AND_D_EMPLOYEES.size;i>0;i--)
+    {
+        remove_employee(&R_AND_D_EMPLOYEES, i-1);
+    }
     
     //send msg to malls
     add_bankruptcy_illiquidity_message(ID);
@@ -579,7 +598,7 @@ int Firm_in_financial_crisis()
     //Set flag if resolved:
     if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
             + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT
-            + TOTAL_DIVIDEND_PAYMENT -1e-7)
+            + TOTAL_DIVIDEND_PAYMENT -1e-12)
     {
         FINANCIAL_CRISIS_STATE=0;
         BANKRUPTCY_STATE=0;

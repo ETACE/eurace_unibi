@@ -55,6 +55,10 @@ void ClearingHouse_correct_rationing_positive(int total_rationing)
 			total_rationing -= rationed_units;
 		}//order-loop
 		i++;
+
+		// start over
+		if (i==PROCESSED_ORDERS.size)
+			i=0;
     }//while-loop
     
     #ifdef _DEBUG_MODE    
@@ -128,6 +132,10 @@ void ClearingHouse_correct_rationing_negative(int total_rationing)
 			total_rationing += rationed_units;
 		}//order-loop
 		i++;
+
+		// start over
+		if (i==PROCESSED_ORDERS.size)
+			i=0;
     }//while-loop
     
     #ifdef _DEBUG_MODE    
