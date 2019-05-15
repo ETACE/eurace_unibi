@@ -486,7 +486,7 @@ int Firm_calc_input_demands()
 			double sum=0;
 			double logit[TECHNOLOGY_VINTAGES.size];
 				
-			if(DAY>=0)
+			if(DAY>=TRANSITION_PHASE)
 			{
 				/*Summing for logit denominator*/
 				for(i=0; i<TECHNOLOGY_VINTAGES.size;i++)
