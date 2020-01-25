@@ -142,7 +142,7 @@ Copyright (c) 2014-2019 Herbert Dawid, Simon Gemkow, Philipp Harting, Sander van
 License
 --
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This software is licensed under the <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+See the files LICENSE and EULA.rtf.
 
 Disclaimer
 --

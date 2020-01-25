@@ -448,11 +448,9 @@ int Firm_check_financial_and_bankruptcy_state()
     if (PAYMENT_ACCOUNT < TOTAL_FINANCIAL_NEEDS)
     {
 
-	
-
         //Code: check if payment account is also less than financial payments
        if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
-                + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT-1e-5)
+                + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT -1e-12)
         {
             //Financial crisis condition
             FINANCIAL_CRISIS_STATE=1;
@@ -516,6 +514,27 @@ int Firm_set_bankruptcy_illiquidity()
     //Type 1: illiquidity
     BANKRUPTCY_INSOLVENCY_STATE  = 0;
     BANKRUPTCY_ILLIQUIDITY_STATE = 1;
+
+    int i;
+    // Fire employees
+    for (i=0;i<EMPLOYEES.size;i++)
+    {
+        add_firing_message(ID, EMPLOYEES.array[i].id);
+    }
+    for (i=EMPLOYEES.size;i>0;i--)
+    {
+        remove_employee(&EMPLOYEES, i-1);
+    }
+
+
+    for (i=0;i<R_AND_D_EMPLOYEES.size;i++)
+    {
+        add_firing_message(ID, R_AND_D_EMPLOYEES.array[i].id);
+    }
+    for (i=R_AND_D_EMPLOYEES.size;i>0;i--)
+    {
+        remove_employee(&R_AND_D_EMPLOYEES, i-1);
+    }
     
     //send msg to malls
     add_bankruptcy_illiquidity_message(ID);
@@ -579,7 +598,7 @@ int Firm_in_financial_crisis()
     //Set flag if resolved:
     if (PAYMENT_ACCOUNT >= TOTAL_INTEREST_PAYMENT
             + TOTAL_DEBT_INSTALLMENT_PAYMENT + TAX_PAYMENT
-            + TOTAL_DIVIDEND_PAYMENT)
+            + TOTAL_DIVIDEND_PAYMENT -1e-12)
     {
         FINANCIAL_CRISIS_STATE=0;
         BANKRUPTCY_STATE=0;
@@ -1082,9 +1101,6 @@ int Firm_bankruptcy_rescale_loans()
 	//Condition: ONCE AT START
 	if ((BANKRUPTCY_IDLE_COUNTER == CONST_BANKRUPTCY_IDLE_PERIOD - 1)&&(TOTAL_DEBT>1e-7))
 	{
-		printf("\n\n IT %d Firm_bankruptcy_rescale_loans: Start for ID %d", DAY, ID);
-		printf("\n\t Setting TARGET_DEBT at BANKRUPTCY_IDLE_COUNTER %d\n", BANKRUPTCY_IDLE_COUNTER);
-
 		//Renegotiating debt: refunding credit, computing bad debt
 		 TOTAL_ASSETS = TOTAL_VALUE_CAPITAL_STOCK + PAYMENT_ACCOUNT;
 
