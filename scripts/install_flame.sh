@@ -13,7 +13,7 @@ mkdir libmboard
 cd libmboard-$LIBMBOARD_VER
 chmod +x autogen.sh  # TODO remove this once the version is updated
 ./autogen.sh
-./configure --prefix="$(cd ../libmboard; pwd)" --disable-parallel
+./configure --prefix="$(cd ../libmboard; pwd)" --disable-parallel --disable-tests
 make
 make install
 
