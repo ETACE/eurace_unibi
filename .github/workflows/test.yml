@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libcunit1 libcunit1-doc libcunit1-dev libgsl-dev
+    - name: Install the code
+      run: |
+        ./scripts/install_flame.sh
+        (cd xparser && ./xparser ../eurace_model.xml)
+        sed -i 's|= /usr/local/lib|= $(PWD)/libmboard|g' Makefile
+        make
+    - name: Run tests
+      run: |
+        ./run_tests.sh
